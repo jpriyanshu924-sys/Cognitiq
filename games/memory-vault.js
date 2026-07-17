@@ -308,6 +308,7 @@ class MemoryVaultGame {
     if(this._kd) window.removeEventListener('keydown',this._kd);
     this.lives--;
     this.history.push({ len: this.seqLen, status: 'Failed' });
+    this.seqLen = Math.max(3, this.seqLen - 1); // adaptive staircase: decrease length on incorrect/timeout
     this.cb.onFeedback(false);
 
     const prog = document.getElementById('mv-progress');
@@ -372,7 +373,7 @@ class MemoryVaultGame {
     if(correct){
       this.roundsWon++;
       this.history.push({ len: this.seqLen, status: 'Success' });
-      this.seqLen=Math.min(9, this.seqLen+1);
+      this.seqLen=Math.min(12, this.seqLen+1); // adaptive staircase: increase length on success
       const pts=150+this.seqLen*50;
       this.score+=pts;
       this.cb.onScore(pts, this.seqLen);
@@ -381,6 +382,7 @@ class MemoryVaultGame {
     } else {
       this.lives--;
       this.history.push({ len: this.seqLen, status: 'Failed' });
+      this.seqLen=Math.max(3, this.seqLen-1); // adaptive staircase: decrease length on incorrect
       this.cb.onFeedback(false);
       if(this.lives<=0){
         this._showGameOver();

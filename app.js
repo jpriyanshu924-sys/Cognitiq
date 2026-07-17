@@ -316,7 +316,7 @@ const GAME_MODULES = {
   'emotions-face-game':() => window.FacesGame,
   'team-selling':      () => window.TeamDilemmaGame,
   'power-generators':  () => window.FeatureUnlockGame,
-  'security-door':     () => window.SignalStopGame,
+  'security-door':     () => window.SecurityDoorGame,
   'patterns':          () => window.PatternMatrixGame,
   'order':             () => window.GridlockGame,
   // McKinsey Solve

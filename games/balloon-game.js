@@ -6,7 +6,7 @@
 class BalloonGame {
   constructor(container, cb) {
     this.container = container; this.cb = cb;
-    this.score = 0; this.round = 0; this.totalRounds = 15;
+    this.score = 0; this.round = 0; this.totalRounds = 40;
     this.pumps = 0; this.banked = 0; this.popped = 0;
     this.bankTotal = 0; this.currentEarnings = 0;
     this.popAt = 0; this.level = 1;
@@ -16,6 +16,7 @@ class BalloonGame {
     this.finished = false;
     this._actionTimer = null;
     this.gameStartTime = 0;
+    this.balloonColor = 'blue';
   }
 
   start() {
@@ -34,16 +35,30 @@ class BalloonGame {
     this.currentEarnings = 0;
     this.balloonR = 40;
     this.animating = false;
-    // Pop threshold: maximum pumps shrinks as rounds progress to increase difficulty
-    const maxPumps = Math.max(16, 64 - (this.round * 3));
-    this.popAt = 1 + Math.floor(Math.random() * maxPumps);
+
+    // Pick balloon color randomly
+    const colors = ['red', 'blue', 'gold'];
+    this.balloonColor = colors[Math.floor(Math.random() * colors.length)];
+
+    // Set pop rate based on color:
+    // Red: early pops (avg ~10.5 pumps, range 1-20)
+    // Blue: medium pops (avg ~17.5 pumps, range 5-30)
+    // Gold: late pops (avg ~32.5 pumps, range 10-55)
+    if (this.balloonColor === 'red') {
+      this.popAt = 1 + Math.floor(Math.random() * 20);
+    } else if (this.balloonColor === 'blue') {
+      this.popAt = 5 + Math.floor(Math.random() * 25);
+    } else {
+      this.popAt = 10 + Math.floor(Math.random() * 45);
+    }
+
     this._render();
     this._startActionTimer();
   }
 
   _startActionTimer() {
     this._clearActionTimer();
-    const limit = Math.max(1800, 3500 - (this.round * 110)); // shrinks down to 1.8s in final rounds
+    const limit = Math.max(1800, 3500 - (this.round * 45)); // shrinks down to 1.8s in final rounds
     let timeLeft = limit;
     
     const timerVal = document.getElementById('ap-timer-val');
@@ -91,7 +106,7 @@ class BalloonGame {
     const lastPopObj = this.pumpHistory.length > 0 ? this.pumpHistory[this.pumpHistory.length - 1] : null;
     let lastPopVal = 'None';
     if (lastPopObj) {
-      lastPopVal = `${lastPopObj.pumps} pumps`;
+      lastPopVal = `${lastPopObj.pumps} pumps (${lastPopObj.color})`;
     }
 
     this.el.innerHTML = `
@@ -124,7 +139,10 @@ class BalloonGame {
                   
                   <!-- Performance Card -->
                   <div class="ap-blg-card">
-                    <div class="ap-blg-card-title">Performance</div>
+                    <div class="ap-blg-card-title" style="display:flex; justify-content:space-between; align-items:center">
+                      Performance
+                      <span class="ap-spin-badge" style="background-color:${this.balloonColor==='red'?'#fee2e2':this.balloonColor==='blue'?'#dbeafe':'#fef3c7'}; color:${this.balloonColor==='red'?'#dc2626':this.balloonColor==='blue'?'#2563eb':'#b45309'}; text-transform:capitalize; font-size:0.75rem">${this.balloonColor}</span>
+                    </div>
                     
                     <div class="ap-blg-metric-group">
                       <span class="ap-blg-lbl">Current Potential</span>
@@ -149,9 +167,9 @@ class BalloonGame {
 
                   <!-- Instructions Card -->
                   <div class="ap-blg-instructions-card">
-                    <div class="ap-blg-instr-title">⚡ HIGH RISK WARNING</div>
+                    <div class="ap-blg-instr-title">⚡ BALLOON PATTERNS</div>
                     <p class="ap-blg-instr-text">
-                      Balloons pop much faster in later rounds! You must act within the ticking action timer at the top right, or the balloon will pop automatically!
+                      Balloon colors have different thresholds! Red balloons pop early, Blue are average, and Gold balloons can be pumped much further.
                     </p>
                   </div>
 
@@ -213,13 +231,35 @@ class BalloonGame {
       return;
     }
 
-    // Balloon radial gradient (violet/purple matching the reference image)
-    const grd = ctx.createRadialGradient(cx - this.balloonR * 0.25, cy - this.balloonR * 0.25, 2, cx, cy, this.balloonR);
-    grd.addColorStop(0, 'rgba(125, 115, 255, 0.95)');
-    grd.addColorStop(0.5, 'rgba(59, 34, 216, 0.9)');
-    grd.addColorStop(1, 'rgba(40, 22, 150, 0.85)');
+    // Balloon radial gradient based on color
+    let color0 = 'rgba(125, 115, 255, 0.95)';
+    let color5 = 'rgba(59, 34, 216, 0.9)';
+    let color1 = 'rgba(40, 22, 150, 0.85)';
+    let shadowColor = 'rgba(59, 34, 216, 0.18)';
+    
+    if (this.balloonColor === 'red') {
+      color0 = 'rgba(254, 202, 202, 0.95)';
+      color5 = 'rgba(239, 68, 68, 0.9)';
+      color1 = 'rgba(185, 28, 28, 0.85)';
+      shadowColor = 'rgba(239, 68, 68, 0.18)';
+    } else if (this.balloonColor === 'blue') {
+      color0 = 'rgba(191, 219, 254, 0.95)';
+      color5 = 'rgba(59, 130, 246, 0.9)';
+      color1 = 'rgba(29, 78, 216, 0.85)';
+      shadowColor = 'rgba(59, 130, 246, 0.18)';
+    } else if (this.balloonColor === 'gold') {
+      color0 = 'rgba(253, 230, 138, 0.95)';
+      color5 = 'rgba(245, 158, 11, 0.9)';
+      color1 = 'rgba(180, 83, 9, 0.85)';
+      shadowColor = 'rgba(245, 158, 11, 0.18)';
+    }
 
-    ctx.shadowColor = 'rgba(59, 34, 216, 0.18)';
+    const grd = ctx.createRadialGradient(cx - this.balloonR * 0.25, cy - this.balloonR * 0.25, 2, cx, cy, this.balloonR);
+    grd.addColorStop(0, color0);
+    grd.addColorStop(0.5, color5);
+    grd.addColorStop(1, color1);
+
+    ctx.shadowColor = shadowColor;
     ctx.shadowBlur = 16;
     ctx.beginPath();
     ctx.arc(cx, cy, this.balloonR, 0, 2 * Math.PI);
@@ -234,7 +274,7 @@ class BalloonGame {
     ctx.fill();
 
     // Knot
-    ctx.fillStyle = 'rgba(40, 22, 150, 0.85)';
+    ctx.fillStyle = color1;
     ctx.beginPath(); ctx.arc(cx, cy + this.balloonR - 2, 5, 0, 2 * Math.PI); ctx.fill();
   }
 
@@ -280,11 +320,11 @@ class BalloonGame {
     this._drawBalloon(true, false);
     this.popped++;
     
-    // Record pop history
-    this.pumpHistory.push({ pumps: this.pumps, popped: true });
+    // Record pop history with color
+    this.pumpHistory.push({ pumps: this.pumps, popped: true, color: this.balloonColor });
     
     const lastPopEl = document.getElementById('blg-last-pop');
-    if (lastPopEl) lastPopEl.textContent = `${this.pumps} pumps`;
+    if (lastPopEl) lastPopEl.textContent = `${this.pumps} pumps (${this.balloonColor})`;
 
     this.currentEarnings = 0;
     this.cb.onFeedback(false);
@@ -308,10 +348,10 @@ class BalloonGame {
     this._clearActionTimer();
     this.bankTotal += this.currentEarnings;
     this.score = this.bankTotal;
-    this.pumpHistory.push({ pumps: this.pumps, popped: false, earned: this.currentEarnings });
+    this.pumpHistory.push({ pumps: this.pumps, popped: false, earned: this.currentEarnings, color: this.balloonColor });
     
     const lastPopEl = document.getElementById('blg-last-pop');
-    if (lastPopEl) lastPopEl.textContent = `${this.pumps} pumps`;
+    if (lastPopEl) lastPopEl.textContent = `${this.pumps} pumps (${this.balloonColor})`;
 
     this.cb.onScore(this.currentEarnings, this.round);
     this.cb.onFeedback(true);

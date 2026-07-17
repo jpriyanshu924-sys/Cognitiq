@@ -1,166 +1,348 @@
 /* ══════════════════════════════════════════════════════
-   Game 2: Sequence Surge
-   Recruitment equivalent: Arctic Shores, HireVue sequences
-   Measures: Logical deduction, fluid intelligence
+   Arctic Shores 2: Sequence Game
+   Measures: Spatial working memory, attention filter, visuospatial recall
+   Based on: Arctic Shores "Sequence" game — Simon-says tile pattern replication with decoys
 ══════════════════════════════════════════════════════ */
 class SequenceSurgeGame {
   constructor(container, cb) {
     this.container = container; this.cb = cb;
-    this.q=0; this.correct=0; this.total=0;
-    this.score=0; this.streak=0; this.times=[];
-    this.level=1; this.locked=false; this.el=null;
+    this.score = 0; this.correct = 0; this.total = 0;
+    this.streak = 0; this.level = 1; this.lives = 3;
+    this.el = null; this._timers = [];
+
+    this.seqLen = 3;
+    this.pattern = []; // array of cell indices {index, isDecoy}
+    this.userPicks = [];
+    this.gridSize = 4; // 4x4 grid (16 tiles)
+    this.phase = 'show'; // 'show' | 'recall' | 'feedback'
+    this.playbackIdx = 0;
   }
 
   start() {
     this.el = document.createElement('div');
     this.el.className = 'ss-game';
     this.container.appendChild(this.el);
-    this._next();
+    this._newRound();
   }
 
-  _rand(arr) { return arr[Math.floor(Math.random()*arr.length)]; }
-  _shuffle(arr) {
-    const a=[...arr];
-    for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
-    return a;
-  }
+  _newRound() {
+    this._clearTimers();
+    if (this.lives <= 0) { this._finish(); return; }
+    
+    this.total++;
+    this.phase = 'show';
+    this.userPicks = [];
+    this.playbackIdx = 0;
 
-  _gen() {
-    const rules = this.level===1
-      ? ['arith','arith','double']
-      : this.level===2
-        ? ['arith','fib','square','double']
-        : ['fib','prime','square','cube','alt-arith'];
+    // Grid size 4x4 (16 cells)
+    const totalCells = this.gridSize * this.gridSize;
 
-    const rule = this._rand(rules);
-    let seq=[], answer, ruleLabel;
-
-    if (rule === 'arith') {
-      const start = Math.floor(Math.random()*8)+1;
-      const step  = this._rand([2,3,4,5,7,-2,-3]);
-      seq = [0,1,2,3,4].map(i => start + i*step);
-      answer = start + 5*step;
-      ruleLabel = `+${step}`;
-    } else if (rule === 'double') {
-      const start = this._rand([1,2,3]);
-      seq = [0,1,2,3,4].map(i => start * Math.pow(2,i));
-      answer = start * Math.pow(2,5);
-      ruleLabel = '×2';
-    } else if (rule === 'fib') {
-      const a=1, b=this._rand([1,2,3]);
-      let arr=[a,b];
-      for(let i=2;i<6;i++) arr.push(arr[i-1]+arr[i-2]);
-      seq=arr.slice(0,5); answer=arr[5];
-      ruleLabel = 'Fibonacci';
-    } else if (rule === 'square') {
-      const off = Math.floor(Math.random()*3);
-      seq = [1,2,3,4,5].map(i => (i+off)*(i+off));
-      answer = (6+off)*(6+off);
-      ruleLabel = 'n²';
-    } else if (rule === 'cube') {
-      seq = [1,2,3,4,5].map(i => i*i*i);
-      answer = 216;
-      ruleLabel = 'n³';
-    } else if (rule === 'prime') {
-      const primes=[2,3,5,7,11,13,17,19,23,29];
-      const start=Math.floor(Math.random()*4);
-      seq=primes.slice(start,start+5); answer=primes[start+5];
-      ruleLabel='Primes';
-    } else { // alt-arith
-      const a=this._rand([2,3,4]), b=this._rand([1,2,3,5]);
-      seq=[];
-      let cur=this._rand([4,6,8,10]);
-      for(let i=0;i<5;i++){seq.push(cur); cur+=(i%2===0?a:b);}
-      answer=cur; ruleLabel=`+${a}/+${b}`;
+    // Generate a true sequence of indices
+    const truePattern = [];
+    for (let i = 0; i < this.seqLen; i++) {
+      truePattern.push(Math.floor(Math.random() * totalCells));
     }
 
-    // Build 4 choices
-    const delta = Math.abs(answer)*0.2 || 3;
-    const wrongs = this._shuffle([
-      answer + Math.ceil(delta),
-      answer - Math.ceil(delta),
-      answer + Math.ceil(delta*2),
-      answer - Math.ceil(delta*1.5),
-    ].filter(w => w !== answer)).slice(0,3);
+    // Interleave decoy steps for Level 2 & 3
+    // Decoys are extra icons that light up but are NOT part of the true sequence
+    this.pattern = truePattern.map(idx => ({ index: idx, isDecoy: false }));
 
-    const choices = this._shuffle([answer, ...wrongs]);
-    return { seq, answer, ruleLabel, choices, answerIdx: choices.indexOf(answer) };
+    if (this.level >= 2) {
+      // Add 1 decoy
+      const decoyIdx = Math.floor(Math.random() * totalCells);
+      const insertAt = 1 + Math.floor(Math.random() * (this.pattern.length - 1));
+      this.pattern.splice(insertAt, 0, { index: decoyIdx, isDecoy: true });
+    }
+
+    if (this.level >= 3) {
+      // Add a second decoy
+      const decoyIdx2 = Math.floor(Math.random() * totalCells);
+      const insertAt2 = 1 + Math.floor(Math.random() * (this.pattern.length - 1));
+      this.pattern.splice(insertAt2, 0, { index: decoyIdx2, isDecoy: true });
+    }
+
+    this._render();
+    const t = setTimeout(() => this._playSequence(), 1000);
+    this._timers.push(t);
   }
 
-  _render(puzzle) {
+  _playSequence() {
+    if (!this.el || this.playbackIdx >= this.pattern.length) {
+      // End of sequence presentation -> Switch to user recall phase
+      this.phase = 'recall';
+      const statusEl = document.getElementById('ss-status');
+      if (statusEl) {
+        statusEl.textContent = 'REPLICATE PATTERN';
+        statusEl.style.color = '#3b22d8';
+      }
+      this._enableGridClicks();
+      return;
+    }
+
+    const step = this.pattern[this.playbackIdx];
+    const cellEl = document.getElementById(`ss-tile-${step.index}`);
+    
+    if (cellEl) {
+      // Light up the cell
+      if (step.isDecoy) {
+        // Decoy lights up in RED/ORANGE
+        cellEl.style.backgroundColor = '#ef4444';
+        cellEl.style.boxShadow = '0 0 20px rgba(239, 68, 68, 0.8)';
+      } else {
+        // True sequence lights up in GREEN
+        cellEl.style.backgroundColor = '#10b981';
+        cellEl.style.boxShadow = '0 0 20px rgba(16, 185, 129, 0.8)';
+      }
+
+      // Turn off cell after duration
+      const t1 = setTimeout(() => {
+        cellEl.style.backgroundColor = '';
+        cellEl.style.boxShadow = '';
+        this.playbackIdx++;
+        
+        // Brief gap between flashes
+        const t2 = setTimeout(() => this._playSequence(), 300);
+        this._timers.push(t2);
+      }, 550);
+      this._timers.push(t1);
+    }
+  }
+
+  _enableGridClicks() {
+    const tiles = this.el.querySelectorAll('.ss-tile');
+    tiles.forEach(tile => {
+      tile.style.cursor = 'pointer';
+      tile.addEventListener('click', () => this._handleTileClick(parseInt(tile.dataset.id)));
+    });
+  }
+
+  _handleTileClick(id) {
+    if (this.phase !== 'recall' || !this.el) return;
+
+    // Flash clicked tile briefly in blue
+    const tileEl = document.getElementById(`ss-tile-${id}`);
+    if (tileEl) {
+      tileEl.style.backgroundColor = '#3b22d8';
+      setTimeout(() => {
+        if (tileEl) {
+          tileEl.style.backgroundColor = '';
+        }
+      }, 250);
+    }
+
+    this.userPicks.push(id);
+
+    // Get only the true sequence indices (filtering out decoys)
+    const trueSequence = this.pattern.filter(p => !p.isDecoy).map(p => p.index);
+
+    // Check correctness so far
+    const stepIdx = this.userPicks.length - 1;
+    if (this.userPicks[stepIdx] !== trueSequence[stepIdx]) {
+      // Mistake!
+      this._handleFailure();
+      return;
+    }
+
+    if (this.userPicks.length === trueSequence.length) {
+      // Replicated successfully!
+      this._handleSuccess();
+    }
+  }
+
+  _handleSuccess() {
+    this.phase = 'feedback';
+    this.correct++;
+    this.streak++;
+    this.score += 100 + this.seqLen * 25 + this.level * 40;
+    this.seqLen = Math.min(10, this.seqLen + 1);
+
+    if (this.streak >= 3) {
+      this.level = Math.min(3, this.level + 1);
+    }
+
+    this.cb.onScore(100 + this.seqLen * 25, this.streak);
+    this.cb.onFeedback(true);
+
+    const statusEl = document.getElementById('ss-status');
+    if (statusEl) {
+      statusEl.textContent = '✓ CORRECT!';
+      statusEl.style.color = '#10b981';
+    }
+
+    const t = setTimeout(() => this._newRound(), 1200);
+    this._timers.push(t);
+  }
+
+  _handleFailure() {
+    this.phase = 'feedback';
+    this.lives--;
+    this.streak = 0;
+    this.seqLen = Math.max(3, this.seqLen - 1);
+
+    this.cb.onFeedback(false);
+
+    const statusEl = document.getElementById('ss-status');
+    if (statusEl) {
+      statusEl.textContent = '❌ WRONG SEQUENCE!';
+      statusEl.style.color = '#ef4444';
+    }
+
+    // Flash true sequence in red/orange on screen
+    const trueSequence = this.pattern.filter(p => !p.isDecoy).map(p => p.index);
+    trueSequence.forEach(idx => {
+      const tile = document.getElementById(`ss-tile-${idx}`);
+      if (tile) {
+        tile.style.backgroundColor = 'rgba(239, 68, 68, 0.4)';
+      }
+    });
+
+    const t = setTimeout(() => {
+      trueSequence.forEach(idx => {
+        const tile = document.getElementById(`ss-tile-${idx}`);
+        if (tile) tile.style.backgroundColor = '';
+      });
+      this._newRound();
+    }, 1500);
+    this._timers.push(t);
+  }
+
+  _render() {
+    if (!this.el) return;
+    const progressPct = Math.min(100, Math.round((this.correct / 15) * 100));
+
+    this.el.innerHTML = `
+      <div class="ap-wrapper">
+        <!-- Top Header Bar -->
+        <header class="ap-header">
+          <div class="ap-header-left">
+            <span class="ap-logo">CognitIQ</span>
+          </div>
+          <div class="ap-header-center">
+            <span class="ap-question-num">Sequence Memory</span>
+          </div>
+          <div class="ap-header-right">
+            <div class="ap-timer-box">
+              <span class="ap-timer-icon">⏱</span>
+              <span class="ap-timer-val" id="ap-timer-val">—</span>
+            </div>
+            <button class="btn ap-exit-btn" id="ap-exit-btn">Save & Exit</button>
+          </div>
+        </header>
+
+        <div class="ap-body">
+          <!-- Main Workspace -->
+          <main class="ap-main" style="padding: 24px; width: 100%">
+            <div class="ap-workspace" style="max-width: 600px">
+              
+              <!-- Title and Stats -->
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 20px">
+                <div>
+                  <h2 style="font-size:1.8rem; font-weight:800; color:#111827">Sequence Game</h2>
+                  <span style="font-size:0.85rem; color:#4b5563">Current Level: <strong>${this.level}</strong></span>
+                </div>
+                <div style="text-align:right">
+                  <span style="font-size:0.7rem; font-weight:700; color:#6b7280; letter-spacing:0.04em">SCORE</span>
+                  <div style="font-size:1.6rem; font-weight:800; color:#3b22d8; font-family:var(--fm)">${this.score}</div>
+                </div>
+              </div>
+
+              <!-- Main Card -->
+              <div class="ap-he-card" style="min-height: 480px; justify-content: center; align-items: center; padding: 30px; margin-bottom: 24px; text-align:center">
+                
+                <div style="font-size:0.72rem; font-weight:700; color:#6b7280; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:8px">Visual Pattern Replication</div>
+                <div class="ap-spin-badge" id="ss-status" style="align-self:center; margin-bottom: 24px; background-color:#eff6ff; color:#3b22d8">
+                  MEMORISING SEQUENCE...
+                </div>
+
+                <!-- 4x4 Grid of Tiles -->
+                <div style="background:#f8fafc; border:1px dashed #cbd5e1; border-radius:12px; padding:20px; width:100%; max-width:320px; display:flex; justify-content:center; align-items:center; margin:0 auto 24px">
+                  <div class="ss-grid" style="display:grid; grid-template-columns:repeat(4,1fr); gap:12px; width:100%">
+                    ${Array.from({length: 16}, (_, i) => `
+                      <div class="ss-tile" id="ss-tile-${i}" data-id="${i}" style="
+                        aspect-ratio:1;
+                        background-color:#ffffff;
+                        border:2px solid #e2e8f0;
+                        border-radius:8px;
+                        transition:all 0.15s ease;
+                      "></div>`).join('')}
+                  </div>
+                </div>
+
+                <div style="font-size:0.78rem; color:#6b7280; max-width:400px; margin:0 auto">
+                  ${this.level >= 2 
+                    ? '⚠️ <strong style="color:#ef4444">DECOY WARNING</strong>: Ignore any <strong style="color:#ef4444">RED</strong> flashes! Replicate only the <strong style="color:#10b981">GREEN</strong> sequence.' 
+                    : 'Watch the highlighted tiles and repeat the pattern in the exact same order.'}
+                </div>
+              </div>
+
+              <!-- Footer info -->
+              <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: center">
+                <div class="ap-tow-footer-card">
+                  <div style="font-size:0.78rem; font-weight:700; color:#1e3a8a; margin-bottom:4px">ℹ️ Simon-says Sequence Game</div>
+                  <div style="font-size:0.72rem; color:#4b5563; line-height:1.4">
+                    Measures visuospatial capacity and selective attention. Distractor tiles will flash to test your concentration.
+                  </div>
+                </div>
+                <div class="ap-tow-footer-card" style="display:flex; flex-direction:row; justify-content:space-around; align-items:center">
+                  <div style="text-align:center">
+                    <span style="font-size:0.68rem; font-weight:700; color:#6b7280; text-transform:uppercase; letter-spacing:0.04em">Lives</span>
+                    <div style="font-size:1.4rem; font-weight:800; color:#dc2626">${this.lives} / 3</div>
+                  </div>
+                  <div style="text-align:center">
+                    <span style="font-size:0.68rem; font-weight:700; color:#6b7280; text-transform:uppercase; letter-spacing:0.04em">Length</span>
+                    <div style="font-size:1.4rem; font-weight:800; color:#3b22d8">${this.seqLen}</div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </main>
+        </div>
+      </div>`;
+
+    const exitBtn = this.el.querySelector('#ap-exit-btn');
+    if (exitBtn) {
+      exitBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (window.CIQ) window.CIQ._exitGame();
+      });
+    }
+  }
+
+  _clearTimers() {
+    this._timers.forEach(clearTimeout);
+    this._timers = [];
+  }
+
+  _finish() {
+    this._clearTimers();
     if (!this.el) return;
     this.el.innerHTML = `
-      <div class="game-q-label">Question ${this.q} &nbsp;·&nbsp; Streak 🔥${this.streak}</div>
-      <div class="prog-bar" style="width:100%;max-width:500px"><div class="prog-fill" style="width:${Math.min(100,this.correct*7)}%"></div></div>
-      <div class="ss-display" id="ss-disp"></div>
-      <p style="font-size:.78rem;color:var(--muted)">What comes next in the sequence?</p>
-      <div class="ss-choices" id="ss-choices"></div>`;
+      <div style="text-align:center;padding:40px">
+        <div style="font-size:3.5rem;margin-bottom:16px">🏆</div>
+        <h3 style="font-family:var(--fh);margin-bottom:12px">Sequence Game Complete!</h3>
+        <p style="color:var(--muted);margin-bottom:8px">Correct Replications: <strong>${this.correct}</strong></p>
+        <div style="font-family:var(--fm);font-size:2.5rem;color:var(--violet-l)">${this.score} pts</div>
+      </div>`;
 
-    const disp = this.el.querySelector('#ss-disp');
-    puzzle.seq.forEach((n,i) => {
-      if (i > 0) {
-        const arr = document.createElement('span');
-        arr.className='ss-arrow'; arr.textContent='→';
-        disp.appendChild(arr);
-      }
-      const item = document.createElement('div');
-      item.className='ss-item'; item.textContent=n;
-      // Stagger animation
-      setTimeout(()=>item.classList.add('lit'), i*80);
-      disp.appendChild(item);
-    });
-    const arrFinal = document.createElement('span');
-    arrFinal.className='ss-arrow'; arrFinal.textContent='→';
-    disp.appendChild(arrFinal);
-    const q = document.createElement('div');
-    q.className='ss-q'; q.textContent='?';
-    disp.appendChild(q);
-
-    const choicesEl = this.el.querySelector('#ss-choices');
-    puzzle.choices.forEach((val,i) => {
-      const btn = document.createElement('button');
-      btn.className='ss-choice'; btn.textContent=val;
-      btn.addEventListener('click', () => this._pick(i, puzzle));
-      choicesEl.appendChild(btn);
-    });
-  }
-
-  _next() {
-    this.q++; this.locked=false; this._t0=Date.now();
-    const p=this._gen(); this._cur=p; this._render(p);
-  }
-
-  _pick(idx, puzzle) {
-    if (this.locked) return;
-    this.locked=true;
-    const rt=Date.now()-this._t0; this.times.push(rt); this.total++;
-    const ok=idx===puzzle.answerIdx;
-    const btns=this.el.querySelectorAll('.ss-choice');
-    if (ok) {
-      btns[idx].classList.add('ok');
-      this.correct++; this.streak++;
-      if(this.correct%5===0) this.level=Math.min(3,this.level+1);
-      const spd=Math.max(0,Math.floor((5000-rt)/100));
-      const str=this.streak>=3?this.streak*20:0;
-      const pts=100+spd+str; this.score+=pts;
-      this.cb.onScore(pts,this.streak); this.cb.onFeedback(true);
-    } else {
-      btns[idx].classList.add('bad');
-      btns[puzzle.answerIdx].classList.add('ok');
-      this.streak=0; this.cb.onFeedback(false);
-    }
-    setTimeout(()=>this._next(),1100);
+    setTimeout(() => {
+      this.cb.onEnd({
+        score: this.score,
+        accuracy: this.total ? (this.correct / this.total) * 100 : 0,
+        avgTime: 0,
+        correct: this.correct, total: this.total, level: this.level
+      });
+    }, 2000);
   }
 
   timeUp() {
-    this.cb.onEnd({
-      score:this.score, accuracy:this.total?(this.correct/this.total)*100:0,
-      avgTime:this.times.length?this.times.reduce((a,b)=>a+b,0)/this.times.length:0,
-      correct:this.correct, total:this.total, level:this.level
-    });
+    this._finish();
   }
 
-  destroy() { this.el=null; }
+  destroy() {
+    this._clearTimers();
+    this.el = null;
+  }
 }
 
 window.SequenceSurgeGame = SequenceSurgeGame;
