@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="CognitIQ Mock Tests — Simulate a complete Pymetrics, Arctic Shores, HireVue, Aon or SHL recruitment assessment under real timed conditions." />
+  <title>Mock Assessment Tests — CognitIQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css?v=15" />
+  <link rel="stylesheet" href="landing.css?v=2" />
+  <link rel="stylesheet" href="mock-test.css?v=1" />
+</head>
+<body class="landing-body">
+
+<!-- NAVBAR -->
+<nav class="lnav" id="lnav">
+  <div class="lnav-inner">
+    <a href="index.html" class="lnav-logo">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" class="lnav-logo-svg">
+        <polygon points="20,3 35,11.5 35,28.5 20,37 5,28.5 5,11.5" fill="none" stroke="currentColor" stroke-width="2.5"/>
+        <circle cx="20" cy="20" r="5.5" fill="currentColor"/>
+        <line x1="20" y1="3" x2="20" y2="14.5" stroke="currentColor" stroke-width="1.8"/>
+        <line x1="35" y1="11.5" x2="25.2" y2="17.2" stroke="currentColor" stroke-width="1.8"/>
+        <line x1="35" y1="28.5" x2="25.2" y2="22.8" stroke="currentColor" stroke-width="1.8"/>
+        <line x1="20" y1="37" x2="20" y2="25.5" stroke="currentColor" stroke-width="1.8"/>
+        <line x1="5" y1="28.5" x2="14.8" y2="22.8" stroke="currentColor" stroke-width="1.8"/>
+        <line x1="5" y1="11.5" x2="14.8" y2="17.2" stroke="currentColor" stroke-width="1.8"/>
+      </svg>
+      <span class="lnav-logo-text">CognitIQ</span>
+    </a>
+    <div class="lnav-links">
+      <a href="games.html" class="lnav-link">Practice Games</a>
+      <a href="mock-test.html" class="lnav-link lnav-link-active">Mock Tests</a>
+      <a href="tips.html" class="lnav-link">Free Tips</a>
+      <a href="pricing.html" class="lnav-link">Pricing</a>
+    </div>
+    <a href="games.html" class="lnav-cta">Start Free →</a>
+    <button class="lnav-hamburger" id="lnav-hamburger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="lnav-mobile" id="lnav-mobile">
+    <a href="games.html" class="lnav-link">Practice Games</a>
+    <a href="mock-test.html" class="lnav-link lnav-link-active">Mock Tests</a>
+    <a href="tips.html" class="lnav-link">Free Tips</a>
+    <a href="pricing.html" class="lnav-link">Pricing</a>
+    <a href="games.html" class="lnav-cta lnav-cta-mobile">Start Free →</a>
+  </div>
+</nav>
+
+<!-- PAGE HERO -->
+<section class="page-hero">
+  <div class="page-hero-inner">
+    <div class="page-hero-eyebrow">🧪 Mock Assessment Centre</div>
+    <h1 class="page-hero-h1">Full Provider Mock Tests</h1>
+    <p class="page-hero-sub">Choose an assessment provider. Run all their games back-to-back under real time pressure — exactly like the actual recruitment process.</p>
+  </div>
+</section>
+
+<!-- MOCK TEST MAIN AREA -->
+<main class="mt-main" id="mt-main">
+
+  <!-- ── Provider selector (shown first) ── -->
+  <section class="mt-selector" id="mt-selector">
+    <div class="mt-selector-inner">
+      <h2 class="mt-sel-title">Which assessment are you preparing for?</h2>
+      <p class="mt-sel-sub">Select a provider to see the full game lineup and begin your timed mock test.</p>
+      <div class="mt-provider-grid" id="mt-provider-grid">
+
+        <button class="mt-pcard" data-provider="pymetrics" id="mt-pymetrics">
+          <div class="mt-pcard-icon">🧠</div>
+          <div class="mt-pcard-name">Pymetrics</div>
+          <div class="mt-pcard-count">12 games · ~35 min</div>
+          <div class="mt-pcard-users">Goldman · Accenture · Unilever · LinkedIn</div>
+          <div class="mt-pcard-tags"><span class="mt-tag">Risk</span><span class="mt-tag">Attention</span><span class="mt-tag">Memory</span><span class="mt-tag">Emotion</span></div>
+        </button>
+
+        <button class="mt-pcard" data-provider="arctic" id="mt-arctic">
+          <div class="mt-pcard-icon">🏔️</div>
+          <div class="mt-pcard-name">Arctic Shores</div>
+          <div class="mt-pcard-count">10 games · ~30 min</div>
+          <div class="mt-pcard-users">PwC · KPMG · NHS · Aviva</div>
+          <div class="mt-pcard-tags"><span class="mt-tag">Attention</span><span class="mt-tag">Risk</span><span class="mt-tag">Switching</span><span class="mt-tag">Logic</span><span class="mt-tag">Social</span></div>
+        </button>
+
+        <button class="mt-pcard" data-provider="mckinsey" id="mt-mckinsey" style="border-left: 4px solid #0f2d70;">
+          <div class="mt-pcard-icon">⚓</div>
+          <div class="mt-pcard-name">McKinsey Solve</div>
+          <div class="mt-pcard-count">4 games · ~40 min</div>
+          <div class="mt-pcard-users">McKinsey & Company</div>
+          <div class="mt-pcard-tags"><span class="mt-tag">Ecosystem</span><span class="mt-tag">Sea Wolf</span><span class="mt-tag">Sustainability</span></div>
+        </button>
+
+        <button class="mt-pcard" data-provider="aon" id="mt-aon">
+          <div class="mt-pcard-icon">⚡</div>
+          <div class="mt-pcard-name">Aon / Cut-e</div>
+          <div class="mt-pcard-count">6 games · ~25 min</div>
+          <div class="mt-pcard-users">Siemens · EY · Deutsche Bank · Bosch</div>
+          <div class="mt-pcard-tags"><span class="mt-tag">Grid</span><span class="mt-tag">Switch</span><span class="mt-tag">ChatAssess</span><span class="mt-tag">Gap</span></div>
+        </button>
+
+        <button class="mt-pcard" data-provider="shl" id="mt-shl">
+          <div class="mt-pcard-icon">📊</div>
+          <div class="mt-pcard-name">SHL</div>
+          <div class="mt-pcard-count">7 games · ~35 min</div>
+          <div class="mt-pcard-users">HSBC · Shell · Rolls-Royce · BT</div>
+          <div class="mt-pcard-tags"><span class="mt-tag">Numerical</span><span class="mt-tag">Inductive</span><span class="mt-tag">Deductive</span><span class="mt-tag">SJT</span></div>
+        </button>
+
+        <button class="mt-pcard" data-provider="talent" id="mt-talent">
+          <div class="mt-pcard-icon">🚀</div>
+          <div class="mt-pcard-name">The Talent Games</div>
+          <div class="mt-pcard-count">5 games · ~25 min</div>
+          <div class="mt-pcard-users">L'Oréal · Nestlé · Danone · Unilever</div>
+          <div class="mt-pcard-tags"><span class="mt-tag">Strategy</span><span class="mt-tag">Crisis</span><span class="mt-tag">Business Sim</span></div>
+        </button>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Detail + Launch Panel (hidden until provider selected) ── -->
+  <section class="mt-detail" id="mt-detail" style="display:none">
+    <div class="mt-detail-inner">
+
+      <!-- Back button -->
+      <button class="mt-back-btn" id="mt-back-btn">← Back to providers</button>
+
+      <div class="mt-detail-layout">
+
+        <!-- Left: info -->
+        <div class="mt-detail-left">
+          <div class="mt-detail-header">
+            <div class="mt-detail-icon" id="mt-detail-icon">🧠</div>
+            <div>
+              <h2 class="mt-detail-name" id="mt-detail-name">Pymetrics</h2>
+              <div class="mt-detail-meta" id="mt-detail-meta">12 games · ~35 min</div>
+            </div>
+          </div>
+          <p class="mt-detail-desc" id="mt-detail-desc"></p>
+          <div class="mt-detail-traits-title">Traits measured:</div>
+          <div class="mt-detail-traits" id="mt-detail-traits"></div>
+          <div class="mt-detail-employers-title">Used by:</div>
+          <div class="mt-detail-employers" id="mt-detail-employers"></div>
+        </div>
+
+        <!-- Right: game list + launch -->
+        <div class="mt-detail-right">
+          <div class="mt-game-list-card">
+            <div class="mt-game-list-title">Games in this test</div>
+            <div class="mt-game-list" id="mt-game-list"></div>
+          </div>
+
+          <!-- Rules -->
+          <div class="mt-rules-card">
+            <div class="mt-rules-title">⚠️ Mock Test Rules</div>
+            <ul class="mt-rules-list">
+              <li>Timer runs continuously — no pauses between games</li>
+              <li>Navigation is locked during the test</li>
+              <li>Results shown after all games complete</li>
+              <li>You may exit early but the test will be marked incomplete</li>
+            </ul>
+          </div>
+
+          <button class="mt-launch-btn" id="mt-launch-btn">
+            ▶ Begin Mock Test
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Active Test Overlay (shown during test) ── -->
+  <div class="mt-overlay" id="mt-overlay" style="display:none">
+
+    <!-- Test HUD bar -->
+    <div class="mt-hud" id="mt-hud">
+      <div class="mt-hud-left">
+        <div class="mt-hud-logo">CognitIQ Mock Test</div>
+        <div class="mt-hud-provider" id="mt-hud-provider">Pymetrics</div>
+      </div>
+      <div class="mt-hud-center">
+        <div class="mt-hud-progress-wrap">
+          <div class="mt-hud-game-label" id="mt-hud-game-label">Game 1 of 12</div>
+          <div class="mt-hud-progress-bar">
+            <div class="mt-hud-progress-fill" id="mt-hud-progress-fill" style="width:0%"></div>
+          </div>
+          <div class="mt-hud-game-name" id="mt-hud-game-name">Balloon Game</div>
+        </div>
+      </div>
+      <div class="mt-hud-right">
+        <div class="mt-hud-timer-wrap">
+          <div class="mt-hud-timer-label">Total Time Left</div>
+          <div class="mt-hud-timer" id="mt-hud-timer">35:00</div>
+        </div>
+        <button class="mt-hud-exit" id="mt-hud-exit">✕ Exit Test</button>
+      </div>
+    </div>
+
+    <!-- Embedded game iframe -->
+    <div class="mt-game-area" id="mt-game-area">
+      <!-- Game will launch inline via games.html with query params -->
+      <div class="mt-game-loading" id="mt-game-loading">
+        <div class="mt-loading-spinner"></div>
+        <div class="mt-loading-text" id="mt-loading-text">Loading next game...</div>
+      </div>
+      <iframe class="mt-game-frame" id="mt-game-frame" src="" style="display:none"></iframe>
+    </div>
+
+    <!-- Between-games transition screen -->
+    <div class="mt-transition" id="mt-transition" style="display:none">
+      <div class="mt-transition-card">
+        <div class="mt-transition-check">✓</div>
+        <div class="mt-transition-prev" id="mt-transition-prev">Balloon Game complete</div>
+        <div class="mt-transition-score" id="mt-transition-score">Score: 847</div>
+        <div class="mt-transition-next-label">Next up:</div>
+        <div class="mt-transition-next" id="mt-transition-next">Money Exchange</div>
+        <div class="mt-transition-countdown" id="mt-transition-countdown">Starting in 3...</div>
+      </div>
+    </div>
+
+    <!-- Final results overlay -->
+    <div class="mt-final-results" id="mt-final-results" style="display:none">
+      <div class="mt-final-inner">
+        <div class="mt-final-icon">🏆</div>
+        <h2 class="mt-final-title" id="mt-final-title">Mock Test Complete!</h2>
+        <div class="mt-final-provider" id="mt-final-provider">Pymetrics Assessment</div>
+        <div class="mt-final-stats">
+          <div class="mt-final-stat">
+            <div class="mt-final-stat-v" id="mt-final-games-done">12/12</div>
+            <div class="mt-final-stat-l">Games Completed</div>
+          </div>
+          <div class="mt-final-stat">
+            <div class="mt-final-stat-v" id="mt-final-avg-score">—</div>
+            <div class="mt-final-stat-l">Average Score</div>
+          </div>
+          <div class="mt-final-stat">
+            <div class="mt-final-stat-v" id="mt-final-time-used">—</div>
+            <div class="mt-final-stat-l">Time Used</div>
+          </div>
+        </div>
+        <div class="mt-final-game-scores" id="mt-final-game-scores"></div>
+        <div class="mt-final-actions">
+          <button class="mt-final-btn-primary" id="mt-final-retry">↺ Retake Test</button>
+          <a href="games.html" class="mt-final-btn-secondary">Practice Individual Games →</a>
+          <a href="index.html" class="mt-final-btn-ghost">← Back to Home</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="site-footer" id="mt-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo">
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="28" height="28">
+          <polygon points="20,3 35,11.5 35,28.5 20,37 5,28.5 5,11.5" fill="none" stroke="currentColor" stroke-width="2.5"/>
+          <circle cx="20" cy="20" r="5.5" fill="currentColor"/>
+        </svg>
+        <span>CognitIQ</span>
+      </div>
+      <p class="footer-tagline">The #1 platform for gamified recruitment assessment practice.</p>
+    </div>
+    <div class="footer-links">
+      <div class="footer-col">
+        <div class="footer-col-title">Platform</div>
+        <a href="games.html" class="footer-link">Practice Games</a>
+        <a href="mock-test.html" class="footer-link">Mock Tests</a>
+        <a href="tips.html" class="footer-link">Free Tips</a>
+        <a href="pricing.html" class="footer-link">Pricing</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 CognitIQ. All rights reserved.</span>
+  </div>
+</footer>
+
+<script src="mock-test.js"></script>
+<script>
+  const lnav = document.getElementById('lnav');
+  window.addEventListener('scroll', () => {
+    lnav.classList.toggle('lnav-scrolled', window.scrollY > 20);
+  });
+  const hamburger = document.getElementById('lnav-hamburger');
+  const mobileMenu = document.getElementById('lnav-mobile');
+  hamburger.addEventListener('click', () => {
+    mobileMenu.classList.toggle('open');
+    hamburger.classList.toggle('open');
+  });
+</script>
+</body>
+</html>

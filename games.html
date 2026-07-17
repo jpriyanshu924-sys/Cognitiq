@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="CognitIQ — Practice the exact games used in gamified recruitment assessments by Pymetrics, Arctic Shores, HireVue, Aon Cut-e, SHL & more." />
+  <title>CognitIQ — Cognitive Assessment Training Suite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css?v=15" />
+  <link rel="stylesheet" href="landing.css?v=2" />
+</head>
+<body>
+<div id="app">
+
+  <!-- ═══════════════════════════════════════════
+       HOME DASHBOARD
+  ═══════════════════════════════════════════ -->
+  <section id="view-home" class="view active">
+
+    <nav class="lnav" id="lnav">
+      <div class="lnav-inner">
+        <a href="index.html" class="lnav-logo">
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" class="lnav-logo-svg">
+            <polygon points="20,3 35,11.5 35,28.5 20,37 5,28.5 5,11.5" fill="none" stroke="currentColor" stroke-width="2.5"/>
+            <circle cx="20" cy="20" r="5.5" fill="currentColor"/>
+            <line x1="20" y1="3" x2="20" y2="14.5" stroke="currentColor" stroke-width="1.8"/>
+            <line x1="35" y1="11.5" x2="25.2" y2="17.2" stroke="currentColor" stroke-width="1.8"/>
+            <line x1="35" y1="28.5" x2="25.2" y2="22.8" stroke="currentColor" stroke-width="1.8"/>
+            <line x1="20" y1="37" x2="20" y2="25.5" stroke="currentColor" stroke-width="1.8"/>
+            <line x1="5" y1="28.5" x2="14.8" y2="22.8" stroke="currentColor" stroke-width="1.8"/>
+            <line x1="5" y1="11.5" x2="14.8" y2="17.2" stroke="currentColor" stroke-width="1.8"/>
+          </svg>
+          <span class="lnav-logo-text">CognitIQ</span>
+        </a>
+        <div class="lnav-links">
+          <a href="games.html" class="lnav-link lnav-link-active">Practice Games</a>
+          <a href="mock-test.html" class="lnav-link">Mock Tests</a>
+          <a href="tips.html" class="lnav-link">Free Tips</a>
+          <a href="pricing.html" class="lnav-link">Pricing</a>
+        </div>
+
+        <!-- Sleek search bar integrated into navigation -->
+        <div class="lnav-search-container" style="margin-left: auto;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lnav-search-icon">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="search-input" class="lnav-search-input" placeholder="Filter games..." />
+        </div>
+
+        <!-- Actions -->
+        <div class="lnav-actions">
+          <div class="lnav-streak-chip" id="header-streak" title="Daily play streak">
+            <span class="lnav-streak-flame">🔥</span>
+            <span class="lnav-streak-num" id="header-streak-num">0</span>
+          </div>
+
+          <div class="lnav-score" id="session-score" style="display:none">
+            <span class="lnav-score-label">SCORE</span>
+            <span class="lnav-score-value" id="total-score-display">0</span>
+          </div>
+
+          <button class="btn-profile-new" id="btn-view-results" title="View Profile" style="border: none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;">
+               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+               <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </button>
+
+          <button class="btn-reset-new" id="btn-reset">Reset</button>
+        </div>
+
+        <button class="lnav-hamburger" id="lnav-hamburger" aria-label="Open menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+      <!-- Mobile dropdown -->
+      <div class="lnav-mobile" id="lnav-mobile">
+        <a href="games.html" class="lnav-link lnav-link-active">Practice Games</a>
+        <a href="mock-test.html" class="lnav-link">Mock Tests</a>
+        <a href="tips.html" class="lnav-link">Free Tips</a>
+        <a href="pricing.html" class="lnav-link">Pricing</a>
+      </div>
+    </nav>
+
+    <!-- PAGE HERO -->
+    <section class="page-hero">
+      <div class="page-hero-inner" style="max-width: 820px;">
+        <div class="page-hero-eyebrow">🚀 Cognitive Training Suite</div>
+        <h1 class="page-hero-h1">Practice Your Recruiter Assessments</h1>
+        <p class="page-hero-sub" style="max-width: 680px; color: rgba(255,255,255,0.75);">Prepare for the exact cognitive, logic, behavioral, and spatial games used by top global employers. Build your cognitive profile across all major provider formats.</p>
+        <div class="page-hero-stats">
+          <div class="page-hero-stat">
+            <span class="page-hero-stat-num">44</span>
+            <span class="page-hero-stat-label">Practice Games</span>
+          </div>
+          <div class="page-hero-stat-divider"></div>
+          <div class="page-hero-stat">
+            <span class="page-hero-stat-num">6</span>
+            <span class="page-hero-stat-label">Assessment Suites</span>
+          </div>
+          <div class="page-hero-stat-divider"></div>
+          <div class="page-hero-stat">
+            <span class="page-hero-stat-num">∞</span>
+            <span class="page-hero-stat-label">Unlimited Access</span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <div class="categories" id="categories-container">
+      <!-- Injected dynamically by app.js based on Trait Categories -->
+    </div>
+
+    <div class="final-cta" id="final-cta" style="display:none">
+      <div class="cta-inner">
+        <div class="cta-emoji">🎉</div>
+        <h3>Recruitment Practice Complete!</h3>
+        <p>You have practiced key modules. View your full cognitive radar profile now.</p>
+        <button class="btn btn-primary btn-lg" id="btn-final-profile">View Cognitive Profile →</button>
+      </div>
+    </div>
+
+
+    <!-- ═══════════════════════════════════════ FOOTER ═══ -->
+    <footer class="site-footer" style="margin-top: 80px;">
+      <div class="footer-inner" style="max-width: 100%; padding-bottom: 48px;">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="28" height="28" class="lnav-logo-svg">
+              <polygon points="20,3 35,11.5 35,28.5 20,37 5,28.5 5,11.5" fill="none" stroke="currentColor" stroke-width="2.5"/>
+              <circle cx="20" cy="20" r="5.5" fill="currentColor"/>
+            </svg>
+            <span>CognitIQ</span>
+          </div>
+          <p class="footer-tagline">The #1 platform for gamified recruitment assessment practice.</p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-col">
+            <div class="footer-col-title">Platform</div>
+            <a href="games.html" class="footer-link">Practice Games</a>
+            <a href="mock-test.html" class="footer-link">Mock Tests</a>
+            <a href="tips.html" class="footer-link">Free Tips</a>
+            <a href="pricing.html" class="footer-link">Pricing</a>
+          </div>
+          <div class="footer-col">
+            <div class="footer-col-title">Providers</div>
+            <a href="mock-test.html#pymetrics" class="footer-link">Pymetrics</a>
+            <a href="mock-test.html#arctic" class="footer-link">Arctic Shores</a>
+            <a href="mock-test.html#hirevue" class="footer-link">HireVue</a>
+            <a href="mock-test.html#aon" class="footer-link">Aon Cut-e</a>
+          </div>
+          <div class="footer-col">
+            <div class="footer-col-title">Legal</div>
+            <a href="#" class="footer-link">Privacy Policy</a>
+            <a href="#" class="footer-link">Terms of Service</a>
+            <a href="#" class="footer-link">Cookie Policy</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2025 CognitIQ. All rights reserved.</span>
+        <span>Made for students, by students.</span>
+      </div>
+    </footer>
+
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       GAME VIEW
+  ═══════════════════════════════════════════ -->
+  <section id="view-game" class="view">
+    <div class="game-hud">
+      <div class="hud-left">
+        <button class="btn btn-icon btn-ghost" id="btn-exit-game" title="Exit Game">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        </button>
+        <span class="hud-game-name" id="hud-game-name">—</span>
+        <span class="hud-mode-badge test-mode" id="hud-mode-badge">⏱ Test</span>
+      </div>
+      <div class="hud-center">
+        <div class="hud-timer" id="hud-timer">
+          <svg class="timer-svg" viewBox="0 0 36 36">
+            <circle cx="18" cy="18" r="15.9" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="2.5"/>
+            <circle cx="18" cy="18" r="15.9" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-dasharray="99.9 99.9" stroke-dashoffset="0" stroke-linecap="round"
+              id="timer-ring" transform="rotate(-90 18 18)"/>
+          </svg>
+          <span id="timer-display">—</span>
+        </div>
+      </div>
+      <div class="hud-right">
+        <div class="hud-streak" id="hud-streak">
+          <span>🔥</span><span id="streak-count">0</span>
+        </div>
+        <div class="hud-score-box">
+          <span class="hud-slabel">Score</span>
+          <span class="hud-sval" id="hud-score">0</span>
+        </div>
+      </div>
+    </div>
+    <div id="game-container"></div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       RESULTS VIEW
+  ═══════════════════════════════════════════ -->
+  <section id="view-results" class="view">
+    <div class="results-wrap">
+      <div class="results-icon" id="results-icon">🏆</div>
+      <h2 id="results-title">Game Complete!</h2>
+      <div class="results-score" id="results-score">0</div>
+      <div class="results-grade" id="results-grade">—</div>
+      <div class="results-metrics" id="results-metrics"></div>
+      <div class="results-actions">
+        <button class="btn btn-secondary" id="btn-retry">↺ Play Again</button>
+        <button class="btn btn-primary" id="btn-next-game">Next Game →</button>
+        <button class="btn btn-ghost btn-sm" id="btn-hub">← Hub</button>
+      </div>
+
+      <!-- ── Recruitment Insights Panel ── -->
+      <div class="ri-card" id="results-insights-card">
+        <div class="ri-header">
+          <div class="ri-header-left">
+            <span class="ri-eyebrow">💼 Recruitment Insight</span>
+            <h3 class="ri-title" id="ri-title">What employers really measure</h3>
+          </div>
+          <div class="ri-employer-badge" id="ri-employer-badge"></div>
+        </div>
+
+        <div class="ri-grid">
+          <!-- Trait Measured -->
+          <div class="ri-block ri-block-measure">
+            <div class="ri-block-label">
+              <span class="ri-block-icon">📊</span> Trait Measured
+            </div>
+            <div class="ri-block-value" id="ri-measure">—</div>
+          </div>
+
+          <!-- What the employer sees -->
+          <div class="ri-block ri-block-insight">
+            <div class="ri-block-label">
+              <span class="ri-block-icon">🔍</span> What Employers See
+            </div>
+            <p class="ri-block-text" id="ri-insight">—</p>
+          </div>
+
+          <!-- Pro Strategy -->
+          <div class="ri-block ri-block-strategy">
+            <div class="ri-block-label">
+              <span class="ri-block-icon">🎯</span> Pro Strategy to Improve
+            </div>
+            <p class="ri-block-text" id="ri-strategy">—</p>
+          </div>
+
+          <!-- Score Interpretation -->
+          <div class="ri-block ri-block-score-interp">
+            <div class="ri-block-label">
+              <span class="ri-block-icon">📈</span> Your Score Interpretation
+            </div>
+            <div class="ri-score-interp-bar">
+              <div class="ri-interp-zones">
+                <div class="ri-zone ri-zone-low">Below Average</div>
+                <div class="ri-zone ri-zone-mid">Average</div>
+                <div class="ri-zone ri-zone-high">Strong</div>
+                <div class="ri-zone ri-zone-top">Outstanding</div>
+              </div>
+              <div class="ri-interp-track">
+                <div class="ri-interp-marker" id="ri-interp-marker"></div>
+              </div>
+              <div class="ri-interp-label" id="ri-interp-label">—</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Next Steps CTA -->
+        <div class="ri-footer">
+          <span class="ri-footer-text">🔁 Practice again to improve your cognitive profile</span>
+          <button class="btn btn-ghost btn-sm ri-practice-again" id="ri-btn-retry">Practice Again</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════
+       FINAL PROFILE VIEW
+  ═══════════════════════════════════════════ -->
+  <section id="view-final" class="view">
+    <div class="final-profile-wrap">
+      <div class="fp-header">
+        <button class="btn btn-ghost btn-sm" id="btn-back-final">← Back to Hub</button>
+        <h2>Your Assessment Profile</h2>
+        <p>Performance aggregated across all 8 major providers</p>
+      </div>
+      <div id="fp-streak-display"></div>
+      <div class="fp-grid">
+        <div class="fp-radar-card">
+          <canvas id="radar-chart" width="440" height="440"></canvas>
+        </div>
+        <div class="fp-breakdown" id="fp-breakdown"></div>
+      </div>
+      <!-- Cognitive Trait Breakdown -->
+      <div class="fp-traits-section" id="fp-traits-section">
+        <div class="fp-traits-title">🧠 Cognitive Trait Breakdown</div>
+        <div class="fp-traits-subtitle">Your scores mapped to the 10 core cognitive traits measured by recruitment assessments</div>
+        <div class="traits-grid" id="fp-traits-grid"></div>
+      </div>
+      <div class="fp-all-scores" id="fp-all-scores"></div>
+      <div class="fp-note">
+        💼 <strong>Assessment Note:</strong> These ratings match the specific scoring styles and parameters utilized in corporate screening platforms.
+      </div>
+    </div>
+  </section>
+
+</div><!-- #app -->
+
+<!-- INTRO MODAL -->
+<div id="game-modal" class="modal-overlay" style="display:none">
+  <div class="modal-box">
+    
+    <!-- Top banner with gradient background -->
+    <div class="modal-header-banner gc-bg-pink" id="modal-header-banner">
+      <button class="modal-close-btn" id="modal-close">✕</button>
+      <div class="modal-header-content">
+        <span class="modal-category-badge" id="modal-category-badge">PYMETRICS ASSESSMENT</span>
+        <h2 class="modal-title-text" id="modal-title-text">Balloon Game</h2>
+        <div class="modal-duration-badge" id="modal-duration-badge">⏱️ Untimed</div>
+      </div>
+    </div>
+
+    <!-- Columns -->
+    <div class="modal-columns">
+      
+      <!-- Left Column: Instructions -->
+      <div class="modal-col-left">
+        <div class="modal-skills-box">
+          <span class="modal-instructions-title">Skills Measured</span>
+          <div class="modal-tags" id="modal-tags">
+            <!-- Injected by app.js -->
+          </div>
+        </div>
+        
+        <div>
+          <span class="modal-instructions-title">How to Play</span>
+          <div class="instruction-steps" id="modal-how-steps">
+            <!-- Injected by app.js -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Video Mockup + Start CTA -->
+      <div class="modal-col-right">
+        <div class="modal-video-box">
+          <span class="modal-instructions-title">Tutorial Video</span>
+          <div class="video-mockup-wrapper">
+            <div class="video-mockup-art" id="modal-video-art">🎈</div>
+            <div class="youtube-play-overlay">
+              <div class="youtube-play-btn">
+                <span class="youtube-play-icon"></span>
+              </div>
+            </div>
+            <span class="video-duration">1:15</span>
+          </div>
+        </div>
+
+        <div class="modal-actions-right">
+          <div class="mode-toggle-group">
+            <button class="mode-toggle-btn active" id="mode-btn-test">⏱️ Test Mode</button>
+            <button class="mode-toggle-btn" id="mode-btn-practice">🏋️ Practice Mode</button>
+          </div>
+          <button class="btn-start-game" id="modal-start">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            Start Game
+          </button>
+          <button class="btn-cancel-game" id="modal-cancel">Cancel</button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- FEEDBACK FLASH -->
+<div id="feedback-flash" class="feedback-flash" style="display:none">
+  <span id="flash-content"></span>
+</div>
+
+<!-- STREAK TOAST -->
+<div class="streak-toast" id="streak-toast"></div>
+
+<!-- Canvas roundRect polyfill for older browsers -->
+<script>
+if (!CanvasRenderingContext2D.prototype.roundRect) {
+  CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+    if (w < 2*r) r = w/2;
+    if (h < 2*r) r = h/2;
+    this.beginPath();
+    this.moveTo(x+r, y);
+    this.arcTo(x+w, y,   x+w, y+h, r);
+    this.arcTo(x+w, y+h, x,   y+h, r);
+    this.arcTo(x,   y+h, x,   y,   r);
+    this.arcTo(x,   y,   x+w, y,   r);
+    this.closePath();
+    return this;
+  };
+}
+</script>
+
+<!-- Scripts for all 38 games -->
+<script src="games/pattern-matrix.js"></script>
+<script src="games/sequence-surge.js"></script>
+<script src="games/pipe-puzzle.js"></script>
+<script src="games/shape-spinner.js?v=cognitiq2"></script>
+<script src="games/mirror-match.js"></script>
+<script src="games/number-dash.js"></script>
+<script src="games/signal-stop.js?v=cognitiq2"></script>
+<script src="games/memory-vault.js?v=cognitiq2"></script>
+
+<!-- Pymetrics Suite -->
+<script src="games/balloon-game.js?v=cognitiq2"></script>
+<script src="games/money-exchange.js?v=cognitiq2"></script>
+<script src="games/tower-game.js?v=cognitiq2"></script>
+<script src="games/keypress-game.js?v=cognitiq2"></script>
+<script src="games/hard-easy-game.js?v=cognitiq2"></script>
+<script src="games/arrows-game.js?v=cognitiq2"></script>
+<script src="games/lengths-game.js?v=cognitiq2"></script>
+<script src="games/cards-game.js?v=cognitiq2"></script>
+<script src="games/faces-game.js?v=cognitiq2"></script>
+
+<!-- Arctic Shores -->
+<script src="games/skyrise-builder.js?v=cognitiq"></script>
+<script src="games/feature-unlock.js"></script>
+<script src="games/arctic-switch.js?v=cognitiq2"></script>
+<script src="games/grid-memory.js?v=cognitiq"></script>
+
+<!-- HireVue Games -->
+<script src="games/numerosity.js?v=cognitiq"></script>
+<script src="games/flashback.js?v=cognitiq"></script>
+<script src="games/pathfinder.js?v=cognitiq"></script>
+<script src="games/shapedance.js?v=cognitiq"></script>
+
+<!-- Aon Assessment Solutions -->
+<script src="games/aon-switch.js?v=cognitiq"></script>
+<script src="games/gridlock.js?v=cognitiq"></script>
+<script src="games/digit-nback.js?v=cognitiq"></script>
+<script src="games/motion-track.js?v=cognitiq"></script>
+
+<!-- SHL Interactive Assessments -->
+<script src="games/verify-numerical.js"></script>
+<script src="games/verify-inductive.js"></script>
+<script src="games/scenario-judge.js"></script>
+
+<!-- The Talent Games -->
+<script src="games/business-sim.js"></script>
+<script src="games/crisis-room.js"></script>
+
+<!-- Talegent -->
+<script src="games/inbox-triage.js"></script>
+<script src="games/team-dilemma.js"></script>
+
+<!-- Sova Assessment -->
+<script src="games/logic-deduction.js"></script>
+<script src="games/personality-reveal.js"></script>
+
+<script src="app.js?v=5"></script>
+<script>
+/* ── Mock Test Integration Bridge ───────────────────────────────
+   When loaded inside the mock-test iframe, auto-launch the game
+   specified by ?game= and report completion via postMessage.
+   ─────────────────────────────────────────────────────────────── */
+(function() {
+  const params = new URLSearchParams(location.search);
+  const gameId = params.get('game');
+  const isMock = params.get('mock') === '1';
+  if (!isMock || !gameId) return;
+
+  // Hide non-game UI elements for clean iframe experience
+  document.documentElement.style.setProperty('--iframe-mode', '1');
+
+  // Wait for app to initialise, then launch the game
+  const tryLaunch = setInterval(() => {
+    if (window._app && typeof window._app._startGame === 'function') {
+      clearInterval(tryLaunch);
+      window._app._startGame(gameId);
+      patchResultsForMock(gameId);
+    }
+  }, 150);
+
+  function patchResultsForMock(gid) {
+    // Override _showResults to also send postMessage to parent
+    const orig = window._app._showResults.bind(window._app);
+    window._app._showResults = function(gameId, result) {
+      orig(gameId, result);
+      const score = result.score ?? window._app.state.hudScore ?? 0;
+      window.parent.postMessage({ type: 'GAME_COMPLETE', gameId, score }, '*');
+    };
+  }
+})();
+</script>
+<script>
+  // Mobile hamburger menu & Scroll transition
+  (function() {
+    const lnav = document.getElementById('lnav');
+    if (lnav) {
+      window.addEventListener('scroll', () => {
+        lnav.classList.toggle('lnav-scrolled', window.scrollY > 20);
+      });
+      // Initial trigger in case page starts scrolled
+      lnav.classList.toggle('lnav-scrolled', window.scrollY > 20);
+    }
+
+    const hamburger = document.getElementById('lnav-hamburger');
+    const mobileMenu = document.getElementById('lnav-mobile');
+    if (hamburger && mobileMenu) {
+      hamburger.addEventListener('click', () => {
+        mobileMenu.classList.toggle('open');
+        hamburger.classList.toggle('open');
+      });
+    }
+  })();
+</script>
+</body>
+</html>
