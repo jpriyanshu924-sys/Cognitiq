@@ -53,7 +53,7 @@ class ArrowsGame {
             <span class="ap-logo">CognitIQ</span>
           </div>
           <div class="ap-header-center">
-            <span class="ap-question-num">Flanker Task</span>
+            <span class="ap-question-num">${this.cb && this.cb.name ? this.cb.name : 'Flanker Task'}</span>
           </div>
           <div class="ap-header-right">
             <div class="ap-timer-box">
@@ -72,7 +72,7 @@ class ArrowsGame {
               <!-- Title and Stats -->
               <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 20px">
                 <div>
-                  <h2 style="font-size:1.8rem; font-weight:800; color:#111827">Flanker Challenge</h2>
+                  <h2 style="font-size:1.8rem; font-weight:800; color:#111827">${this.cb && this.cb.name ? this.cb.name : 'Flanker Challenge'}</h2>
                   <span style="font-size:0.85rem; color:#4b5563">Current Level: <strong id="arr-level-val">${this.level}</strong></span>
                 </div>
                 <div style="text-align:right">

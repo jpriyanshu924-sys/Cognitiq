@@ -189,7 +189,7 @@ class FacesGame {
         <div class="ap-body">
           <main class="ap-main" style="width: 100%">
             <div class="ap-workspace" style="max-width: 1200px">
-              <h2 style="font-size:1.8rem;font-weight:800;color:#111827;margin-bottom:8px">Emotional Recognition</h2>
+              <h2 style="font-size:1.8rem;font-weight:800;color:#111827;margin-bottom:8px">${this.cb && this.cb.name ? this.cb.name : 'Emotional Recognition'}</h2>
               <p style="font-size:0.88rem;color:#4b5563;margin-bottom:24px">Carefully observe the expression in the image below. Subtle cues in the eyes and mouth will reveal the subject's true emotion.</p>
               
               <div style="font-size:0.88rem;font-weight:600;color:#374151;margin-bottom:8px">Assessment Progress</div>

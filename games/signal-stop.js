@@ -26,7 +26,7 @@ class SignalStopGame {
             <span class="ap-logo">CognitIQ</span>
           </div>
           <div class="ap-header-center">
-            <span class="ap-question-num">Impulse Control Task</span>
+            <span class="ap-question-num">${this.cb && this.cb.name ? this.cb.name : 'Impulse Control Task'}</span>
           </div>
           <div class="ap-header-right">
             <div class="ap-timer-box">
@@ -51,7 +51,7 @@ class SignalStopGame {
                     <div class="ap-kp-icon-badge" style="background:#fef2f2; color:#ef4444">
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
                     </div>
-                    <span class="ap-kp-title">Signal Stop Challenge</span>
+                    <span class="ap-kp-title">${this.cb && this.cb.name ? this.cb.name : 'Signal Stop Challenge'}</span>
                   </div>
                   
                   <div class="ap-kp-status-badge">

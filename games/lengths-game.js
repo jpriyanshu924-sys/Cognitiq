@@ -152,7 +152,7 @@ class LengthsGame {
               <!-- Title and Stats -->
               <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 20px">
                 <div>
-                  <h2 style="font-size:1.8rem; font-weight:800; color:#111827">Lengths & Estimation</h2>
+                  <h2 style="font-size:1.8rem; font-weight:800; color:#111827">${this.cb && this.cb.name ? this.cb.name : 'Lengths & Estimation'}</h2>
                   <span style="font-size:0.85rem; color:#4b5563">Current Level: <strong>${this.level}</strong></span>
                 </div>
                 <div style="text-align:right">

@@ -586,6 +586,7 @@ class CognitIQApp {
     const Cls = GAME_MODULES[gameId]();
     if (Cls) {
       this.state.gameInst = new Cls(container, {
+        name:       cfg.name,
         onScore:    (pts, streak) => this._hudScore(pts, streak),
         onEnd:      (result)      => this._endGame(result),
         onFeedback: (ok)          => this._flash(ok),
