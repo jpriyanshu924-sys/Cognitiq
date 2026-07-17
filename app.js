@@ -830,13 +830,16 @@ class CognitIQApp {
     }).length;
 
     const TRAIT_CATEGORIES = {
-      1: { name: 'Attention & Focus', icon: '🏹', desc: 'Inhibiting distractions and maintaining persistent focus', games: ['arrows-game', 'arrow-directions', 'lengths-game', 'motion-track', 'keypress-game', 'signal-stop', 'security-door'], color: 'linear-gradient(135deg, #06b6d4, #0891b2)', bg: 'gc-bg-cyan', tag: 'Attention' },
+      // Practice grid — each unique game appears ONCE.
+      // Aliases (arrow-directions, balloon-risk-game, etc.) live in mock-test.js
+      // and are encountered there; they are intentionally excluded here.
+      1: { name: 'Attention & Focus', icon: '🏹', desc: 'Inhibiting distractions and maintaining persistent focus', games: ['arrows-game', 'lengths-game', 'motion-track', 'keypress-game', 'signal-stop'], color: 'linear-gradient(135deg, #06b6d4, #0891b2)', bg: 'gc-bg-cyan', tag: 'Attention' },
       2: { name: 'Working Memory & Speed', icon: '🧠', desc: 'Holding, updating and manipulating sequential data', games: ['memory-vault', 'digit-nback', 'flashback', 'sequence', 'aon-switch', 'tickets', 'number-dash'], color: 'linear-gradient(135deg, #7c3aed, #6d28d9)', bg: 'gc-bg-violet', tag: 'Memory' },
       3: { name: 'Quantitative & Numerical', icon: '🔢', desc: 'Processing mental arithmetic and logical quantities', games: ['verify-numerical', 'numerosity'], color: 'linear-gradient(135deg, #d97706, #b45309)', bg: 'gc-bg-orange', tag: 'Numerical' },
-      4: { name: 'Logical & Abstract Reasoning', icon: '🔷', desc: 'Formulating patterns and rules from visual shapes', games: ['pattern-matrix', 'patterns', 'verify-inductive', 'power-generators', 'logic-deduction'], color: 'linear-gradient(135deg, #8b5cf6, #7c3aed)', bg: 'gc-bg-purple', tag: 'Logic' },
-      5: { name: 'Spatial Reasoning & Planning', icon: '📐', desc: 'Mentally rotating shapes and sequencing moves', games: ['shape-spinner', 'shapedance', 'mirror-match', 'pipe-puzzle', 'pathfinder', 'gridlock', 'order', 'tower-game'], color: 'linear-gradient(135deg, #2563eb, #1d4ed8)', bg: 'gc-bg-blue', tag: 'Spatial' },
-      6: { name: 'Risk Calibration & Decision Making', icon: '🧩', desc: 'Assessing trade-offs under high-uncertainty rules', games: ['balloon-game', 'balloon-risk-game', 'cards-game', 'hard-easy-game', 'money-exchange', 'business-sim'], color: 'linear-gradient(135deg, #10b981, #059669)', bg: 'gc-bg-emerald', tag: 'Decision' },
-      7: { name: 'Social, Emotional & Interpersonal', icon: '🤝', desc: 'Reading expressions and resolving workplace scenarios', games: ['faces-game', 'emotions-face-game', 'team-selling', 'team-dilemma', 'scenario-judge', 'inbox-triage', 'crisis-room', 'personality-reveal'], color: 'linear-gradient(135deg, #3b82f6, #2563eb)', bg: 'gc-bg-pink', tag: 'Social' }
+      4: { name: 'Logical & Abstract Reasoning', icon: '🔷', desc: 'Formulating patterns and rules from visual shapes', games: ['pattern-matrix', 'verify-inductive', 'power-generators', 'logic-deduction'], color: 'linear-gradient(135deg, #8b5cf6, #7c3aed)', bg: 'gc-bg-purple', tag: 'Logic' },
+      5: { name: 'Spatial Reasoning & Planning', icon: '📐', desc: 'Mentally rotating shapes and sequencing moves', games: ['shape-spinner', 'shapedance', 'mirror-match', 'pipe-puzzle', 'pathfinder', 'gridlock', 'tower-game'], color: 'linear-gradient(135deg, #2563eb, #1d4ed8)', bg: 'gc-bg-blue', tag: 'Spatial' },
+      6: { name: 'Risk Calibration & Decision Making', icon: '🧩', desc: 'Assessing trade-offs under high-uncertainty rules', games: ['balloon-game', 'cards-game', 'hard-easy-game', 'money-exchange', 'business-sim'], color: 'linear-gradient(135deg, #10b981, #059669)', bg: 'gc-bg-emerald', tag: 'Decision' },
+      7: { name: 'Social, Emotional & Interpersonal', icon: '🤝', desc: 'Reading expressions and resolving workplace scenarios', games: ['faces-game', 'team-dilemma', 'scenario-judge', 'inbox-triage', 'crisis-room', 'personality-reveal'], color: 'linear-gradient(135deg, #3b82f6, #2563eb)', bg: 'gc-bg-pink', tag: 'Social' }
     };
 
     container.innerHTML = Object.keys(TRAIT_CATEGORIES).map(catId => {
