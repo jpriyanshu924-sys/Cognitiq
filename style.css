@@ -749,12 +749,36 @@ h1, h2, h3, h4, h5 { font-family: var(--fh); }
 }
 
 @media (max-width: 768px) {
+  .modal-overlay {
+    align-items: flex-start;
+    overflow-y: auto;
+    padding: 20px 12px;
+  }
+  .modal-box {
+    max-height: none;
+    width: 100%;
+    margin: 0 auto;
+  }
+  .modal-header-banner {
+    padding: 24px 20px;
+  }
+  .modal-header-banner .modal-close-btn {
+    top: 16px;
+    right: 16px;
+  }
   .modal-columns {
     flex-direction: column;
+    min-height: auto;
   }
   .modal-col-left {
     border-right: none;
     border-bottom: 1px solid var(--border);
+    max-height: none;
+    overflow-y: visible;
+    padding: 24px 20px;
+  }
+  .modal-col-right {
+    padding: 24px 20px;
   }
 }
 
