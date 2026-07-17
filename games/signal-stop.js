@@ -135,7 +135,7 @@ class SignalStopGame {
 
     // Duration: 600-1000ms depending on level, scaled by time speed factor
     const elapsed = (Date.now() - this._startTime) / 1000;
-    const timeSpeedFactor = 1.0 + (elapsed / 40.0);
+    const timeSpeedFactor = 1.0 + (elapsed / 20.0);
     const duration=(1200-this.level*150)/timeSpeedFactor;
     this.hideTimer=setTimeout(()=>this._hideSignal(), duration);
   }
@@ -173,9 +173,9 @@ class SignalStopGame {
     if(hint) hint.textContent='…';
 
     // Gap: 400-900ms, scaled by time speed factor
-    const elapsed = (Date.now() - this._startTime) / 1000;
-    const timeSpeedFactor = 1.0 + (elapsed / 40.0);
-    const gap=(400+Math.random()*500)/timeSpeedFactor;
+    const elapsed2 = (Date.now() - this._startTime) / 1000;
+    const timeSpeedFactor2 = 1.0 + (elapsed2 / 20.0);
+    const gap=(400+Math.random()*500)/timeSpeedFactor2;
     this.signalTimer=setTimeout(()=>this._nextSignal(), gap);
   }
 
@@ -189,7 +189,7 @@ class SignalStopGame {
     if(!this.signalActive){
       // Pressed when no signal → false alarm
       this.falseAlarms++;
-      this.score=Math.max(0,this.score-30);
+      this.score=Math.max(0,this.score-50);
       this._updateStats();
       this.cb.onFeedback(false);
       return;

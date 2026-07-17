@@ -15,7 +15,7 @@ class DigitNBackGame {
     this.currentDigit = null;
     this.isMatch = false;
     this.userMatched = false;
-    this.trialDuration = 2000; // ms per digit
+    this.trialDuration = 1400; // ms per digit (starting value)
     this.trialCount = 0;
     this.maxTrials = 40;
     this.hasResponded = false;
@@ -218,10 +218,12 @@ class DigitNBackGame {
       matchBtn.onclick = () => this._handleMatchInput();
     }
 
-    // Trial duration timer
+    // Trial duration timer: dynamically speeds up based on streak down to 800ms
+    const speedFactor = Math.max(0, Math.min(5, this.streak > 0 ? this.streak : 0));
+    const currentDuration = Math.max(800, 1400 - speedFactor * 120);
     const t = setTimeout(() => {
       this._evaluateTrialEnd();
-    }, this.trialDuration);
+    }, currentDuration);
     this._timers.push(t);
   }
 

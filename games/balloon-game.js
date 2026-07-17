@@ -14,9 +14,12 @@ class BalloonGame {
     this.balloonR = 40; this.targetR = 0; this.animating = false;
     this.pumpHistory = []; // for behavioral profile
     this.finished = false;
+    this._actionTimer = null;
+    this.gameStartTime = 0;
   }
 
   start() {
+    this.gameStartTime = Date.now();
     this.el = document.createElement('div');
     this.el.className = 'balloon-game';
     this.container.appendChild(this.el);
@@ -24,15 +27,62 @@ class BalloonGame {
   }
 
   _newRound() {
+    this._clearActionTimer();
     if (this.round >= this.totalRounds) { this._finish(); return; }
     this.round++;
     this.pumps = 0;
     this.currentEarnings = 0;
     this.balloonR = 40;
     this.animating = false;
-    // Pop threshold: random between 1-128 pumps (uniform distribution like real BART)
-    this.popAt = 1 + Math.floor(Math.random() * 64);
+    // Pop threshold: maximum pumps shrinks as rounds progress to increase difficulty
+    const maxPumps = Math.max(16, 64 - (this.round * 3));
+    this.popAt = 1 + Math.floor(Math.random() * maxPumps);
     this._render();
+    this._startActionTimer();
+  }
+
+  _startActionTimer() {
+    this._clearActionTimer();
+    const limit = Math.max(1800, 3500 - (this.round * 110)); // shrinks down to 1.8s in final rounds
+    let timeLeft = limit;
+    
+    const timerVal = document.getElementById('ap-timer-val');
+    if (timerVal) {
+      timerVal.textContent = (timeLeft / 1000).toFixed(1) + 's';
+      timerVal.style.color = '';
+    }
+    
+    const tick = () => {
+      if (this.animating || this.finished || !this.el) return;
+      timeLeft -= 100;
+      if (timerVal) {
+        timerVal.textContent = Math.max(0, (timeLeft / 1000)).toFixed(1) + 's';
+        if (timeLeft <= 1000) {
+          timerVal.style.color = '#ef4444';
+          timerVal.style.fontWeight = '800';
+        } else {
+          timerVal.style.color = '';
+          timerVal.style.fontWeight = '';
+        }
+      }
+      if (timeLeft <= 0) {
+        this._actionTimeout();
+      } else {
+        this._actionTimer = setTimeout(tick, 100);
+      }
+    };
+    this._actionTimer = setTimeout(tick, 100);
+  }
+
+  _clearActionTimer() {
+    clearTimeout(this._actionTimer);
+  }
+
+  _actionTimeout() {
+    this._clearActionTimer();
+    // Auto-pop due to timeout
+    this.pumps = Math.max(this.pumps, this.popAt); 
+    this._animatePop();
   }
 
   _render() {
@@ -99,31 +149,23 @@ class BalloonGame {
 
                   <!-- Instructions Card -->
                   <div class="ap-blg-instructions-card">
-                    <div class="ap-blg-instr-title">
-                      <span>ℹ️</span> INSTRUCTIONS
-                    </div>
-                    <div class="ap-blg-instr-text">
-                      Inflate the balloon to increase your reward. If it pops, you lose the points for this round. Secure your earnings anytime!
-                    </div>
+                    <div class="ap-blg-instr-title">⚡ HIGH RISK WARNING</div>
+                    <p class="ap-blg-instr-text">
+                      Balloons pop much faster in later rounds! You must act within the ticking action timer at the top right, or the balloon will pop automatically!
+                    </p>
                   </div>
 
                 </div>
 
-                <!-- Right panel: Dotted game box -->
+                <!-- Right panel: Game Arena -->
                 <div class="ap-blg-right-card">
                   <div class="ap-blg-arena">
-                    <canvas id="blg-canvas" width="440" height="340"></canvas>
+                    <canvas id="blg-canvas" width="440" height="340" style="background:transparent"></canvas>
                   </div>
                   
                   <div class="ap-blg-buttons">
-                    <button class="btn ap-blg-btn-pump" id="blg-pump">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.59-4.59A2 2 0 1 1 19 8H2"/></svg>
-                      Pump Balloon
-                    </button>
-                    <button class="btn ap-blg-btn-collect" id="blg-bank" ${this.pumps === 0 ? 'disabled' : ''}>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-                      Collect Points
-                    </button>
+                    <button class="btn ap-blg-btn-pump" id="blg-pump">🎈 Pump</button>
+                    <button class="btn ap-blg-btn-collect" id="blg-bank" disabled>💰 Collect</button>
                   </div>
                 </div>
               </div>
@@ -198,6 +240,7 @@ class BalloonGame {
 
   _pump() {
     if (this.animating || this.finished) return;
+    this._clearActionTimer();
     this.pumps++;
     this.currentEarnings = this.pumps * 10;
     this.targetR = Math.min(135, 40 + this.pumps * 3.5); // Adjusted scale to make size transitions visible earlier
@@ -226,12 +269,14 @@ class BalloonGame {
         this.balloonR = this.targetR;
         this._drawBalloon();
         this.animating = false;
+        this._startActionTimer();
       }
     };
     grow();
   }
 
   _animatePop() {
+    this._clearActionTimer();
     this._drawBalloon(true, false);
     this.popped++;
     
@@ -260,6 +305,7 @@ class BalloonGame {
 
   _bank() {
     if (this.animating || this.pumps === 0 || this.finished) return;
+    this._clearActionTimer();
     this.bankTotal += this.currentEarnings;
     this.score = this.bankTotal;
     this.pumpHistory.push({ pumps: this.pumps, popped: false, earned: this.currentEarnings });
@@ -285,6 +331,7 @@ class BalloonGame {
   }
 
   _finish() {
+    this._clearActionTimer();
     this.finished = true;
     const avgPumps = this.pumpHistory.length > 0
       ? this.pumpHistory.reduce((a, b) => a + b.pumps, 0) / this.pumpHistory.length : 0;
@@ -311,7 +358,10 @@ class BalloonGame {
   }
 
   timeUp() { this._finish(); }
-  destroy() { this.el = null; }
+  destroy() { 
+    this._clearActionTimer();
+    this.el = null; 
+  }
 }
 
 window.BalloonGame = BalloonGame;

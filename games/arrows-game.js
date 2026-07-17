@@ -10,9 +10,12 @@ class ArrowsGame {
     this.streak = 0; this.times = []; this.level = 1;
     this.locked = false; this.el = null;
     this._kd = null; this._showTimer = null;
+    this._responseTimeout = null;
+    this.gameStartTime = 0;
   }
 
   start() {
+    this.gameStartTime = Date.now();
     this.el = document.createElement('div');
     this.el.className = 'arr-game';
     this.container.appendChild(this.el);
@@ -161,6 +164,9 @@ class ArrowsGame {
     disp.innerHTML = '<span class="arr-placeholder" style="color:#cbd5e1">●</span>';
     disp.className = 'arr-display arr-blank';
 
+    const elapsed = (Date.now() - this.gameStartTime) / 1000;
+    const flashDelay = Math.max(300, (2005 - this.level * 300) - Math.floor(elapsed / 15) * 180);
+
     clearTimeout(this._showTimer);
     this._showTimer = setTimeout(() => {
       if (!this.el) return;
@@ -170,7 +176,14 @@ class ArrowsGame {
       }).join('');
       disp.className = 'arr-display arr-showing';
       this._t0 = Date.now(); // start timing from when arrows appear
-    }, 2005 - this.level * 300); // Dynamic interval: levels speed up!
+
+      // Start response timeout: decreases from 1300ms down to 600ms
+      const timeoutLimit = Math.max(600, 1350 - Math.floor(elapsed / 15) * 150);
+      clearTimeout(this._responseTimeout);
+      this._responseTimeout = setTimeout(() => {
+        this._timeoutMiss();
+      }, timeoutLimit);
+    }, flashDelay);
 
     if (typeTag) {
       typeTag.textContent = puzzle.congruent ? '✓ Congruent' : '⚡ Incongruent';
@@ -193,6 +206,7 @@ class ArrowsGame {
   _pick(dir) {
     if (this.locked || !this._cur || !this.el) return;
     this.locked = true;
+    clearTimeout(this._responseTimeout);
 
     const rt = Date.now() - this._t0;
     this.times.push(rt);
@@ -249,9 +263,30 @@ class ArrowsGame {
     setTimeout(() => this._next(), 900);
   }
 
+  _timeoutMiss() {
+    if (this.locked || !this.el) return;
+    this.locked = true;
+    this.total++;
+    this.streak = 0;
+    this.cb.onFeedback(false);
+
+    // Visual feedback for timeout
+    const disp = document.getElementById('arr-display');
+    if (disp) {
+      disp.innerHTML = '<span style="color:#ef4444; font-size:1.8rem; font-weight:800; letter-spacing:0">TIMEOUT!</span>';
+    }
+
+    // Update stats
+    const strEl = document.getElementById('arr-streak-count');
+    if (strEl) strEl.textContent = this.streak;
+
+    setTimeout(() => this._next(), 900);
+  }
+
   timeUp() {
     if (this._kd) window.removeEventListener('keydown', this._kd);
     clearTimeout(this._showTimer);
+    clearTimeout(this._responseTimeout);
     this.cb.onEnd({
       score: this.score,
       accuracy: this.total ? (this.correct / this.total) * 100 : 0,
@@ -263,6 +298,7 @@ class ArrowsGame {
   destroy() {
     if (this._kd) window.removeEventListener('keydown', this._kd);
     clearTimeout(this._showTimer);
+    clearTimeout(this._responseTimeout);
     this.el = null;
   }
 }

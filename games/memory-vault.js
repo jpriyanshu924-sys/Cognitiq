@@ -158,9 +158,11 @@ class MemoryVaultGame {
       });
     }
 
-    // Flash each item in turn
+    // Flash each item in turn - dynamically faster at higher lengths
     let idx=0;
-    const totalTime = this.sequence.length * 750 + 600;
+    const showDuration = Math.max(250, 550 - (this.seqLen - 3) * 60);
+    const stepInterval = Math.max(350, 750 - (this.seqLen - 3) * 70);
+    const totalTime = this.sequence.length * stepInterval + 600;
     const startTime = Date.now();
 
     // Progress bar animation
@@ -171,7 +173,7 @@ class MemoryVaultGame {
       if (fill) fill.style.width = `${pct}%`;
       if (pct < 100) {
         const frame = requestAnimationFrame(animateProg);
-        this._timers.push(frame); // store frame so it can be canceled if destroyed
+        this._timers.push(frame);
       }
     };
     animateProg();
@@ -191,10 +193,10 @@ class MemoryVaultGame {
         
         const t1 = setTimeout(() => {
           if (activeEl) activeEl.style.opacity = 0;
-        }, 550);
+        }, showDuration);
         this._timers.push(t1);
 
-        const t2 = setTimeout(flashNext, 750);
+        const t2 = setTimeout(flashNext, stepInterval);
         this._timers.push(t2);
       } else {
         if (activeEl) activeEl.textContent = '';
@@ -261,6 +263,66 @@ class MemoryVaultGame {
       if(e.key==='Backspace') this._clearLast();
     };
     window.addEventListener('keydown',this._kd);
+
+    // Start 10-second ticking recall timer
+    this._startRecallTimer();
+  }
+
+  _startRecallTimer() {
+    this._clearRecallTimer();
+    let timeLeft = 10000;
+    const timerVal = document.getElementById('ap-timer-val');
+    if (timerVal) {
+      timerVal.textContent = (timeLeft / 1000).toFixed(1) + 's';
+      timerVal.style.color = '';
+    }
+
+    const tick = () => {
+      if (this.phase !== 'recall' || !this.el) return;
+      timeLeft -= 100;
+      if (timerVal) {
+        timerVal.textContent = Math.max(0, (timeLeft / 1000)).toFixed(1) + 's';
+        if (timeLeft <= 3000) {
+          timerVal.style.color = '#ef4444';
+          timerVal.style.fontWeight = '800';
+        } else {
+          timerVal.style.color = '';
+          timerVal.style.fontWeight = '';
+        }
+      }
+      if (timeLeft <= 0) {
+        this._recallTimeout();
+      } else {
+        this._recallTimer = setTimeout(tick, 100);
+      }
+    };
+    this._recallTimer = setTimeout(tick, 100);
+  }
+
+  _clearRecallTimer() {
+    clearTimeout(this._recallTimer);
+  }
+
+  _recallTimeout() {
+    this._clearRecallTimer();
+    if(this._kd) window.removeEventListener('keydown',this._kd);
+    this.lives--;
+    this.history.push({ len: this.seqLen, status: 'Failed' });
+    this.cb.onFeedback(false);
+
+    const prog = document.getElementById('mv-progress');
+    if (prog) {
+      prog.textContent = 'TIMEOUT!';
+      prog.style.color = '#ef4444';
+      prog.style.fontWeight = '800';
+    }
+
+    if(this.lives<=0){
+      this._showGameOver();
+      return;
+    }
+    const t=setTimeout(()=>this._newRound(), 1200);
+    this._timers.push(t);
   }
 
   _enterDigit(n) {
@@ -283,6 +345,7 @@ class MemoryVaultGame {
     if(prog) prog.textContent=`Entered: ${this.input.length} / ${this.sequence.length}`;
 
     if(this.input.length===this.sequence.length) {
+      this._clearRecallTimer();
       const t=setTimeout(()=>this._evaluate(), 500);
       this._timers.push(t);
     }
@@ -301,6 +364,7 @@ class MemoryVaultGame {
 
   _evaluate() {
     if(!this.el) return;
+    this._clearRecallTimer();
     if(this._kd) window.removeEventListener('keydown',this._kd);
 
     const correct=this.sequence.every((v,i)=>v===this.input[i]);
@@ -330,6 +394,7 @@ class MemoryVaultGame {
 
   _showGameOver() {
     if(!this.el) return;
+    this._clearRecallTimer();
     this.el.innerHTML=`
       <div style="text-align:center;padding:40px">
         <div style="font-size:3rem;margin-bottom:16px">🔐</div>
@@ -347,6 +412,7 @@ class MemoryVaultGame {
   }
 
   timeUp() {
+    this._clearRecallTimer();
     this._timers.forEach(clearTimeout);
     if(this._kd) window.removeEventListener('keydown',this._kd);
     this.cb.onEnd({
@@ -356,6 +422,7 @@ class MemoryVaultGame {
   }
 
   destroy() {
+    this._clearRecallTimer();
     this._timers.forEach(clearTimeout);
     if(this._kd) window.removeEventListener('keydown',this._kd);
     this.el=null;

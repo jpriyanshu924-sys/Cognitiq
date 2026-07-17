@@ -2,7 +2,7 @@
    Pymetrics Game 7: Lengths Game
    Measures: Perceptual accuracy, attention to detail, estimation
    Real equivalent: Pymetrics Lengths / Line Bisection
-══════════════════════════════════════════════════════ */
+ ══════════════════════════════════════════════════════ */
 class LengthsGame {
   constructor(container, cb) {
     this.container = container; this.cb = cb;
@@ -10,9 +10,12 @@ class LengthsGame {
     this.streak = 0; this.times = []; this.level = 1;
     this.locked = false; this.el = null;
     this.q = 0;
+    this._responseTimeout = null;
+    this.gameStartTime = 0;
   }
 
   start() {
+    this.gameStartTime = Date.now();
     this.el = document.createElement('div');
     this.el.className = 'len-game';
     this.container.appendChild(this.el);
@@ -42,7 +45,7 @@ class LengthsGame {
       // Two lines, which is longer?
       const maxW = 350;
       const minL = 40;
-      const diff = this.level === 1 ? 40 : this.level === 2 ? 20 : 10; // harder = closer lengths
+      const diff = this.level === 1 ? 20 : this.level === 2 ? 10 : 5; // harder = closer lengths
       const lenA = minL + Math.floor(Math.random() * (maxW - minL - diff));
       const lenB = lenA + diff + Math.floor(Math.random() * diff * 0.5);
       const swap = Math.random() < 0.5;
@@ -56,7 +59,7 @@ class LengthsGame {
       // A line with a mark — is the mark left or right of center?
       const lineLen = 200 + Math.floor(Math.random() * 150);
       const exactCenter = lineLen / 2;
-      const offset = (this.level === 1 ? 15 : this.level === 2 ? 8 : 5) + Math.floor(Math.random() * 10);
+      const offset = (this.level === 1 ? 8 : this.level === 2 ? 4 : 2) + Math.floor(Math.random() * 4);
       const markPos = exactCenter + (Math.random() < 0.5 ? offset : -offset);
       const answer = markPos > exactCenter ? 'Right' : 'Left';
       return {
@@ -82,7 +85,7 @@ class LengthsGame {
       };
     } else { // triple — which is the odd one out?
       const base = 60 + Math.floor(Math.random() * 200);
-      const diff2 = (this.level === 1 ? 40 : 20) + Math.floor(Math.random() * 20);
+      const diff2 = (this.level === 1 ? 20 : 10) + Math.floor(Math.random() * 10);
       const oddIdx = Math.floor(Math.random() * 3);
       const lines = [base, base, base];
       lines[oddIdx] = base + diff2;
@@ -259,11 +262,19 @@ class LengthsGame {
         if (window.CIQ) window.CIQ._exitGame();
       });
     }
+
+    // Start response timeout: starts at 1800ms, decreases to 800ms
+    const elapsed = (Date.now() - this.gameStartTime) / 1000;
+    const timeoutLimit = Math.max(800, 1800 - Math.floor(elapsed / 15) * 200);
+    clearTimeout(this._responseTimeout);
+    this._responseTimeout = setTimeout(() => this._timeoutMiss(), timeoutLimit);
   }
 
   _pick(ans, puzzle) {
     if (this.locked) return;
     this.locked = true;
+    clearTimeout(this._responseTimeout);
+
     const rt = Date.now() - this._t0;
     this.times.push(rt); this.total++;
 
@@ -296,7 +307,40 @@ class LengthsGame {
     setTimeout(() => this._next(), 900);
   }
 
+  _timeoutMiss() {
+    if (this.locked) return;
+    this.locked = true;
+    this.total++;
+    this.streak = 0;
+    this.cb.onFeedback(false);
+
+    // Highlight the correct option
+    const btns = this.el.querySelectorAll('.len-btn');
+    btns.forEach(b => {
+      if (String(b.dataset.ans) === String(this._cur.answer)) {
+        b.style.backgroundColor = '#10b981';
+        b.style.color = '#ffffff';
+        b.style.borderColor = '#10b981';
+      }
+    });
+
+    // Show TIMEOUT visual indicator
+    const canvas = document.getElementById('len-cvs');
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = 'rgba(239, 68, 68, 0.85)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 20px "Inter",sans-serif';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('TIMEOUT!', canvas.width/2, canvas.height/2);
+    }
+
+    setTimeout(() => this._next(), 900);
+  }
+
   timeUp() {
+    clearTimeout(this._responseTimeout);
     this.cb.onEnd({
       score: this.score,
       accuracy: this.total ? (this.correct / this.total) * 100 : 0,
@@ -305,7 +349,10 @@ class LengthsGame {
     });
   }
 
-  destroy() { this.el = null; }
+  destroy() {
+    clearTimeout(this._responseTimeout);
+    this.el = null;
+  }
 }
 
 window.LengthsGame = LengthsGame;

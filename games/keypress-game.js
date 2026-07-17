@@ -147,7 +147,7 @@ class KeypressGame {
     this._updateSignal();
 
     const elapsed = (Date.now() - this._startTime) / 1000;
-    const timeSpeedFactor = 1.0 + (elapsed / 40.0);
+    const timeSpeedFactor = 1.0 + (elapsed / 20.0);
     const duration = phase.dur / timeSpeedFactor;
 
     this._phaseTimer = setTimeout(() => {
@@ -214,7 +214,7 @@ class KeypressGame {
     } else {
       // Wrong press during STOP
       this.wrongPresses++;
-      this.score = Math.max(0, this.score - 15);
+      this.score = Math.max(0, this.score - 40);
       this.cb.onFeedback(false);
     }
   }

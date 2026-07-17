@@ -10,6 +10,7 @@ class NumerosityGame {
     this.streak = 0; this.level = 1; this.el = null; this._timers = [];
     this.target = 0; this.bubbles = []; this.selected = new Set();
     this.runningSum = 0;
+    this._roundTimer = null;
   }
 
   start() {
@@ -20,6 +21,7 @@ class NumerosityGame {
   }
 
   _newRound() {
+    this._clearRoundTimer();
     this.total++;
     this.selected = new Set();
     this.runningSum = 0;
@@ -28,16 +30,87 @@ class NumerosityGame {
     const numBubbles = this.level === 1 ? 6 : this.level === 2 ? 8 : 10;
 
     // Generate bubbles with at least one valid combination
-    const answerCount = 2 + Math.floor(Math.random() * 2); // 2-3 numbers sum to target
-    const answerNums = Array.from({length: answerCount}, () => 1 + Math.floor(Math.random() * maxN));
+    let answerNums;
+    if (this.level === 1) {
+      const answerCount = 2 + Math.floor(Math.random() * 2); // 2-3 numbers sum to target
+      answerNums = Array.from({length: answerCount}, () => 1 + Math.floor(Math.random() * maxN));
+    } else {
+      // Level 2 & 3: include one negative number to make it highly competitive
+      const posCount = 2 + Math.floor(Math.random() * 2); // 2-3 positive numbers
+      const posNums = Array.from({length: posCount}, () => 5 + Math.floor(Math.random() * maxN));
+      const negNum = -(1 + Math.floor(Math.random() * 8));
+      answerNums = [...posNums, negNum];
+    }
     this.target = answerNums.reduce((a, b) => a + b, 0);
 
     // Fill remaining bubbles with random numbers
-    const extra = Array.from({length: numBubbles - answerCount}, () => 1 + Math.floor(Math.random() * maxN));
-    const allNums = [...answerNums, ...extra].sort(() => Math.random() - 0.5);
+    let extra;
+    if (this.level === 1) {
+      extra = Array.from({length: numBubbles - answerNums.length}, () => 1 + Math.floor(Math.random() * maxN));
+    } else {
+      // Mix of positive and negative extra numbers
+      extra = Array.from({length: numBubbles - answerNums.length}, () => {
+        const sign = Math.random() < 0.3 ? -1 : 1;
+        const val = 1 + Math.floor(Math.random() * maxN);
+        return sign * val;
+      });
+    }
 
+    const allNums = [...answerNums, ...extra].sort(() => Math.random() - 0.5);
     this.bubbles = allNums.map((n, i) => ({ id: i, val: n }));
     this._render();
+    this._startRoundTimer();
+  }
+
+  _startRoundTimer() {
+    this._clearRoundTimer();
+    let timeLeft = 8000; // 8 seconds per round
+    const timerVal = document.getElementById('ap-timer-val');
+    if (timerVal) {
+      timerVal.textContent = (timeLeft / 1000).toFixed(1) + 's';
+      timerVal.style.color = '';
+    }
+
+    const tick = () => {
+      if (!this.el) return;
+      timeLeft -= 100;
+      if (timerVal) {
+        timerVal.textContent = Math.max(0, (timeLeft / 1000)).toFixed(1) + 's';
+        if (timeLeft <= 2500) {
+          timerVal.style.color = '#ef4444';
+          timerVal.style.fontWeight = '800';
+        } else {
+          timerVal.style.color = '';
+          timerVal.style.fontWeight = '';
+        }
+      }
+      if (timeLeft <= 0) {
+        this._roundTimeout();
+      } else {
+        this._roundTimer = setTimeout(tick, 100);
+      }
+    };
+    this._roundTimer = setTimeout(tick, 100);
+  }
+
+  _clearRoundTimer() {
+    clearTimeout(this._roundTimer);
+  }
+
+  _roundTimeout() {
+    this._clearRoundTimer();
+    this.streak = 0;
+    this.cb.onFeedback(false);
+
+    // Briefly display timeout feedback
+    const sumEl = document.getElementById('num-sum');
+    if (sumEl) {
+      sumEl.textContent = 'TIMEOUT!';
+      sumEl.style.color = '#ef4444';
+    }
+
+    const t = setTimeout(() => this._newRound(), 1000);
+    this._timers.push(t);
   }
 
   _render() {
@@ -115,7 +188,7 @@ class NumerosityGame {
                 </button>
                 
                 <div style="font-size:0.75rem; color:#6b7280; margin-top:20px">
-                  Select 2 or more numbers to reach the target sum.
+                  Select 2 or more numbers to reach the target sum. Note negative numbers!
                 </div>
               </div>
 
@@ -178,6 +251,7 @@ class NumerosityGame {
     });
 
     document.getElementById('num-submit')?.addEventListener('click', () => {
+      this._clearRoundTimer();
       if (this.runningSum === this.target && this.selected.size >= 2) {
         this.correct++; this.streak++;
         if (this.correct % 5 === 0) this.level = Math.min(3, this.level + 1);
@@ -200,7 +274,17 @@ class NumerosityGame {
     }
   }
 
-  timeUp() { this._timers.forEach(clearTimeout); this.cb.onEnd({ score: this.score, accuracy: this.total ? (this.correct/this.total)*100 : 0, avgTime: 0, correct: this.correct, total: this.total, level: this.level }); }
-  destroy() { this._timers.forEach(clearTimeout); this.el = null; }
+  timeUp() { 
+    this._clearRoundTimer();
+    this._timers.forEach(clearTimeout); 
+    this.cb.onEnd({ score: this.score, accuracy: this.total ? (this.correct/this.total)*100 : 0, avgTime: 0, correct: this.correct, total: this.total, level: this.level }); 
+  }
+
+  destroy() { 
+    this._clearRoundTimer();
+    this._timers.forEach(clearTimeout); 
+    this.el = null; 
+  }
 }
+
 window.NumerosityGame = NumerosityGame;

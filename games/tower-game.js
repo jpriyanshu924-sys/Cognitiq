@@ -128,7 +128,7 @@ class TowerGame {
                     </div>
                     <div class="ap-tow-stat-col">
                       <span class="ap-tow-stat-lbl">Target</span>
-                      <span class="ap-tow-stat-val-green">${this.minMoves}</span>
+                      <span class="ap-tow-stat-val-green">${this.minMoves} <span style="font-size:0.72rem; color:#6b7280; font-weight:600">(Max: ${Math.floor(this.minMoves * 1.5)})</span></span>
                     </div>
                   </div>
                   
@@ -330,6 +330,37 @@ class TowerGame {
         
         const movesEl = document.getElementById('tow-moves-count');
         if (movesEl) movesEl.textContent = this.moves;
+
+        const maxMoves = Math.floor(this.minMoves * 1.5);
+        if (this.moves > maxMoves) {
+          this.puzzleSolvedState = true;
+          this.cb.onFeedback(false);
+          
+          const headerNum = this.el.querySelector('.ap-question-num');
+          if (headerNum) {
+            headerNum.textContent = 'TOO MANY MOVES!';
+            headerNum.style.color = '#ef4444';
+          }
+          
+          const submitBtn = document.getElementById('btn-tow-submit');
+          if (submitBtn) {
+            submitBtn.textContent = '❌ Failed (Exceeded Move Limit)';
+            submitBtn.disabled = true;
+            submitBtn.style.backgroundColor = '#ef4444';
+          }
+          
+          setTimeout(() => {
+            this.puzzleSolvedState = false;
+            this.puzzlesSolved++;
+            if (this.puzzlesSolved >= 8) {
+              this._finish();
+            } else {
+              if (this.puzzlesSolved % 2 === 0) this.level = Math.min(3, this.level + 1);
+              this._newPuzzle();
+            }
+          }, 1500);
+          return;
+        }
 
         if (this._isSolved()) {
           this.puzzleSolvedState = true;
