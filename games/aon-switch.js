@@ -223,7 +223,28 @@ class AonSwitchGame {
 
   timeUp() {
     if (this._kd) window.removeEventListener('keydown', this._kd);
-    this.cb.onEnd({ score: this.score, accuracy: this.total?(this.correct/this.total)*100:0, avgTime: this.times.length?this.times.reduce((a,b)=>a+b,0)/this.times.length:0, correct: this.correct, total: this.total, level: this.level });
+    clearTimeout(this._nextTimer);
+
+    if (this.el) {
+      this.el.innerHTML = `
+        <div style="text-align:center;padding:40px">
+          <div style="font-size:3.5rem;margin-bottom:16px">🔄</div>
+          <h3 style="font-family:var(--fh);margin-bottom:12px">Switch Challenge Complete!</h3>
+          <p style="color:var(--muted);margin-bottom:8px">Correct Classifications: <strong>${this.correct} / ${this.total}</strong></p>
+          <div style="font-family:var(--fm);font-size:2.5rem;color:var(--violet-l)">${this.score} pts</div>
+        </div>`;
+    }
+
+    setTimeout(() => {
+      this.cb.onEnd({ 
+        score: this.score, 
+        accuracy: this.total ? (this.correct / this.total) * 100 : 0, 
+        avgTime: this.times.length ? this.times.reduce((a, b) => a + b, 0) / this.times.length : 0, 
+        correct: this.correct, 
+        total: this.total, 
+        level: this.level 
+      });
+    }, 2000);
   }
   destroy() { if (this._kd) window.removeEventListener('keydown', this._kd); clearTimeout(this._nextTimer); this.el = null; }
 }
