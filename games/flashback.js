@@ -226,9 +226,8 @@ class FlashbackGame {
                 <!-- Choices grid -->
                 <div class="fb-choices" style="display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; width:100%; max-width:380px; margin-bottom:28px">
                   ${pool.map(item => {
-                    const used = this.userSeq.includes(item);
                     return `
-                    <button class="btn ap-face-choice-btn fb-choice ${used ? 'fb-used' : ''}" style="margin-top:0; padding:12px 6px; display:flex; flex-direction:column; align-items:center; gap:4px; opacity:${used?0.5:1}; cursor:${used?'not-allowed':'pointer'}" data-id="${item.id}">
+                    <button class="btn ap-face-choice-btn fb-choice" style="margin-top:0; padding:12px 6px; display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer;" data-id="${item.id}">
                       <span style="font-size:1.8rem; line-height:1">${item.icon}</span>
                       <span style="font-size:0.75rem; color:#4b5563; font-weight:600">${item.label}</span>
                     </button>`;
@@ -271,7 +270,7 @@ class FlashbackGame {
       btn.addEventListener('click', () => {
         if (this.userSeq.length >= this.seqLen) return;
         const item = this.ITEMS.find(it => it.id === btn.dataset.id);
-        if (item && !this.userSeq.includes(item)) { this.userSeq.push(item); this._renderRecall(); }
+        if (item) { this.userSeq.push(item); this._renderRecall(); }
       });
     });
     document.getElementById('fb-submit')?.addEventListener('click', () => this._evaluate());
@@ -306,7 +305,28 @@ class FlashbackGame {
     this._timers.push(t);
   }
 
-  timeUp() { this._timers.forEach(clearTimeout); this.cb.onEnd({ score: this.score, accuracy: this.total ? (this.correct/this.total)*100 : 0, avgTime: 0, correct: this.correct, total: this.total, level: this.level }); }
+  timeUp() {
+    this._timers.forEach(clearTimeout);
+    if (this.el) {
+      this.el.innerHTML = `
+        <div style="text-align:center;padding:40px">
+          <div style="font-size:3.5rem;margin-bottom:16px">👁️</div>
+          <h3 style="font-family:var(--fh);margin-bottom:12px">Flashback Complete!</h3>
+          <p style="color:var(--muted);margin-bottom:8px">Correct sequences: <strong>${this.correct} / ${this.total}</strong></p>
+          <div style="font-family:var(--fm);font-size:2.5rem;color:var(--violet-l)">${this.score} pts</div>
+        </div>`;
+    }
+    setTimeout(() => {
+      this.cb.onEnd({
+        score: this.score,
+        accuracy: this.total ? (this.correct / this.total) * 100 : 0,
+        avgTime: 0,
+        correct: this.correct,
+        total: this.total,
+        level: this.level
+      });
+    }, 2000);
+  }
   destroy() { this._timers.forEach(clearTimeout); this.el = null; }
 }
 window.FlashbackGame = FlashbackGame;

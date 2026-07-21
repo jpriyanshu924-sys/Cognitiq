@@ -289,14 +289,27 @@ class DigitNBackGame {
   _finish() {
     if (this._kd) window.removeEventListener('keydown', this._kd);
     this._timers.forEach(clearTimeout);
-    this.cb.onEnd({
-      score: this.score,
-      accuracy: this.total ? (this.correct / this.total) * 100 : 0,
-      avgTime: 0,
-      correct: this.correct,
-      total: this.total,
-      level: this.level
-    });
+
+    if (this.el) {
+      this.el.innerHTML = `
+        <div style="text-align:center;padding:40px">
+          <div style="font-size:3.5rem;margin-bottom:16px">🔢</div>
+          <h3 style="font-family:var(--fh);margin-bottom:12px">Digit Challenge Complete!</h3>
+          <p style="color:var(--muted);margin-bottom:8px">Correct matches: <strong>${this.correct} / ${this.total}</strong></p>
+          <div style="font-family:var(--fm);font-size:2.5rem;color:var(--violet-l)">${this.score} pts</div>
+        </div>`;
+    }
+
+    setTimeout(() => {
+      this.cb.onEnd({
+        score: this.score,
+        accuracy: this.total ? (this.correct / this.total) * 100 : 0,
+        avgTime: 0,
+        correct: this.correct,
+        total: this.total,
+        level: this.level
+      });
+    }, 2000);
   }
 
   timeUp() { this._finish(); }
