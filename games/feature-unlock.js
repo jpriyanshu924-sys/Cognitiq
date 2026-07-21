@@ -2,7 +2,7 @@
    Arctic Shores 2: Feature Unlock
    Measures: Hypothesis testing, deductive reasoning, adaptability
    Based on: Arctic Shores rule-discovery "Feature Unlock" game
-══════════════════════════════════════════════════════ */
+   ══════════════════════════════════════════════════════ */
 class FeatureUnlockGame {
   constructor(container, cb) {
     this.container = container; this.cb = cb;
@@ -30,7 +30,9 @@ class FeatureUnlockGame {
 
     const colors = this._COLORS();
     const shapes = this._SHAPES();
-    const gridSize = this.level <= 1 ? 9 : 12; // 3×3 or 3×4 grid
+    
+    // Scale grid size: Level 1 = 9 (3x3), Level 2 = 12 (3x4), Level 3 = 16 (4x4)
+    const gridSize = this.level === 1 ? 9 : this.level === 2 ? 12 : 16;
 
     // Generate grid of {color, shape, id} tiles
     this.grid = [];
@@ -44,9 +46,14 @@ class FeatureUnlockGame {
       });
     }
 
-    // Generate a hidden rule
-    const ruleTypes = ['same-color', 'same-shape', 'count'];
-    const ruleType = ruleTypes[Math.floor(Math.random() * (this.level === 1 ? 2 : 3))];
+    // Generate a hidden rule (escalates with level)
+    const ruleTypes = this.level === 1
+      ? ['same-color', 'same-shape']
+      : this.level === 2
+        ? ['same-color', 'same-shape', 'count', 'boolean-and']
+        : ['same-color', 'same-shape', 'count', 'boolean-or', 'boolean-and', 'boolean-xor'];
+
+    const ruleType = ruleTypes[Math.floor(Math.random() * ruleTypes.length)];
 
     if (ruleType === 'same-color') {
       const targetColorIdx = Math.floor(Math.random() * colors.length);
@@ -54,29 +61,66 @@ class FeatureUnlockGame {
     } else if (ruleType === 'same-shape') {
       const targetShapeIdx = Math.floor(Math.random() * shapes.length);
       this.rule = { type: 'same-shape', target: targetShapeIdx, label: `All ${shapes[targetShapeIdx]} shapes` };
-    } else {
+    } else if (ruleType === 'count') {
       const count = 2 + Math.floor(Math.random() * 3);
       this.rule = { type: 'count', target: count, label: `Exactly ${count} tiles selected` };
+    } else if (ruleType === 'boolean-or') {
+      const targetColorIdx = Math.floor(Math.random() * colors.length);
+      const targetShapeIdx = Math.floor(Math.random() * shapes.length);
+      this.rule = { 
+        type: 'boolean-or', 
+        targetColor: targetColorIdx, 
+        targetShape: targetShapeIdx, 
+        label: `All ${colors[targetColorIdx]} tiles OR all ${shapes[targetShapeIdx]} shapes` 
+      };
+    } else if (ruleType === 'boolean-and') {
+      const targetColorIdx = Math.floor(Math.random() * colors.length);
+      const targetShapeIdx = Math.floor(Math.random() * shapes.length);
+      this.rule = { 
+        type: 'boolean-and', 
+        targetColor: targetColorIdx, 
+        targetShape: targetShapeIdx, 
+        label: `Only ${colors[targetColorIdx]} tiles that are also ${shapes[targetShapeIdx]} shapes` 
+      };
+    } else { // xor: color index XOR shape index
+      const targetColorIdx = Math.floor(Math.random() * colors.length);
+      const targetShapeIdx = Math.floor(Math.random() * shapes.length);
+      this.rule = {
+        type: 'boolean-xor',
+        targetColor: targetColorIdx,
+        targetShape: targetShapeIdx,
+        label: `Tiles that are ${colors[targetColorIdx]} OR ${shapes[targetShapeIdx]}, but NOT both`
+      };
     }
 
     this._render();
   }
 
   _isCorrect() {
+    let correctIds = [];
     if (this.rule.type === 'same-color') {
-      const correctIds = this.grid.filter(t => t.colorIdx === this.rule.target).map(t => t.id);
-      return correctIds.length === this.selected.size && correctIds.every(id => this.selected.has(id));
+      correctIds = this.grid.filter(t => t.colorIdx === this.rule.target).map(t => t.id);
     } else if (this.rule.type === 'same-shape') {
-      const correctIds = this.grid.filter(t => t.shapeIdx === this.rule.target).map(t => t.id);
-      return correctIds.length === this.selected.size && correctIds.every(id => this.selected.has(id));
-    } else {
+      correctIds = this.grid.filter(t => t.shapeIdx === this.rule.target).map(t => t.id);
+    } else if (this.rule.type === 'count') {
       return this.selected.size === this.rule.target;
+    } else if (this.rule.type === 'boolean-or') {
+      correctIds = this.grid.filter(t => t.colorIdx === this.rule.targetColor || t.shapeIdx === this.rule.targetShape).map(t => t.id);
+    } else if (this.rule.type === 'boolean-and') {
+      correctIds = this.grid.filter(t => t.colorIdx === this.rule.targetColor && t.shapeIdx === this.rule.targetShape).map(t => t.id);
+    } else if (this.rule.type === 'boolean-xor') {
+      correctIds = this.grid.filter(t => (t.colorIdx === this.rule.targetColor) !== (t.shapeIdx === this.rule.targetShape)).map(t => t.id);
     }
+    
+    return correctIds.length === this.selected.size && correctIds.every(id => this.selected.has(id));
   }
 
   _render() {
     if (!this.el) return;
-    const cols = this.grid.length === 9 ? 3 : 4;
+    let cols = 3;
+    if (this.grid.length === 12) cols = 4;
+    else if (this.grid.length === 16) cols = 4;
+
     this.el.innerHTML = `
       <div class="fu-header">
         <div>Puzzle ${this.puzzlesSolved + 1} · Level ${this.level}</div>
@@ -99,7 +143,7 @@ class FeatureUnlockGame {
         <button class="btn btn-secondary fu-clear" id="fu-clear">Clear</button>
         <button class="btn btn-primary fu-submit" id="fu-submit">🔓 Unlock!</button>
       </div>
-      <p style="font-size:.72rem;color:var(--subtle);text-align:center">Hint: The rule could be about COLOR, SHAPE, or COUNT of tiles.</p>`;
+      <p style="font-size:.72rem;color:var(--subtle);text-align:center">Hint: Rules involve logical relationships (AND/OR/XOR) of COLOR and SHAPE.</p>`;
 
     this.el.querySelectorAll('.fu-tile').forEach(tile => {
       tile.addEventListener('click', () => {
@@ -142,7 +186,7 @@ class FeatureUnlockGame {
 
   timeUp() {
     this._timers.forEach(clearTimeout);
-    this.cb.onEnd({ score: this.score, accuracy: this.puzzlesSolved > 0 ? 70 : 0, avgTime: 0, correct: this.puzzlesSolved, total: this.puzzlesSolved + 1, level: this.level });
+    this.cb.onEnd({ score: this.score, accuracy: this.puzzlesSolved > 0 ? 80 : 0, avgTime: 0, correct: this.puzzlesSolved, total: this.puzzlesSolved + 1, level: this.level });
   }
   destroy() { this._timers.forEach(clearTimeout); this.el = null; }
 }

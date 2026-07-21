@@ -11,6 +11,7 @@ class LogicDeductionGame {
     this.el = null;
     this.hasAnswered = false;
 
+    // Static array of 10 complex logical syllogisms, conditional logic, and ordering puzzles
     this.questions = [
       {
         premises: [
@@ -54,6 +55,69 @@ class LogicDeductionGame {
         options: ["Must Be True", "Might Be True", "Cannot Be True"],
         answer: 2, // Cannot Be True
         explanation: "All software leads are managers, and no manager is a part-time worker. Therefore, no software lead can be a part-time worker."
+      },
+      {
+        premises: [
+          "Jane is faster than Sarah.",
+          "Sarah is faster than Dave.",
+          "Bob is faster than Jane."
+        ],
+        conclusion: "Bob is faster than Dave.",
+        options: ["Must Be True", "Might Be True", "Cannot Be True"],
+        answer: 0, // Must Be True
+        explanation: "Since Bob > Jane, Jane > Sarah, and Sarah > Dave, Bob is transitively faster than Dave (Bob > Jane > Sarah > Dave)."
+      },
+      {
+        premises: [
+          "If it rains, John plays chess.",
+          "If John plays chess, Mary reads.",
+          "Mary is not reading."
+        ],
+        conclusion: "It is raining.",
+        options: ["Must Be True", "Might Be True", "Cannot Be True"],
+        answer: 2, // Cannot Be True
+        explanation: "Since Mary is not reading, John is not playing chess (modus tollens). Since John is not playing chess, it is not raining. Therefore, it is impossible for it to be raining."
+      },
+      {
+        premises: [
+          "Most accountants are detail-oriented.",
+          "Some detail-oriented people are introverts."
+        ],
+        conclusion: "Most accountants are introverts.",
+        options: ["Must Be True", "Might Be True", "Cannot Be True"],
+        answer: 1, // Might Be True
+        explanation: "While most accountants are detail-oriented, the subset of detail-oriented people who are introverts may or may not overlap with accountants. It is possible but not guaranteed."
+      },
+      {
+        premises: [
+          "No athletes are smokers.",
+          "All runners are athletes."
+        ],
+        conclusion: "Some runners are smokers.",
+        options: ["Must Be True", "Might Be True", "Cannot Be True"],
+        answer: 2, // Cannot Be True
+        explanation: "Since all runners are athletes, and no athlete is a smoker, it is logically impossible for any runner to be a smoker."
+      },
+      {
+        premises: [
+          "Alice is taller than Carol.",
+          "David is shorter than Carol.",
+          "Betty is taller than David."
+        ],
+        conclusion: "Betty is taller than Alice.",
+        options: ["Must Be True", "Might Be True", "Cannot Be True"],
+        answer: 1, // Might Be True
+        explanation: "We know Alice > Carol > David, and Betty > David. We don't have a direct heights comparison between Betty and Alice or Carol. So Betty might be taller, but it is not certain."
+      },
+      {
+        premises: [
+          "All members of Club A are also members of Club B.",
+          "No members of Club B are members of Club C."
+        ],
+        conclusion: "No members of Club A are members of Club C.",
+        options: ["Must Be True", "Might Be True", "Cannot Be True"],
+        answer: 0, // Must Be True
+        explanation: "Club A is a subset of Club B, which has no intersection with Club C. Therefore, Club A cannot intersect with Club C."
       }
     ];
   }
@@ -99,20 +163,20 @@ class LogicDeductionGame {
           <p class="ld-conclusion-text">"${q.conclusion}"</p>
         </div>
         
-        <div class="ld-choices-row" id="ld-choices">
+        <div class="ld-choices-grid">
           ${q.options.map((opt, idx) => `
-            <button class="btn ld-opt-btn" data-idx="${idx}">${opt}</button>
+            <button class="btn ld-choice-btn" data-idx="${idx}">${opt}</button>
           `).join('')}
         </div>
         
-        <div class="ld-explanation" id="ld-explanation" style="display:none;margin-top:20px;padding:15px;background:rgba(255,255,255,0.03);border-radius:8px"></div>
+        <div class="shl-explanation" id="ld-explanation" style="display:none;margin-top:20px;padding:15px;background:rgba(255,255,255,0.03);border-radius:8px"></div>
       </div>
       
-      <div class="ld-footer" style="display:none;margin-top:20px" id="ld-next-panel">
-        <button class="btn btn-primary" id="ld-next-btn">Next Puzzle ➔</button>
+      <div class="shl-footer" style="display:none;margin-top:20px" id="ld-next-panel">
+        <button class="btn btn-primary" id="ld-next-btn">Next Syllogism ➔</button>
       </div>`;
 
-    this.el.querySelectorAll('.ld-opt-btn').forEach(btn => {
+    this.el.querySelectorAll('.ld-choice-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const idx = parseInt(btn.dataset.idx);
         this._pickAnswer(idx);
@@ -129,19 +193,19 @@ class LogicDeductionGame {
     const isCorrect = (choiceIdx === q.answer);
 
     // Highlight choices
-    const btns = this.el.querySelectorAll('.ld-opt-btn');
+    const btns = this.el.querySelectorAll('.ld-choice-btn');
     btns.forEach(btn => {
       const idx = parseInt(btn.dataset.idx);
       if (idx === q.answer) {
-        btn.classList.add('ld-opt-correct');
+        btn.classList.add('ld-correct');
       } else if (idx === choiceIdx && !isCorrect) {
-        btn.classList.add('ld-opt-wrong');
+        btn.classList.add('ld-wrong');
       }
     });
 
     if (isCorrect) {
       this.correct++;
-      const pts = 250;
+      const pts = 200;
       this.score += pts;
       this.cb.onScore(pts, this.qIndex + 1);
       this.cb.onFeedback(true);
@@ -149,20 +213,22 @@ class LogicDeductionGame {
       this.cb.onFeedback(false);
     }
 
-    const expEl = this.el.querySelector('#ld-explanation');
-    if (expEl) {
-      expEl.style.display = 'block';
-      expEl.innerHTML = `<strong>${isCorrect ? 'Correct!' : 'Incorrect.'}</strong> ${q.explanation}`;
+    // Display explanation
+    const exp = this.el.querySelector('#ld-explanation');
+    if (exp) {
+      exp.innerHTML = `
+        <strong style="color:${isCorrect ? '#10b981' : '#ef4444'}">${isCorrect ? '✓ Correct Answer!' : '✗ Incorrect'}</strong>
+        <p style="margin-top:6px;font-size:0.8rem;color:var(--muted);line-height:1.5">${q.explanation}</p>`;
+      exp.style.display = 'block';
     }
 
-    const nextPanel = this.el.querySelector('#ld-next-panel');
-    if (nextPanel) {
-      nextPanel.style.display = 'flex';
-      const nextBtn = this.el.querySelector('#ld-next-btn');
-      if (nextBtn) nextBtn.addEventListener('click', () => {
+    const footer = this.el.querySelector('#ld-next-panel');
+    if (footer) {
+      footer.style.display = 'flex';
+      footer.querySelector('#ld-next-btn').onclick = () => {
         this.qIndex++;
         this._showQuestion();
-      });
+      };
     }
   }
 
@@ -173,13 +239,17 @@ class LogicDeductionGame {
       avgTime: 0,
       correct: this.correct,
       total: this.total,
-      level: 1
+      level: 3
     });
   }
 
-  timeUp() { this._finish(); }
+  timeUp() {
+    this._finish();
+  }
+
   destroy() {
     this.el = null;
   }
 }
+
 window.LogicDeductionGame = LogicDeductionGame;
