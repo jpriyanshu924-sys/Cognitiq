@@ -1,8 +1,10 @@
 /* ══════════════════════════════════════════════════════
    Pymetrics / Arctic Shores: Arrows Game
    Measures: Cognitive flexibility, attention control, task-switching
-   Pymetrics: Color-based direction rule switching (Blue=Same, Red=Opposite)
-   Arctic Shores: Flanker Task (ignore vertical distractors around center arrow)
+   Rules from Playbook:
+   - Blue/Black arrows: Indicate direction of the center arrow
+   - Red arrows: Indicate direction of the side (flanker) arrows
+   - Strict 2-second response limit per trial
 ══════════════════════════════════════════════════════ */
 class ArrowsGame {
   constructor(container, cb) {
@@ -13,14 +15,6 @@ class ArrowsGame {
     this._kd = null; this._showTimer = null;
     this._responseTimeout = null;
     this.gameStartTime = 0;
-
-    // Detect game mode from callback name
-    const name = (this.cb && this.cb.name) ? this.cb.name : 'Arrows';
-    this.isColorRuleMode = !name.toLowerCase().includes('direction');
-    
-    // Color-Rule mode state
-    this.activeRule = 'same'; // 'same' | 'opposite'
-    this.trialsSinceSwitch = 0;
   }
 
   start() {
@@ -35,83 +29,38 @@ class ArrowsGame {
   _rand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
   _gen() {
+    // Center arrow direction
     const centerDir = this._rand(['left', 'right']);
+    // Flanker direction (sometimes congruent, sometimes incongruent)
+    const congruent = Math.random() < 0.5;
+    const flankerDir = congruent ? centerDir : (centerDir === 'left' ? 'right' : 'left');
 
-    if (this.isColorRuleMode) {
-      // Pymetrics Mode: Rule switches periodically every 6 trials
-      this.trialsSinceSwitch++;
-      if (this.trialsSinceSwitch >= 6) {
-        this.trialsSinceSwitch = 0;
-        this.activeRule = this.activeRule === 'same' ? 'opposite' : 'same';
-        this._flashRuleSwitched();
-      }
-      return { arrows: [centerDir], centerDir, rule: this.activeRule, congruent: true };
-    } else {
-      // Arctic Shores Mode: Flanker Task (center focus, vertical distractors)
-      const flankerDir = this.level >= 2
-        ? (Math.random() < 0.5 ? centerDir : (centerDir === 'left' ? 'right' : 'left'))
-        : centerDir;
+    // Arrow color: blue or red
+    const color = Math.random() < 0.5 ? 'blue' : 'red';
 
-      const numFlankers = 2;
-      const arrows = [];
-      for (let i = 0; i < numFlankers; i++) arrows.push(flankerDir);
-      arrows.push(centerDir); // center
-      for (let i = 0; i < numFlankers; i++) arrows.push(flankerDir);
+    // 5 arrows (1 center and 4 flankers)
+    const arrows = [flankerDir, flankerDir, centerDir, flankerDir, flankerDir];
 
-      const congruent = centerDir === flankerDir;
-      return { arrows, centerDir, congruent };
-    }
+    return { arrows, centerDir, flankerDir, color, congruent };
   }
 
   _arrowChar(dir) { return dir === 'left' ? '←' : '→'; }
 
-  _flashRuleSwitched() {
-    const flashEl = document.createElement('div');
-    flashEl.style.cssText = `
-      position: absolute;
-      top: 30%; left: 50%; transform: translate(-50%, -50%);
-      background: rgba(15, 23, 42, 0.95);
-      color: #ffffff;
-      padding: 12px 24px;
-      border-radius: 8px;
-      font-weight: 800;
-      font-size: 1.1rem;
-      z-index: 1000;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-      pointer-events: none;
-      animation: ruleFlash 0.8s ease-out forwards;
-    `;
-    flashEl.textContent = '⚡ RULE SWITCHED!';
-    
-    // Inject style keyframes if not present
-    if (!document.getElementById('rule-flash-style')) {
-      const style = document.createElement('style');
-      style.id = 'rule-flash-style';
-      style.textContent = `
-        @keyframes ruleFlash {
-          0% { opacity: 0; transform: translate(-50%, -40%) scale(0.9); }
-          20% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
-          80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-          100% { opacity: 0; transform: translate(-50%, -60%) scale(0.95); }
-        }
-      `;
-      document.head.appendChild(style);
-    }
-    
-    this.el.appendChild(flashEl);
-    setTimeout(() => flashEl.remove(), 800);
-  }
-
   _render() {
     if (!this.el) return;
-    const title = (this.cb && this.cb.name) ? this.cb.name : (this.isColorRuleMode ? 'Arrows Game' : 'Arrow Directions');
-    const instructionHtml = this.isColorRuleMode
-      ? `Observe the card background color rule:
-         <div style="margin-top: 8px; font-size: 0.85rem;">
-           <span style="background:#eff6ff; color:#1e3a8a; padding:3px 8px; border-radius:4px; border:1px solid #bfdbfe; font-weight:700">BLUE card</span>: Click arrow direction
-           <span style="background:#fef2f2; color:#991b1b; padding:3px 8px; border-radius:4px; border:1px solid #fecaca; margin-left:8px; font-weight:700">RED card</span>: Click OPPOSITE direction
-         </div>`
-      : `Which way does the <span style="color:#3b22d8; font-weight:700">CENTRE</span> arrow point? Ignore vertical distractors.`;
+    const title = 'Arrows Game';
+    const instructionHtml = `
+      <div style="font-size: 0.9rem; line-height: 1.6; text-align: left; max-width: 460px; margin: 0 auto 16px; background: rgba(0,0,0,0.02); padding: 12px; border-radius: 8px;">
+        <div style="margin-bottom: 6px; display: flex; align-items: center; gap: 8px;">
+          <span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:#2563eb;"></span>
+          <span><strong>Blue arrows</strong>: Indicate direction of the <strong>center</strong> arrow.</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:#dc2626;"></span>
+          <span><strong>Red arrows</strong>: Indicate direction of the <strong>side</strong> arrows.</span>
+        </div>
+      </div>
+    `;
 
     this.el.innerHTML = `
       <div class="ap-wrapper">
@@ -121,12 +70,12 @@ class ArrowsGame {
             <span class="ap-logo">CognitIQ</span>
           </div>
           <div class="ap-header-center">
-            <span class="ap-question-num">${title}</span>
+            <span class="ap-question-num">Arrows Test</span>
           </div>
           <div class="ap-header-right">
             <div class="ap-timer-box">
               <span class="ap-timer-icon">⏱</span>
-              <span class="ap-timer-val" id="ap-timer-val">—</span>
+              <span class="ap-timer-val" id="ap-timer-val">2.0s</span>
             </div>
             <button class="btn ap-exit-btn" id="ap-exit-btn">Save & Exit</button>
           </div>
@@ -153,9 +102,9 @@ class ArrowsGame {
               <div class="ap-he-card" id="arr-card" style="min-height: 400px; justify-content: center; align-items: center; padding: 40px; margin-bottom: 24px; text-align:center; transition: all 0.3s ease;">
                 
                 <div style="font-size:0.72rem; font-weight:700; color:#6b7280; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:8px">Attention Switch</div>
-                <div class="ap-spin-badge" id="arr-type" style="align-self:center; margin-bottom: 28px">—</div>
+                <div class="ap-spin-badge" id="arr-type" style="align-self:center; margin-bottom: 24px;">—</div>
                 
-                <div style="font-size:1.05rem; font-weight:700; color:#111827; margin-bottom:24px; line-height:1.5;" id="arr-instructions">${instructionHtml}</div>
+                <div id="arr-instructions">${instructionHtml}</div>
                 
                 <div class="arr-display" id="arr-display" style="font-size:4.5rem; letter-spacing:8px; font-weight:800; margin-bottom:40px; height:80px; display:flex; align-items:center; justify-content:center">
                   <span class="arr-placeholder" style="color:#cbd5e1">●</span>
@@ -175,8 +124,8 @@ class ArrowsGame {
               <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: center">
                 <div class="ap-tow-footer-card">
                   <div style="font-size:0.78rem; font-weight:700; color:#1e3a8a; margin-bottom:4px">ℹ️ Selective Attention Task</div>
-                  <div style="font-size:0.72rem; color:#4b5563; line-height:1.4">
-                    ${this.isColorRuleMode ? 'Blue cards require matching the arrow direction. Red cards require pressing the opposite direction.' : 'Focus solely on the middle arrow. Conflicting arrows on the side (incongruent) will test your cognitive control.'}
+                  <div style="font-size:0.72rem; color:#4b5563; line-height:1.4;">
+                    If the arrows are blue, match the center arrow. If red, match the side arrows. Watch out for the strict 2-second timeout!
                   </div>
                 </div>
                 <div class="ap-tow-footer-card" style="display:flex; flex-direction:row; justify-content:space-around; align-items:center">
@@ -230,57 +179,69 @@ class ArrowsGame {
     disp.innerHTML = '<span class="arr-placeholder" style="color:#cbd5e1">●</span>';
     disp.className = 'arr-display arr-blank';
 
-    // Style card background for Color-Rule mode
-    if (this.isColorRuleMode && cardEl) {
-      if (puzzle.rule === 'same') {
-        cardEl.style.backgroundColor = '#eff6ff'; // blue shade
-        cardEl.style.borderColor = '#bfdbfe';
+    // Style card background color subtly based on the rule type
+    if (cardEl) {
+      if (puzzle.color === 'blue') {
+        cardEl.style.backgroundColor = '#f8fafc'; // Neutral slate
+        cardEl.style.borderColor = '#cbd5e1';
       } else {
-        cardEl.style.backgroundColor = '#fef2f2'; // red shade
-        cardEl.style.borderColor = '#fecaca';
+        cardEl.style.backgroundColor = '#fdf2f8'; // Subtle pink/red tint
+        cardEl.style.borderColor = '#fbcfe8';
       }
     }
 
     const elapsed = (Date.now() - this.gameStartTime) / 1000;
-    const flashDelay = Math.max(300, (2005 - this.level * 300) - Math.floor(elapsed / 15) * 180);
+    const flashDelay = Math.max(250, 400 - Math.floor(elapsed / 15) * 50); // fast visual pacing
 
     clearTimeout(this._showTimer);
     this._showTimer = setTimeout(() => {
       if (!this.el) return;
 
-      if (this.isColorRuleMode) {
-        // Single central arrow
-        const dir = puzzle.centerDir;
-        disp.innerHTML = `<span class="arr-arrow" style="color:#3b22d8; font-weight:800; text-shadow:0 4px 12px rgba(59,34,216,0.2)">${this._arrowChar(dir)}</span>`;
-      } else {
-        // Flanker sequence
-        disp.innerHTML = puzzle.arrows.map((dir, i) => {
-          const isCenter = i === Math.floor(puzzle.arrows.length / 2);
-          return `<span class="arr-arrow" style="color:${isCenter ? '#3b22d8' : '#cbd5e1'}; font-weight:800; text-shadow:${isCenter ? '0 4px 12px rgba(59,34,216,0.2)' : 'none'}">${this._arrowChar(dir)}</span>`;
-        }).join('');
-      }
+      // Draw all 5 arrows with the correct color
+      const arrowColor = puzzle.color === 'blue' ? '#2563eb' : '#dc2626';
+      disp.innerHTML = puzzle.arrows.map((dir, i) => {
+        const isTarget = puzzle.color === 'blue' ? (i === 2) : (i !== 2);
+        const weight = isTarget ? '800' : '600';
+        return `<span class="arr-arrow" style="color:${arrowColor}; font-weight:${weight}; font-size:4rem; margin:0 4px; display:inline-block;">${this._arrowChar(dir)}</span>`;
+      }).join('');
       
       disp.className = 'arr-display arr-showing';
-      this._t0 = Date.now(); // start timing from when arrows appear
+      this._t0 = Date.now();
 
-      // Start response timeout: decreases from 1350ms down to 600ms
-      const timeoutLimit = Math.max(600, 1350 - Math.floor(elapsed / 15) * 150);
+      // Start response timeout: strict 2.0s limit, scaling down to 800ms for high difficulty
+      const timeoutLimit = Math.max(800, 2000 - Math.floor(elapsed / 15) * 150);
+      let timeLeft = timeoutLimit;
+
+      const timerVal = document.getElementById('ap-timer-val');
+      if (timerVal) {
+        timerVal.textContent = (timeLeft / 1000).toFixed(1) + 's';
+        timerVal.style.color = '';
+      }
+
       clearTimeout(this._responseTimeout);
-      this._responseTimeout = setTimeout(() => {
-        this._timeoutMiss();
-      }, timeoutLimit);
+      const tick = () => {
+        if (this.locked || !this.el) return;
+        timeLeft -= 100;
+        if (timerVal) {
+          timerVal.textContent = Math.max(0, (timeLeft / 1000)).toFixed(1) + 's';
+          if (timeLeft <= 600) {
+            timerVal.style.color = '#ef4444';
+            timerVal.style.fontWeight = '800';
+          }
+        }
+        if (timeLeft <= 0) {
+          this._timeoutMiss();
+        } else {
+          this._responseTimeout = setTimeout(tick, 100);
+        }
+      };
+      this._responseTimeout = setTimeout(tick, 100);
     }, flashDelay);
 
     if (typeTag) {
-      if (this.isColorRuleMode) {
-        typeTag.textContent = puzzle.rule === 'same' ? '✓ Same Direction' : '⚡ Opposite Direction';
-        typeTag.style.color = puzzle.rule === 'same' ? '#2563eb' : '#dc2626';
-        typeTag.style.backgroundColor = puzzle.rule === 'same' ? '#dbeafe' : '#fee2e2';
-      } else {
-        typeTag.textContent = puzzle.congruent ? '✓ Congruent' : '⚡ Incongruent';
-        typeTag.style.color = puzzle.congruent ? '#059669' : '#ea580c';
-        typeTag.style.backgroundColor = puzzle.congruent ? '#ecfdf5' : '#fff7ed';
-      }
+      typeTag.textContent = puzzle.color === 'blue' ? '🎯 Target: CENTER Arrow' : '🎯 Target: SIDE Arrows';
+      typeTag.style.color = puzzle.color === 'blue' ? '#2563eb' : '#dc2626';
+      typeTag.style.backgroundColor = puzzle.color === 'blue' ? '#dbeafe' : '#fee2e2';
     }
 
     // Reset button states
@@ -305,10 +266,7 @@ class ArrowsGame {
     this.total++;
 
     // Determine correct choice direction
-    let correctDir = this._cur.centerDir;
-    if (this.isColorRuleMode && this._cur.rule === 'opposite') {
-      correctDir = this._cur.centerDir === 'left' ? 'right' : 'left';
-    }
+    const correctDir = this._cur.color === 'blue' ? this._cur.centerDir : this._cur.flankerDir;
 
     const ok = dir === correctDir;
     const btnId = dir === 'left' ? 'arr-left' : 'arr-right';
@@ -326,7 +284,7 @@ class ArrowsGame {
       this.correct++; this.streak++;
       if (this.correct % 8 === 0) this.level = Math.min(3, this.level + 1);
 
-      const ruleBonus = (this.isColorRuleMode && this._cur.rule === 'opposite') || (!this.isColorRuleMode && !this._cur.congruent) ? 30 : 0;
+      const ruleBonus = !this._cur.congruent ? 30 : 0;
       const spdBonus = Math.max(0, Math.floor((1200 - rt) / 15));
       const strBonus = this.streak >= 5 ? this.streak * 10 : 0;
       const pts = 60 + spdBonus + ruleBonus + strBonus;
@@ -358,7 +316,7 @@ class ArrowsGame {
     if (scoreEl) scoreEl.textContent = this.score;
     if (lvlEl) lvlEl.textContent = this.level;
 
-    setTimeout(() => this._next(), 900);
+    setTimeout(() => this._next(), 800);
   }
 
   _timeoutMiss() {

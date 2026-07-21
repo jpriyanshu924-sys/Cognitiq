@@ -2,13 +2,18 @@
    Pymetrics Game 1: Balloon Game (BART)
    Measures: Risk tolerance, impulsivity, decision-making
    Real equivalent: Balloon Analogue Risk Task
+   Rules from Playbook:
+   - Each pump earns $0.05
+   - Goal is to collect money before balloon explodes
+   - Redesigned 3-column UI matching Screenshot 3
 ══════════════════════════════════════════════════════ */
 class BalloonGame {
   constructor(container, cb) {
     this.container = container; this.cb = cb;
     this.score = 0; this.round = 0; this.totalRounds = 40;
     this.pumps = 0; this.banked = 0; this.popped = 0;
-    this.bankTotal = 0; this.currentEarnings = 0;
+    this.bankTotal = 0; // stored in cents (points)
+    this.currentEarnings = 0; // stored in cents (points)
     this.popAt = 0; this.level = 1;
     this.el = null; this._animId = null;
     this.balloonR = 40; this.targetR = 0; this.animating = false;
@@ -53,6 +58,7 @@ class BalloonGame {
     }
 
     this._render();
+    this._updateButtonsState(false, true);
     this._startActionTimer();
   }
 
@@ -100,13 +106,47 @@ class BalloonGame {
     this._animatePop();
   }
 
+  _updateButtonsState(isPumpDisabled, isBankDisabled) {
+    const pumpBtn = document.getElementById('blg-pump');
+    const bankBtn = document.getElementById('blg-bank');
+    
+    if (pumpBtn) {
+      pumpBtn.disabled = isPumpDisabled;
+      if (isPumpDisabled) {
+        pumpBtn.style.backgroundColor = '#cbd5e1';
+        pumpBtn.style.boxShadow = 'none';
+        pumpBtn.style.cursor = 'not-allowed';
+      } else {
+        pumpBtn.style.backgroundColor = '#4cd3e3';
+        pumpBtn.style.boxShadow = '0 6px 12px rgba(76,211,227,0.3)';
+        pumpBtn.style.cursor = 'pointer';
+      }
+    }
+
+    if (bankBtn) {
+      bankBtn.disabled = isBankDisabled;
+      if (isBankDisabled) {
+        bankBtn.style.backgroundColor = '#cbd5e1';
+        bankBtn.style.boxShadow = 'none';
+        bankBtn.style.cursor = 'not-allowed';
+      } else {
+        bankBtn.style.backgroundColor = '#43aa8b';
+        bankBtn.style.boxShadow = '0 6px 12px rgba(67,170,139,0.3)';
+        bankBtn.style.cursor = 'pointer';
+      }
+    }
+  }
+
   _render() {
     if (!this.el) return;
     
     const lastPopObj = this.pumpHistory.length > 0 ? this.pumpHistory[this.pumpHistory.length - 1] : null;
     let lastPopVal = 'None';
     if (lastPopObj) {
-      lastPopVal = `${lastPopObj.pumps} pumps (${lastPopObj.color})`;
+      const displayAmt = (lastPopObj.pumps * 0.05).toFixed(2);
+      lastPopVal = lastPopObj.popped 
+        ? `${lastPopObj.pumps} pumps (Popped: -$${displayAmt})`
+        : `${lastPopObj.pumps} pumps (Collected: +$${displayAmt})`;
     }
 
     this.el.innerHTML = `
@@ -146,12 +186,12 @@ class BalloonGame {
                     
                     <div class="ap-blg-metric-group">
                       <span class="ap-blg-lbl">Current Potential</span>
-                      <div class="ap-blg-val-blue" id="blg-earn">${this.currentEarnings}<span class="ap-blg-unit">pts</span></div>
+                      <div class="ap-blg-val-blue" id="blg-earn">$${(this.currentEarnings / 100).toFixed(2)}</div>
                     </div>
                     
                     <div class="ap-blg-metric-group">
                       <span class="ap-blg-lbl">Total Earned</span>
-                      <div class="ap-blg-val-green" id="blg-total">${this.bankTotal.toLocaleString()}<span class="ap-blg-unit">pts</span></div>
+                      <div class="ap-blg-val-green" id="blg-total">$${(this.bankTotal / 100).toFixed(2)}</div>
                     </div>
                     
                     <div class="ap-blg-divider"></div>
@@ -159,7 +199,7 @@ class BalloonGame {
                     <div class="ap-blg-pop-row">
                       <div>
                         <span class="ap-blg-lbl" style="margin-bottom:2px">Last Pop</span>
-                        <div class="ap-blg-pop-text" id="blg-last-pop" style="color: #b91c1c">${lastPopVal}</div>
+                        <div class="ap-blg-pop-text" id="blg-last-pop" style="color: #b91c1c; font-size:0.78rem;">${lastPopVal}</div>
                       </div>
                       <div class="ap-blg-pop-badge">💥</div>
                     </div>
@@ -175,15 +215,53 @@ class BalloonGame {
 
                 </div>
 
-                <!-- Right panel: Game Arena -->
-                <div class="ap-blg-right-card">
-                  <div class="ap-blg-arena">
-                    <canvas id="blg-canvas" width="440" height="340" style="background:transparent"></canvas>
-                  </div>
-                  
-                  <div class="ap-blg-buttons">
-                    <button class="btn ap-blg-btn-pump" id="blg-pump">🎈 Pump</button>
-                    <button class="btn ap-blg-btn-collect" id="blg-bank" disabled>💰 Collect</button>
+                <!-- Right panel: Redesigned Game Arena matching Screenshot 3 -->
+                <div class="ap-blg-right-card" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 480px; position: relative;">
+                  <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 600px; gap: 20px; margin: auto 0;">
+                    
+                    <!-- Left Column: PUMP button and $0.05 badge -->
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; flex: 1;">
+                      <div style="background-color: #4cd3e3; color: #ffffff; padding: 6px 16px; border-radius: 20px; font-weight: 700; font-size: 0.9rem; min-width: 80px; text-align: center; box-shadow: 0 2px 4px rgba(76,211,227,0.2);">
+                        $0.05
+                      </div>
+                      <button class="btn" id="blg-pump" style="
+                        width: 100px; height: 100px; border-radius: 50% !important;
+                        background-color: #4cd3e3; color: #ffffff;
+                        font-weight: 700 !important; font-size: 1rem !important;
+                        border: none; cursor: pointer;
+                        box-shadow: 0 6px 12px rgba(76,211,227,0.3);
+                        display: flex; align-items: center; justify-content: center;
+                        transition: transform 0.1s, background-color 0.2s;
+                        margin: 0;
+                      ">
+                        PUMP
+                      </button>
+                    </div>
+
+                    <!-- Center Column: Balloon Canvas -->
+                    <div style="display: flex; align-items: center; justify-content: center; flex: 2; position: relative;">
+                      <canvas id="blg-canvas" width="280" height="340" style="background:transparent"></canvas>
+                    </div>
+
+                    <!-- Right Column: COLLECT button and current earnings badge -->
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; flex: 1;">
+                      <div id="blg-potential-badge" style="background-color: #43aa8b; color: #ffffff; padding: 6px 16px; border-radius: 20px; font-weight: 700; font-size: 0.9rem; min-width: 80px; text-align: center; box-shadow: 0 2px 4px rgba(67,170,139,0.2); transition: background-color 0.2s;">
+                        $0.00
+                      </div>
+                      <button class="btn" id="blg-bank" disabled style="
+                        width: 100px; height: 100px; border-radius: 50% !important;
+                        background-color: #43aa8b; color: #ffffff;
+                        font-weight: 700 !important; font-size: 1rem !important;
+                        border: none; cursor: pointer;
+                        box-shadow: 0 6px 12px rgba(67,170,139,0.3);
+                        display: flex; align-items: center; justify-content: center;
+                        transition: transform 0.1s, background-color 0.2s;
+                        margin: 0;
+                      ">
+                        COLLECT
+                      </button>
+                    </div>
+
                   </div>
                 </div>
               </div>
@@ -282,13 +360,19 @@ class BalloonGame {
     if (this.animating || this.finished) return;
     this._clearActionTimer();
     this.pumps++;
-    this.currentEarnings = this.pumps * 10;
-    this.targetR = Math.min(135, 40 + this.pumps * 3.5); // Adjusted scale to make size transitions visible earlier
+    
+    // Each pump adds exactly $0.05 (5 points)
+    this.currentEarnings = this.pumps * 5;
+    this.targetR = Math.min(100, 40 + this.pumps * 3.0); // clean visual bounds inside smaller canvas
 
+    // Update potential badges
     const earnEl = document.getElementById('blg-earn');
-    if (earnEl) earnEl.innerHTML = `${this.currentEarnings}<span class="ap-blg-unit">pts</span>`;
-    const bankBtn = document.getElementById('blg-bank');
-    if (bankBtn) { bankBtn.disabled = false; }
+    if (earnEl) earnEl.textContent = `$${(this.currentEarnings / 100).toFixed(2)}`;
+    
+    const potentialBadge = document.getElementById('blg-potential-badge');
+    if (potentialBadge) potentialBadge.textContent = `$${(this.currentEarnings / 100).toFixed(2)}`;
+
+    this._updateButtonsState(false, false);
 
     // Check pop BEFORE animating
     if (this.pumps >= this.popAt) {
@@ -302,7 +386,7 @@ class BalloonGame {
     const grow = () => {
       if (!this.el) return;
       if (this.balloonR < this.targetR) {
-        this.balloonR += 3;
+        this.balloonR += 2;
         this._drawBalloon();
         requestAnimationFrame(grow);
       } else {
@@ -324,18 +408,21 @@ class BalloonGame {
     this.pumpHistory.push({ pumps: this.pumps, popped: true, color: this.balloonColor });
     
     const lastPopEl = document.getElementById('blg-last-pop');
-    if (lastPopEl) lastPopEl.textContent = `${this.pumps} pumps (${this.balloonColor})`;
+    if (lastPopEl) {
+      const displayAmt = (this.pumps * 0.05).toFixed(2);
+      lastPopEl.textContent = `${this.pumps} pumps (Popped: -$${displayAmt})`;
+    }
 
     this.currentEarnings = 0;
     this.cb.onFeedback(false);
 
     const earnEl = document.getElementById('blg-earn');
-    if (earnEl) earnEl.innerHTML = `0<span class="ap-blg-unit">pts (Popped!)</span>`;
+    if (earnEl) earnEl.innerHTML = `$0.00 <span style="font-size:0.75rem; color:#ef4444;">(Popped!)</span>`;
 
-    const pumpBtn = document.getElementById('blg-pump');
-    const bankBtn = document.getElementById('blg-bank');
-    if (pumpBtn) pumpBtn.disabled = true;
-    if (bankBtn) bankBtn.disabled = true;
+    const potentialBadge = document.getElementById('blg-potential-badge');
+    if (potentialBadge) potentialBadge.textContent = `$0.00`;
+
+    this._updateButtonsState(true, true);
 
     setTimeout(() => {
       this.animating = false;
@@ -351,7 +438,10 @@ class BalloonGame {
     this.pumpHistory.push({ pumps: this.pumps, popped: false, earned: this.currentEarnings, color: this.balloonColor });
     
     const lastPopEl = document.getElementById('blg-last-pop');
-    if (lastPopEl) lastPopEl.textContent = `${this.pumps} pumps (${this.balloonColor})`;
+    if (lastPopEl) {
+      const displayAmt = (this.currentEarnings / 100).toFixed(2);
+      lastPopEl.textContent = `${this.pumps} pumps (Collected: +$${displayAmt})`;
+    }
 
     this.cb.onScore(this.currentEarnings, this.round);
     this.cb.onFeedback(true);
@@ -359,12 +449,12 @@ class BalloonGame {
     this._drawBalloon(false, true);
     
     const totalEl = document.getElementById('blg-total');
-    if (totalEl) totalEl.innerHTML = `${this.bankTotal.toLocaleString()}<span class="ap-blg-unit">pts</span>`;
+    if (totalEl) totalEl.textContent = `$${(this.bankTotal / 100).toFixed(2)}`;
 
-    const pumpBtn = document.getElementById('blg-pump');
-    const bankBtn = document.getElementById('blg-bank');
-    if (pumpBtn) pumpBtn.disabled = true;
-    if (bankBtn) bankBtn.disabled = true;
+    const potentialBadge = document.getElementById('blg-potential-badge');
+    if (potentialBadge) potentialBadge.textContent = `$0.00`;
+
+    this._updateButtonsState(true, true);
     this.banked++;
 
     setTimeout(() => this._newRound(), 1000);
@@ -383,8 +473,8 @@ class BalloonGame {
         <div style="font-size:3.5rem;margin-bottom:16px">🎈</div>
         <h3 style="font-family:var(--fh);margin-bottom:12px">Balloon Game Complete!</h3>
         <p style="color:var(--muted);margin-bottom:8px">Avg pumps per balloon: <strong>${avgPumps.toFixed(1)}</strong></p>
-        <p style="color:var(--muted);margin-bottom:20px">Pop rate: <strong>${Math.round(popRate * 100)}%</strong> &nbsp;|&nbsp; Banked: <strong>${this.bankTotal.toLocaleString()} pts</strong></p>
-        <div style="font-family:var(--fm);font-size:2.5rem;color:var(--violet-l)">${this.score} pts</div>
+        <p style="color:var(--muted);margin-bottom:20px">Pop rate: <strong>${Math.round(popRate * 100)}%</strong> &nbsp;|&nbsp; Banked: <strong>$${(this.bankTotal / 100).toFixed(2)}</strong></p>
+        <div style="font-family:var(--fm);font-size:2.5rem;color:var(--violet-l)">$${(this.bankTotal / 100).toFixed(2)}</div>
       </div>`;
 
     setTimeout(() => {
