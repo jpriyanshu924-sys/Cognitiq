@@ -18,7 +18,7 @@ const PROVIDERS = {
       { id: 'keypress-game',  name: 'Keypress',           icon: '⌨️' },
       { id: 'hard-easy-game', name: 'Hard / Easy Task',   icon: '⚖️' },
       { id: 'arrows-game',    name: 'Arrows',             icon: '🏹' },
-      { id: 'lengths-game',   name: 'Lengths',            icon: '📏' },
+      { id: 'lengths-game',   name: 'Lengths',            icon: '😀' },
       { id: 'cards-game',     name: 'Cards',              icon: '🃏' },
       { id: 'faces-game',     name: 'Faces',              icon: '😊' },
       { id: 'signal-stop',    name: 'Signal / Stop',      icon: '🚦' },

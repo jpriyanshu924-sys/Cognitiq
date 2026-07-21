@@ -1,17 +1,30 @@
 /* ══════════════════════════════════════════════════════
-   Pymetrics Game 7: Lengths Game
-   Measures: Perceptual accuracy, attention to detail, estimation
-   Real equivalent: Pymetrics Lengths / Line Bisection
- ══════════════════════════════════════════════════════ */
+   Pymetrics Game 7: Lengths Game (Mouth Length)
+   Measures: Attention to detail, perceptual learning, reward sensitivity
+   Real equivalent: Pymetrics Face/Mouth Lengths Task
+   Rules from Playbook & Screenshot:
+   - Identify if the face has a LITTLE mouth or a BIG mouth
+   - Little mouth: Click "Little Mouth" or press ArrowLeft
+   - Big mouth: Click "Big Mouth" or press ArrowRight
+   - Probabilistic cash reward on correct answers
+══════════════════════════════════════════════════════ */
 class LengthsGame {
   constructor(container, cb) {
     this.container = container; this.cb = cb;
-    this.score = 0; this.correct = 0; this.total = 0;
-    this.streak = 0; this.times = []; this.level = 1;
+    this.score = 0; // stored in cents (points)
+    this.correct = 0; this.total = 0;
+    this.streak = 0; this.level = 1;
+    this.bankTotal = 0; // total cash in cents
     this.locked = false; this.el = null;
-    this.q = 0;
+    this.q = 0; this.totalQuestions = 30;
+    this.times = []; this._t0 = 0;
+    this._kd = null; this._flashTimer = null;
     this._responseTimeout = null;
     this.gameStartTime = 0;
+
+    // Face / Mouth state
+    this.currentMouth = 'little'; // 'little' | 'big'
+    this.mouthShown = false;
   }
 
   start() {
@@ -19,113 +32,114 @@ class LengthsGame {
     this.el = document.createElement('div');
     this.el.className = 'len-game';
     this.container.appendChild(this.el);
-    this._next();
+    this._newRound();
   }
 
-  _next() {
+  _newRound() {
+    this._clearTimers();
+    if (this.q >= this.totalQuestions) { this._finish(); return; }
     this.q++;
     this.locked = false;
-    this._t0 = Date.now();
-    const puzzle = this._gen();
-    this._cur = puzzle;
-    this._render(puzzle);
+    this.mouthShown = false;
+
+    // Randomize mouth type for this round
+    this.currentMouth = Math.random() < 0.5 ? 'little' : 'big';
+
+    this._render();
+    
+    // Draw initial face base with mouth hidden/blank
+    this._drawFace(true);
+
+    // After brief delay, flash mouth on the face
+    setTimeout(() => {
+      if (!this.el) return;
+      this.mouthShown = true;
+      this._drawFace(false);
+      this._t0 = Date.now();
+
+      // Flashes face for 450ms, then clears mouth to test memory recall
+      const flashDuration = Math.max(300, 600 - this.level * 100);
+      this._flashTimer = setTimeout(() => {
+        if (!this.el) return;
+        this.mouthShown = false;
+        this._drawFace(true); // Redraw with blank mouth
+      }, flashDuration);
+
+      // 2.5 seconds strict response limit
+      this._responseTimeout = setTimeout(() => this._timeoutMiss(), 2500);
+    }, 400);
   }
 
-  _gen() {
-    // Game types rotate based on level and question number
-    const modes = this.level === 1
-      ? ['which-longer', 'which-longer', 'bisect']
-      : this.level === 2
-        ? ['which-longer', 'bisect', 'estimate', 'triple']
-        : ['bisect', 'estimate', 'triple', 'which-longer'];
+  _drawFace(hideMouth = false) {
+    const canvas = document.getElementById('len-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    const cx = W / 2, cy = H / 2;
+    ctx.clearRect(0, 0, W, H);
 
-    const mode = modes[this.q % modes.length];
+    // Draw Face Base (Sleek Golden Gradient Emoji style)
+    const grd = ctx.createRadialGradient(cx - 20, cy - 20, 10, cx, cy, 75);
+    grd.addColorStop(0, '#ffd166');
+    grd.addColorStop(1, '#f7a072');
 
-    if (mode === 'which-longer') {
-      // Two lines, which is longer?
-      const maxW = 350;
-      const minL = 40;
-      const diff = this.level === 1 ? 20 : this.level === 2 ? 10 : 5; // harder = closer lengths
-      const lenA = minL + Math.floor(Math.random() * (maxW - minL - diff));
-      const lenB = lenA + diff + Math.floor(Math.random() * diff * 0.5);
-      const swap = Math.random() < 0.5;
-      return {
-        mode, question: 'Which line is longer?',
-        lineA: swap ? lenB : lenA, lineB: swap ? lenA : lenB,
-        answer: swap ? 'B' : 'A',
-        choices: ['A', 'B']
-      };
-    } else if (mode === 'bisect') {
-      // A line with a mark — is the mark left or right of center?
-      const lineLen = 200 + Math.floor(Math.random() * 150);
-      const exactCenter = lineLen / 2;
-      const offset = (this.level === 1 ? 8 : this.level === 2 ? 4 : 2) + Math.floor(Math.random() * 4);
-      const markPos = exactCenter + (Math.random() < 0.5 ? offset : -offset);
-      const answer = markPos > exactCenter ? 'Right' : 'Left';
-      return {
-        mode, question: 'Is the mark left or right of center?',
-        lineLen, markPos, answer,
-        choices: ['Left', 'Right']
-      };
-    } else if (mode === 'estimate') {
-      // Estimate what % of the canvas width a line covers
-      const canvasW = 380;
-      const lineLen = 60 + Math.floor(Math.random() * 280);
-      const truePct = Math.round((lineLen / canvasW) * 100);
-      const options = [truePct];
-      while (options.length < 4) {
-        const fake = Math.max(5, Math.min(95, truePct + (Math.random() < 0.5 ? -1 : 1) * (5 + Math.floor(Math.random() * 25))));
-        if (!options.includes(fake)) options.push(fake);
+    ctx.shadowColor = 'rgba(247, 160, 114, 0.25)';
+    ctx.shadowBlur = 12;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 70, 0, 2 * Math.PI);
+    ctx.fillStyle = grd;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // Draw Eyes (Slate grey)
+    ctx.fillStyle = '#1e293b';
+    ctx.beginPath();
+    ctx.arc(cx - 22, cy - 14, 6, 0, 2 * Math.PI); // Left Eye
+    ctx.arc(cx + 22, cy - 14, 6, 0, 2 * Math.PI); // Right Eye
+    ctx.fill();
+
+    // Draw Mouth if not hidden
+    if (!hideMouth && this.mouthShown) {
+      // Define slight measurement differences based on level:
+      // Level 1: Little = 16px, Big = 36px (Difference 20px)
+      // Level 2: Little = 20px, Big = 32px (Difference 12px)
+      // Level 3: Little = 22px, Big = 28px (Difference 6px)
+      let mouthLen = 20;
+      if (this.level === 1) {
+        mouthLen = this.currentMouth === 'little' ? 16 : 36;
+      } else if (this.level === 2) {
+        mouthLen = this.currentMouth === 'little' ? 20 : 32;
+      } else {
+        mouthLen = this.currentMouth === 'little' ? 22 : 28;
       }
-      options.sort((a, b) => a - b);
-      return {
-        mode, question: 'What percentage of the bar width does the line cover?',
-        lineLen, canvasW, truePct, answer: truePct,
-        choices: options
-      };
-    } else { // triple — which is the odd one out?
-      const base = 60 + Math.floor(Math.random() * 200);
-      const diff2 = (this.level === 1 ? 20 : 10) + Math.floor(Math.random() * 10);
-      const oddIdx = Math.floor(Math.random() * 3);
-      const lines = [base, base, base];
-      lines[oddIdx] = base + diff2;
-      return {
-        mode, question: 'Which line is different from the other two?',
-        lines, answer: String.fromCharCode(65 + oddIdx),
-        choices: ['A', 'B', 'C']
-      };
+
+      ctx.strokeStyle = '#1e293b';
+      ctx.lineWidth = 5;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(cx - mouthLen / 2, cy + 26);
+      ctx.lineTo(cx + mouthLen / 2, cy + 26);
+      ctx.stroke();
     }
   }
 
-  _render(puzzle) {
+  _render() {
     if (!this.el) return;
-    const W = 380, H = 60;
-    const baseColor = '#3b22d8';
 
-    let canvasHtml = '';
-    let choicesHtml = '';
-
-    if (puzzle.mode === 'which-longer') {
-      canvasHtml = `
-        <canvas id="len-cvs" width="${W}" height="${H + 40}" class="len-canvas" style="background:transparent"></canvas>`;
-      choicesHtml = puzzle.choices.map(c =>
-        `<button class="btn ap-face-choice-btn len-btn" style="margin-top:0" data-ans="${c}">Line ${c}</button>`
-      ).join('');
-    } else if (puzzle.mode === 'bisect') {
-      canvasHtml = `<canvas id="len-cvs" width="${W}" height="80" class="len-canvas" style="background:transparent"></canvas>`;
-      choicesHtml = puzzle.choices.map(c =>
-        `<button class="btn ap-face-choice-btn len-btn" style="margin-top:0" data-ans="${c}">${c}</button>`
-      ).join('');
-    } else if (puzzle.mode === 'estimate') {
-      canvasHtml = `<canvas id="len-cvs" width="${W}" height="60" class="len-canvas" style="background:transparent"></canvas>`;
-      choicesHtml = puzzle.choices.map(c =>
-        `<button class="btn ap-face-choice-btn len-btn" style="margin-top:0" data-ans="${c}">${c}%</button>`
-      ).join('');
-    } else { // triple
-      canvasHtml = `<canvas id="len-cvs" width="${W}" height="100" class="len-canvas" style="background:transparent"></canvas>`;
-      choicesHtml = puzzle.choices.map(c =>
-        `<button class="btn ap-face-choice-btn len-btn" style="margin-top:0" data-ans="${c}">Line ${c}</button>`
-      ).join('');
+    const lastRewardObj = this.times.length > 0 ? this.times[this.times.length - 1] : null;
+    let rewardText = 'None';
+    let rewardColor = '#6b7280';
+    if (lastRewardObj) {
+      if (lastRewardObj.rewarded) {
+        rewardText = `💵 REWARDED! +$0.20`;
+        rewardColor = '#059669';
+      } else if (lastRewardObj.correct) {
+        rewardText = `✓ Correct (No Cash)`;
+        rewardColor = '#2563eb';
+      } else {
+        rewardText = `❌ Incorrect`;
+        rewardColor = '#dc2626';
+      }
     }
 
     this.el.innerHTML = `
@@ -136,7 +150,7 @@ class LengthsGame {
             <span class="ap-logo">CognitIQ</span>
           </div>
           <div class="ap-header-center">
-            <span class="ap-question-num">Question ${this.q}</span>
+            <span class="ap-question-num">Question ${this.q} of ${this.totalQuestions}</span>
           </div>
           <div class="ap-header-right">
             <div class="ap-timer-box">
@@ -150,56 +164,70 @@ class LengthsGame {
         <div class="ap-body">
           <!-- Main Workspace -->
           <main class="ap-main" style="padding: 24px; width: 100%">
-            <div class="ap-workspace" style="max-width: 600px">
+            <div class="ap-workspace" style="max-width: 1100px">
               
-              <!-- Title and Stats -->
-              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 20px">
-                <div>
-                  <h2 style="font-size:1.8rem; font-weight:800; color:#111827">${this.cb && this.cb.name ? this.cb.name : 'Lengths & Estimation'}</h2>
-                  <span style="font-size:0.85rem; color:#4b5563">Current Level: <strong>${this.level}</strong></span>
-                </div>
-                <div style="text-align:right">
-                  <span style="font-size:0.75rem; font-weight:700; color:#6b7280; letter-spacing:0.04em">SCORE</span>
-                  <div style="font-size:1.6rem; font-weight:800; color:#3b22d8; font-family:var(--fm)">${this.score}</div>
-                </div>
-              </div>
-
-              <!-- Main Card -->
-              <div class="ap-he-card" style="min-height: 400px; justify-content: center; align-items: center; padding: 40px; margin-bottom: 24px; text-align:center">
-                
-                <div style="font-size:0.72rem; font-weight:700; color:#6b7280; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:8px">Visual Estimation</div>
-                <div class="ap-spin-badge" style="align-self:center; margin-bottom: 24px; background-color:#eff6ff; color:#3b22d8">
-                  ${puzzle.mode === 'which-longer' ? '📏 Compare Lengths' : puzzle.mode === 'bisect' ? '🎯 Line Bisection' : puzzle.mode === 'estimate' ? '📊 Estimate %' : '🔲 Odd One Out'}
-                </div>
-                
-                <div style="font-size:1.15rem; font-weight:800; color:#111827; margin-bottom:24px">${puzzle.question}</div>
-                
-                <div class="len-display" style="background:#f8fafc; border:1px dashed #cbd5e1; border-radius:12px; padding:20px; width:100%; display:flex; align-items:center; justify-content:center; margin-bottom:32px">
-                  ${canvasHtml}
-                </div>
-
-                <div class="ap-face-choices-grid" style="grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); width:100%">
-                  ${choicesHtml}
-                </div>
-              </div>
-
-              <!-- Footer Row with stats feedback -->
-              <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: center">
-                <div class="ap-tow-footer-card">
-                  <div style="font-size:0.78rem; font-weight:700; color:#1e3a8a; margin-bottom:4px">ℹ️ Perceptual Accuracy Task</div>
-                  <div style="font-size:0.72rem; color:#4b5563; line-height:1.4">
-                    Measure and compare lengths, estimate percentages of fill, and find the mid-point of bisected lines as accurately and quickly as you can.
+              <div class="ap-blg-grid" style="grid-template-columns: 280px 1fr">
+                <!-- Left panel: Performance & Stats -->
+                <div class="ap-blg-left">
+                  
+                  <div class="ap-blg-card">
+                    <div class="ap-blg-card-title" style="display:flex; justify-content:space-between; align-items:center">
+                      Performance
+                      <span class="ap-spin-badge" style="background-color:#eff6ff; color:#2563eb; font-size:0.75rem">Level ${this.level}</span>
+                    </div>
+                    
+                    <div class="ap-blg-metric-group">
+                      <span class="ap-blg-lbl">Total Cash Earned</span>
+                      <div class="ap-blg-val-green" id="len-total-cash">$${(this.bankTotal / 100).toFixed(2)}</div>
+                    </div>
+                    
+                    <div class="ap-blg-divider"></div>
+                    
+                    <div class="ap-blg-pop-row">
+                      <div>
+                        <span class="ap-blg-lbl" style="margin-bottom:2px">Last Result</span>
+                        <div class="ap-blg-pop-text" id="len-last-feedback" style="color: ${rewardColor}; font-size:0.85rem">${rewardText}</div>
+                      </div>
+                      <div class="ap-blg-pop-badge" style="background-color:#dbeafe; color:#1e40af">💵</div>
+                    </div>
                   </div>
+
+                  <div class="ap-blg-instructions-card">
+                    <div class="ap-blg-instr-title">⚡ Face Length Rules</div>
+                    <p class="ap-blg-instr-text" style="font-size: 0.72rem; line-height:1.4">
+                      Determine if the mouth length of the face is <strong>LITTLE</strong> or <strong>BIG</strong>. Correct responses may probabilistically trigger cash rewards.
+                    </p>
+                  </div>
+
                 </div>
-                <div class="ap-tow-footer-card" style="display:flex; flex-direction:row; justify-content:space-around; align-items:center">
-                  <div style="text-align:center">
-                    <span style="font-size:0.68rem; font-weight:700; color:#6b7280; text-transform:uppercase; letter-spacing:0.04em">Correct</span>
-                    <div style="font-size:1.4rem; font-weight:800; color:#059669">${this.correct}</div>
+
+                <!-- Right panel: Play Arena -->
+                <div class="ap-blg-right-card" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 480px; position: relative;">
+                  
+                  <div style="font-size:0.72rem; font-weight:700; color:#6b7280; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:8px">Visual Discrimination</div>
+                  <div class="ap-spin-badge" id="len-status-badge" style="align-self:center; margin-bottom: 24px; background-color:#eff6ff; color:#3b22d8">
+                    Observe the face mouth length...
                   </div>
-                  <div style="text-align:center">
-                    <span style="font-size:0.68rem; font-weight:700; color:#6b7280; text-transform:uppercase; letter-spacing:0.04em">Streak</span>
-                    <div style="font-size:1.4rem; font-weight:800; color:#ea580c">${this.streak}</div>
+
+                  <!-- Face canvas area -->
+                  <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 28px;">
+                    <canvas id="len-canvas" width="240" height="240" style="background:transparent"></canvas>
                   </div>
+
+                  <!-- Action buttons -->
+                  <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; width:100%; max-width:360px;">
+                    <button class="btn ap-he-btn-outline" style="margin-top:0; padding:16px 0; font-size:0.95rem !important; cursor:pointer; font-weight:700;" id="len-btn-left" data-type="little">
+                      ← Little Mouth
+                    </button>
+                    <button class="btn ap-he-btn-outline" style="margin-top:0; padding:16px 0; font-size:0.95rem !important; cursor:pointer; font-weight:700;" id="len-btn-right" data-type="big">
+                      Big Mouth →
+                    </button>
+                  </div>
+
+                  <div style="font-size:0.75rem; color:#6b7280; margin-top:24px">
+                    Press <span class="ap-kp-key-box">←</span> or <span class="ap-kp-key-box">→</span> arrow keys to answer
+                  </div>
+
                 </div>
               </div>
 
@@ -208,52 +236,14 @@ class LengthsGame {
         </div>
       </div>`;
 
-    // Draw on canvas
-    const canvas = document.getElementById('len-cvs');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    document.getElementById('len-btn-left').addEventListener('click', () => this._pick('little'));
+    document.getElementById('len-btn-right').addEventListener('click', () => this._pick('big'));
 
-    const drawLine = (y, startX, endX, color = baseColor, thick = 4, label = '') => {
-      ctx.strokeStyle = color;
-      ctx.lineWidth = thick;
-      ctx.lineCap = 'round';
-      ctx.beginPath(); ctx.moveTo(startX, y); ctx.lineTo(endX, y); ctx.stroke();
-      if (label) {
-        ctx.fillStyle = '#6b7280';
-        ctx.font = 'bold 13px "JetBrains Mono",monospace';
-        ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
-        ctx.fillText(label, 4, y);
-      }
+    this._kd = e => {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); this._pick('little'); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); this._pick('big'); }
     };
-
-    if (puzzle.mode === 'which-longer') {
-      const margin = 30;
-      drawLine(25, margin, margin + puzzle.lineA, '#3b22d8', 6, 'A');
-      drawLine(65, margin, margin + puzzle.lineB, '#005d50', 6, 'B');
-    } else if (puzzle.mode === 'bisect') {
-      const margin = 20;
-      const lineY = 40;
-      const startX = (W - puzzle.lineLen) / 2;
-      drawLine(lineY, startX, startX + puzzle.lineLen, baseColor, 4);
-      // Mark
-      ctx.strokeStyle = '#ea580c'; ctx.lineWidth = 3;
-      ctx.beginPath(); ctx.moveTo(puzzle.markPos, lineY - 12); ctx.lineTo(puzzle.markPos, lineY + 12); ctx.stroke();
-    } else if (puzzle.mode === 'estimate') {
-      const startX = 0;
-      ctx.fillStyle = 'rgba(0,0,0,.04)';
-      ctx.fillRect(0, 18, W, 24);
-      drawLine(30, startX, startX + puzzle.lineLen, '#3b22d8', 18);
-    } else { // triple
-      const margin = 30;
-      puzzle.lines.forEach((len, i) => {
-        drawLine(20 + i * 33, margin, margin + len, i === ['A','B','C'].indexOf(puzzle.answer) ? '#ea580c' : '#3b22d8', 6, ['A','B','C'][i]);
-      });
-    }
-
-    this.el.querySelectorAll('.len-btn').forEach(btn => {
-      btn.addEventListener('click', () => this._pick(btn.dataset.ans, puzzle));
-    });
+    window.addEventListener('keydown', this._kd);
 
     const exitBtn = this.el.querySelector('#ap-exit-btn');
     if (exitBtn) {
@@ -262,95 +252,142 @@ class LengthsGame {
         if (window.CIQ) window.CIQ._exitGame();
       });
     }
-
-    // Start response timeout: starts at 1800ms, decreases to 800ms
-    const elapsed = (Date.now() - this.gameStartTime) / 1000;
-    const timeoutLimit = Math.max(800, 1800 - Math.floor(elapsed / 15) * 200);
-    clearTimeout(this._responseTimeout);
-    this._responseTimeout = setTimeout(() => this._timeoutMiss(), timeoutLimit);
   }
 
-  _pick(ans, puzzle) {
-    if (this.locked) return;
+  _pick(choice) {
+    if (this.locked || !this.el) return;
     this.locked = true;
-    clearTimeout(this._responseTimeout);
+    this._clearTimers();
 
     const rt = Date.now() - this._t0;
-    this.times.push(rt); this.total++;
+    this.total++;
 
-    const ok = String(ans) === String(puzzle.answer);
-    const btns = this.el.querySelectorAll('.len-btn');
-    btns.forEach(b => {
-      if (String(b.dataset.ans) === String(puzzle.answer)) {
-        b.style.backgroundColor = '#10b981';
-        b.style.color = '#ffffff';
-        b.style.borderColor = '#10b981';
-      }
-      if (String(b.dataset.ans) === String(ans) && !ok) {
-        b.style.backgroundColor = '#ef4444';
-        b.style.color = '#ffffff';
-        b.style.borderColor = '#ef4444';
-      }
-    });
+    const isCorrect = choice === this.currentMouth;
+    
+    // Probabilistic reward schedule:
+    // Correct trials have a 70% chance of paying $0.20
+    const rewarded = isCorrect && (Math.random() < 0.7);
+    const rewardAmt = rewarded ? 20 : 0; // cents
 
-    if (ok) {
-      this.correct++; this.streak++;
-      if (this.correct % 6 === 0) this.level = Math.min(3, this.level + 1);
-      const spdBonus = Math.max(0, Math.floor((3000 - rt) / 50));
-      const pts = 80 + spdBonus + (this.streak >= 3 ? this.streak * 15 : 0);
-      this.score += pts;
-      this.cb.onScore(pts, this.streak); this.cb.onFeedback(true);
+    if (isCorrect) {
+      this.correct++;
+      this.streak++;
+      this.bankTotal += rewardAmt;
+      this.score = this.bankTotal; // Keep points matching banked cents
+      if (this.correct % 8 === 0) {
+        this.level = Math.min(3, this.level + 1);
+      }
+      this.times.push({ rt, correct: true, rewarded });
+      this.cb.onScore(rewardAmt, this.streak);
+      this.cb.onFeedback(true);
     } else {
-      this.streak = 0; this.cb.onFeedback(false);
+      this.streak = 0;
+      this.times.push({ rt, correct: false, rewarded: false });
+      this.cb.onFeedback(false);
     }
 
-    setTimeout(() => this._next(), 900);
+    // Render visual feedback
+    const statusBadge = document.getElementById('len-status-badge');
+    const leftBtn = document.getElementById('len-btn-left');
+    const rightBtn = document.getElementById('len-btn-right');
+
+    if (isCorrect) {
+      if (statusBadge) {
+        statusBadge.textContent = rewarded ? '💵 REWARDED! +$0.20' : '✓ CORRECT!';
+        statusBadge.style.color = rewarded ? '#059669' : '#2563eb';
+        statusBadge.style.backgroundColor = rewarded ? '#d1fae5' : '#dbeafe';
+      }
+      const activeBtn = choice === 'little' ? leftBtn : rightBtn;
+      if (activeBtn) {
+        activeBtn.style.backgroundColor = '#10b981';
+        activeBtn.style.borderColor = '#10b981';
+        activeBtn.style.color = '#ffffff';
+      }
+    } else {
+      if (statusBadge) {
+        statusBadge.textContent = '❌ INCORRECT!';
+        statusBadge.style.color = '#dc2626';
+        statusBadge.style.backgroundColor = '#fee2e2';
+      }
+      const activeBtn = choice === 'little' ? leftBtn : rightBtn;
+      const correctBtn = choice === 'little' ? rightBtn : leftBtn;
+      if (activeBtn) {
+        activeBtn.style.backgroundColor = '#ef4444';
+        activeBtn.style.borderColor = '#ef4444';
+        activeBtn.style.color = '#ffffff';
+      }
+      if (correctBtn) {
+        correctBtn.style.backgroundColor = '#10b981';
+        correctBtn.style.borderColor = '#10b981';
+        correctBtn.style.color = '#ffffff';
+      }
+    }
+
+    // Force face redraw to show correct length clearly
+    this.mouthShown = true;
+    this._drawFace(false);
+
+    // Advance round after brief feedback display
+    setTimeout(() => this._newRound(), 1200);
   }
 
   _timeoutMiss() {
-    if (this.locked) return;
+    if (this.locked || !this.el) return;
     this.locked = true;
     this.total++;
     this.streak = 0;
+    this.times.push({ rt: 2500, correct: false, rewarded: false });
     this.cb.onFeedback(false);
 
-    // Highlight the correct option
-    const btns = this.el.querySelectorAll('.len-btn');
-    btns.forEach(b => {
-      if (String(b.dataset.ans) === String(this._cur.answer)) {
-        b.style.backgroundColor = '#10b981';
-        b.style.color = '#ffffff';
-        b.style.borderColor = '#10b981';
-      }
-    });
-
-    // Show TIMEOUT visual indicator
-    const canvas = document.getElementById('len-cvs');
-    if (canvas) {
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = 'rgba(239, 68, 68, 0.85)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 20px "Inter",sans-serif';
-      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.fillText('TIMEOUT!', canvas.width/2, canvas.height/2);
+    const statusBadge = document.getElementById('len-status-badge');
+    if (statusBadge) {
+      statusBadge.textContent = '❌ TIMEOUT!';
+      statusBadge.style.color = '#dc2626';
+      statusBadge.style.backgroundColor = '#fee2e2';
     }
 
-    setTimeout(() => this._next(), 900);
+    setTimeout(() => this._newRound(), 1200);
   }
 
-  timeUp() {
+  _clearTimers() {
+    clearTimeout(this._flashTimer);
     clearTimeout(this._responseTimeout);
-    this.cb.onEnd({
-      score: this.score,
-      accuracy: this.total ? (this.correct / this.total) * 100 : 0,
-      avgTime: this.times.length ? this.times.reduce((a, b) => a + b, 0) / this.times.length : 0,
-      correct: this.correct, total: this.total, level: this.level
-    });
   }
+
+  _finish() {
+    this._clearTimers();
+    if (this._kd) window.removeEventListener('keydown', this._kd);
+    this.finished = true;
+
+    const rate = this.total ? (this.correct / this.total) * 100 : 0;
+    const totalRt = this.times.reduce((a, b) => a + b.rt, 0);
+    const avgTime = this.times.length ? totalRt / this.times.length : 0;
+
+    if (!this.el) return;
+    this.el.innerHTML = `
+      <div style="text-align:center;padding:40px">
+        <div style="font-size:3.5rem;margin-bottom:16px">⚖️</div>
+        <h3 style="font-family:var(--fh);margin-bottom:12px">Lengths Game Complete!</h3>
+        <p style="color:var(--muted);margin-bottom:8px">Correct Identifications: <strong>${this.correct} / ${this.total}</strong></p>
+        <p style="color:var(--muted);margin-bottom:20px">Total Cash: <strong>$${(this.bankTotal / 100).toFixed(2)}</strong></p>
+        <div style="font-family:var(--fm);font-size:2.5rem;color:var(--violet-l)">$${(this.bankTotal / 100).toFixed(2)}</div>
+      </div>`;
+
+    setTimeout(() => {
+      this.cb.onEnd({
+        score: this.score,
+        accuracy: Math.round(rate),
+        avgTime: Math.round(avgTime),
+        correct: this.correct, total: this.total, level: this.level
+      });
+    }, 2000);
+  }
+
+  timeUp() { this._finish(); }
 
   destroy() {
-    clearTimeout(this._responseTimeout);
+    this._clearTimers();
+    if (this._kd) window.removeEventListener('keydown', this._kd);
     this.el = null;
   }
 }

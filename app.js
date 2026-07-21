@@ -41,10 +41,10 @@ const GAME_CONFIG = {
     howto: ['Watch the row of 5 arrows that flash on screen', 'Identify the direction the CENTRE arrow is pointing', 'Press Left Arrow or Right Arrow key accordingly', 'Ignore the flanking arrows — they are distractors', 'Be fast and accurate. Speed + correctness = max score']
   },
   'lengths-game': {
-    name: 'Lengths Game', icon: '📏', cat: 1, duration: 60, provider: 'Pymetrics', difficulty: 'easy', tag: 'Attention',
-    desc: 'Quickly distinguish between two lines of slightly different lengths. Focuses on perceptual precision and detail scanning under speed pressure.',
-    skills: ['Detail Scanning', 'Perceptual Speed', 'Visual Accuracy'],
-    howto: ['Two vertical lines will flash on the screen', 'Identify whether the lines are equal or unequal in length', 'Press A key if they are equal, press L key if they are unequal', "The difference can be extremely subtle. Trust your first instinct"]
+    name: 'Lengths Game', icon: '😀', cat: 1, duration: 60, provider: 'Pymetrics', difficulty: 'easy', tag: 'Attention',
+    desc: 'Quickly distinguish whether the cartoon face has a little mouth or a big mouth. Focuses on perceptual discrimination and reward sensitivity under speed pressure.',
+    skills: ['Perceptual Accuracy', 'Selective Attention', 'Reward Learning'],
+    howto: ['A cartoon face will flash briefly on the screen', 'Identify whether the face has a LITTLE mouth or a BIG mouth', 'Press Left Arrow key (or Left button) for a little mouth, and Right Arrow key (or Right button) for a big mouth', 'Correct answers may be rewarded with cash. Try to earn as much as you can!']
   },
   'cards-game': {
     name: 'Cards Game', icon: '🃏', cat: 6, duration: 90, provider: 'Pymetrics', difficulty: 'hard', tag: 'Decision',
