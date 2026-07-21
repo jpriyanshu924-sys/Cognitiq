@@ -47,14 +47,17 @@ class MotionTrackGame {
     this.dots = [];
     for (let i = 0; i < this.numDots; i++) {
       const isTarget = i < this.numTargets;
-      // Ensure starting positions are spaced out
+      // Ensure starting positions are spaced out with fallback logic to prevent hangs
       let r = 14;
       let x, y, collides;
+      let attempts = 0;
       do {
         x = r + Math.random() * (W - 2 * r);
         y = r + Math.random() * (H - 2 * r);
-        collides = this.dots.some(d => Math.hypot(d.x - x, d.y - y) < 40);
-      } while (collides);
+        attempts++;
+        const minDist = attempts > 50 ? 25 : 40; // reduce spacing constraints if layout is crowded
+        collides = this.dots.some(d => Math.hypot(d.x - x, d.y - y) < minDist);
+      } while (collides && attempts < 100);
 
       // Random velocities
       const speed = 1.6 + this.level * 0.3;
@@ -255,14 +258,27 @@ class MotionTrackGame {
     if (this.canvas && this._clickHandler) {
       this.canvas.removeEventListener('click', this._clickHandler);
     }
-    this.cb.onEnd({
-      score: this.score,
-      accuracy: this.total ? (this.correct / this.total) * 100 : 0,
-      avgTime: 0,
-      correct: this.correct,
-      total: this.total,
-      level: this.level
-    });
+
+    if (this.el) {
+      this.el.innerHTML = `
+        <div style="text-align:center;padding:40px">
+          <div style="font-size:3.5rem;margin-bottom:16px">🎯</div>
+          <h3 style="font-family:var(--fh);margin-bottom:12px">Motion Challenge Complete!</h3>
+          <p style="color:var(--muted);margin-bottom:8px">Correct Targets Tracked: <strong>${this.correct} / ${this.total}</strong></p>
+          <div style="font-family:var(--fm);font-size:2.5rem;color:var(--violet-l)">${this.score} pts</div>
+        </div>`;
+    }
+
+    setTimeout(() => {
+      this.cb.onEnd({
+        score: this.score,
+        accuracy: this.total ? (this.correct / this.total) * 100 : 0,
+        avgTime: 0,
+        correct: this.correct,
+        total: this.total,
+        level: this.level
+      });
+    }, 2000);
   }
 
   _render() {

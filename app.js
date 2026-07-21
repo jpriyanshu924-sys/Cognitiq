@@ -416,12 +416,24 @@ class CognitIQApp {
       setTimeout(() => this._startGame(id), 80);
     });
     document.getElementById('btn-next-game').addEventListener('click', () => {
+      const isMock = new URLSearchParams(location.search).get('mock') === '1';
+      if (isMock) {
+        window.parent.postMessage({ type: 'NEXT_MOCK_GAME' }, '*');
+        return;
+      }
       const idx = GAME_ORDER.indexOf(this.state.currentGame);
       const next = GAME_ORDER[(idx + 1) % GAME_ORDER.length];
       this._showView('home');
       setTimeout(() => this._startGame(next), 80);
     });
-    document.getElementById('btn-hub').addEventListener('click', () => this._showView('home'));
+    document.getElementById('btn-hub').addEventListener('click', () => {
+      const isMock = new URLSearchParams(location.search).get('mock') === '1';
+      if (isMock) {
+        window.parent.postMessage({ type: 'NEXT_MOCK_GAME' }, '*');
+        return;
+      }
+      this._showView('home');
+    });
 
     // Profile
     document.getElementById('btn-final-profile').addEventListener('click', () => this._showProfile());
@@ -599,7 +611,13 @@ class CognitIQApp {
     clearInterval(this.state.timer);
     if (this.state.gameInst?.destroy) this.state.gameInst.destroy();
     this.state.gameInst = null;
-    this._showView('home');
+    
+    const isMock = new URLSearchParams(location.search).get('mock') === '1';
+    if (isMock) {
+      window.parent.postMessage({ type: 'EXIT_GAME' }, '*');
+    } else {
+      this._showView('home');
+    }
   }
 
   _endGame(result) {
@@ -742,9 +760,22 @@ class CognitIQApp {
     const idx  = GAME_ORDER.indexOf(gameId);
     const hasN = idx < GAME_ORDER.length - 1;
     const nextBtn = document.getElementById('btn-next-game');
-    nextBtn.textContent = hasN
-      ? `Next: ${GAME_CONFIG[GAME_ORDER[idx+1]].name} →`
-      : 'Back to Hub';
+    const isMock = new URLSearchParams(location.search).get('mock') === '1';
+    
+    if (nextBtn) {
+      if (isMock) {
+        nextBtn.textContent = 'Proceed →';
+      } else {
+        nextBtn.textContent = hasN
+          ? `Next: ${GAME_CONFIG[GAME_ORDER[idx+1]].name} →`
+          : 'Back to Hub';
+      }
+    }
+
+    const retryBtn = document.getElementById('btn-retry');
+    if (retryBtn) {
+      retryBtn.style.display = isMock ? 'none' : '';
+    }
 
     // ── Recruitment Insights Panel ──────────────────────────
     this._renderRecruitmentInsights(gameId, score, acc);

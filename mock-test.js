@@ -269,13 +269,21 @@ function loadGame(idx) {
   updateHUD();
 }
 
-/* ── Called from iframe via postMessage when a game ends ─────── */
 window.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'GAME_COMPLETE') {
     const score = event.data.score ?? 0;
     const gameName = state.games[state.currentGameIdx]?.name || 'Game';
-    state.scores.push({ name: gameName, score });
-    showTransition(gameName, score);
+    // Only push if we haven't already saved it for the current index
+    if (state.scores.length <= state.currentGameIdx) {
+      state.scores.push({ name: gameName, score });
+    }
+  } else if (event.data && event.data.type === 'NEXT_MOCK_GAME') {
+    const lastScore = state.scores[state.scores.length - 1];
+    const prevName = lastScore ? lastScore.name : 'Game';
+    const prevScore = lastScore ? lastScore.score : 0;
+    showTransition(prevName, prevScore);
+  } else if (event.data && event.data.type === 'EXIT_GAME') {
+    confirmExit();
   }
 });
 
