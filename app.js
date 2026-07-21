@@ -622,43 +622,98 @@ class CognitIQApp {
 
   _endGame(result) {
     clearInterval(this.state.timer);
-    if (this.state.gameInst?.destroy) this.state.gameInst.destroy();
+    
+    // Safety check to prevent double end execution
+    if (this._endingGame) return;
+    this._endingGame = true;
+
+    if (this.state.gameInst?.destroy) {
+      try {
+        this.state.gameInst.destroy();
+      } catch(e) {
+        console.error(e);
+      }
+    }
+    this.state.gameInst = null;
 
     const gameId = this.state.currentGame;
     const score  = result.score ?? this.state.hudScore;
+    const cfg = GAME_CONFIG[gameId];
 
-    let entry = this.state.scores[gameId];
-    if (!entry) {
-      entry = { best: null, history: [] };
-      this.state.scores[gameId] = entry;
-    } else if (entry.score !== undefined) {
-      entry = { best: entry, history: [] };
-      this.state.scores[gameId] = entry;
+    // Show a beautiful, consistent, platform-wide "Game Completed" exit page inside the container
+    const container = document.getElementById('game-container');
+    if (container) {
+      const isDollarGame = ['balloon-game', 'balloon-risk-game', 'lengths-game', 'checking-game'].includes(gameId);
+      const scoreStr = isDollarGame ? `$${(score / 100).toFixed(2)}` : score.toLocaleString();
+      const acc = result.accuracy ?? (result.total ? (result.correct / result.total) * 100 : 0);
+
+      container.innerHTML = `
+        <div class="ap-wrapper" style="position:relative; z-index:100; background:#f3f4f6; display:flex; align-items:center; justify-content:center; height:100%">
+          <div style="background:#ffffff; border:1px solid #e5e7eb; border-radius:16px; padding:48px 32px; width:100%; max-width:480px; text-align:center; box-shadow:0 10px 25px -5px rgba(0,0,0,0.05)">
+            <div style="font-size:4rem; margin-bottom:20px; animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both">${cfg?.icon || '🎮'}</div>
+            <h2 style="font-family:var(--fh); font-size:1.8rem; font-weight:800; color:#111827; margin-bottom:8px">Game Complete!</h2>
+            <p style="font-size:0.9rem; color:#6b7280; margin-bottom:24px">${cfg?.name || 'Assessment'}</p>
+            
+            <div style="display:flex; justify-content:space-around; background:#f9fafb; border-radius:12px; padding:16px; margin-bottom:28px">
+              <div>
+                <div style="font-size:0.75rem; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:0.05em">Accuracy</div>
+                <div style="font-family:var(--fm); font-size:1.3rem; font-weight:800; color:#111827">${Math.round(acc)}%</div>
+              </div>
+              <div style="width:1px; background:#e5e7eb"></div>
+              <div>
+                <div style="font-size:0.75rem; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:0.05em">Score / Earnings</div>
+                <div style="font-family:var(--fm); font-size:1.3rem; font-weight:800; color:#3b22d8">${scoreStr}</div>
+              </div>
+            </div>
+            
+            <div style="font-size:0.8rem; color:#9ca3af; display:flex; align-items:center; justify-content:center; gap:8px">
+              <span class="ap-timer-icon" style="animation: spin 2s linear infinite">🔄</span> Saving results...
+            </div>
+          </div>
+        </div>
+        <style>
+          @keyframes spin { 100% { transform:rotate(360deg); } }
+          @keyframes popIn { 0% { transform:scale(0.8); opacity:0; } 100% { transform:scale(1); opacity:1; } }
+        </style>
+      `;
     }
-    if (!entry.best || score > entry.best.score) {
-      entry.best = {
-        score, accuracy: result.accuracy ?? 0,
-        avgTime: result.avgTime ?? 0,
-        correct: result.correct ?? 0,
-        total:   result.total   ?? 0,
-        level:   result.level   ?? 1,
-        ts: Date.now(),
-      };
-    }
-    // Add to history (cap at 5)
-    if (!entry.history) entry.history = [];
-    entry.history.push({ score, ts: Date.now() });
-    if (entry.history.length > 5) entry.history.shift();
 
-    localStorage.setItem('ciq_scores', JSON.stringify(this.state.scores));
+    setTimeout(() => {
+      this._endingGame = false;
 
-    // Update streak (only count test mode plays for streak)
-    if (!this.state.practiceMode) {
-      this._updateStreak(true);
-    }
+      let entry = this.state.scores[gameId];
+      if (!entry) {
+        entry = { best: null, history: [] };
+        this.state.scores[gameId] = entry;
+      } else if (entry.score !== undefined) {
+        entry = { best: entry, history: [] };
+        this.state.scores[gameId] = entry;
+      }
+      if (!entry.best || score > entry.best.score) {
+        entry.best = {
+          score, accuracy: result.accuracy ?? 0,
+          avgTime: result.avgTime ?? 0,
+          correct: result.correct ?? 0,
+          total:   result.total   ?? 0,
+          level:   result.level   ?? 1,
+          ts: Date.now(),
+        };
+      }
+      // Add to history (cap at 5)
+      if (!entry.history) entry.history = [];
+      entry.history.push({ score, ts: Date.now() });
+      if (entry.history.length > 5) entry.history.shift();
 
-    this._updateDashboard();
-    this._showResults(gameId, result);
+      localStorage.setItem('ciq_scores', JSON.stringify(this.state.scores));
+
+      // Update streak (only count test mode plays for streak)
+      if (!this.state.practiceMode) {
+        this._updateStreak(true);
+      }
+
+      this._updateDashboard();
+      this._showResults(gameId, result);
+    }, 2000);
   }
 
   /* ── TIMER ───────────────────────────── */
