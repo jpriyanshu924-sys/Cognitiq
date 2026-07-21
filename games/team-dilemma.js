@@ -11,42 +11,67 @@ class TeamDilemmaGame {
     this.el = null;
     this.hasAnswered = false;
 
+    // Advanced, subtle set of 5 realistic corporate dilemmas with balanced, professional options
     this.dilemmas = [
       {
         title: "The Autonomy Conflict",
         chars: { left: "👨‍💼 David (Lead)", right: "👩‍💻 Sarah (Engineer)" },
         dialogue: "David demands daily, detailed status reports on every task. Sarah feels micro-managed, arguing that writing reports eats up coding time and shows a lack of trust.",
         options: [
-          { text: "Instruct Sarah to comply with David's requests, as he is the lead and needs full visibility.", val: 2 },
-          { text: "Tell David to stop requesting reports and trust Sarah to complete her work.", val: 1 },
-          { text: "Facilitate a compromise: agree on a brief, automated daily Slack update and a weekly status sync to balance autonomy and visibility.", val: 4 }, // Best
-          { text: "Reassign Sarah to a different project so they no longer need to coordinate.", val: 1.5 }
+          { text: "Establish a automated daily Slack status update (using a template) and a weekly status sync to balance autonomy and visibility.", val: 4 },
+          { text: "Instruct Sarah to log tasks directly into the project board in real-time, allowing David to check status autonomously without demanding separate reports.", val: 3.8 },
+          { text: "Implement weekly milestone reports instead of daily logs, allowing Sarah more coding focus while providing David summary updates.", val: 3.5 },
+          { text: "Establish a mandatory daily 15-minute standup meeting where Sarah reports details, ensuring David has full visibility while saving written reporting time.", val: 3.0 }
         ],
-        explanation: "Collaborative compromises (Option C) preserve trust and autonomy while meeting management needs. Forceful or avoidant actions (A/B/D) aggravate friction."
+        explanation: "Establishing automated daily logs (Option 1) or real-time project board updates (Option 2) are highly effective ways to provide status visibility without adding bureaucratic overhead or creating manager-employee friction."
       },
       {
         title: "Quality vs. Speed",
         chars: { left: "👩‍💼 Chloe (Marketing)", right: "👨‍💻 Marcus (QA Lead)" },
         dialogue: "Chloe wants to launch the new web module immediately to align with a major ad campaign. Marcus refuses to sign off because test coverage is at 80% rather than the 95% company target.",
         options: [
-          { text: "Delay the launch until Marcus hits the 95% test coverage requirement.", val: 2 },
-          { text: "Bypass QA and approve the launch to satisfy Chloe's marketing goals.", val: 1.5 },
-          { text: "Run a risk assessment: launch the core modules on schedule with standard support, and target the remaining test patches for a hotfix deployment next week.", val: 4 }, // Best
-          { text: "Advise Chloe and Marcus to debate and settle the dispute on their own.", val: 1 }
+          { text: "Launch a limited beta release to 15% of users to test in production on schedule, while QA runs tests to hit 95% before full rollout.", val: 4 },
+          { text: "Review the missing 15% test coverage to identify critical risk areas; launch low-risk core features on schedule while delaying high-risk edge features.", val: 3.8 },
+          { text: "Delay the launch by one week to allow QA to reach 90% coverage, and request Marketing to run pre-launch teasers to minimize campaign disruption.", val: 3.5 },
+          { text: "Launch on schedule with a dedicated fast-response developer crew on standby to fix errors in real-time as they appear.", val: 2.8 }
         ],
-        explanation: "Pragmatic, risk-managed compromises (Option C) balance business urgencies with quality controls. Siding entirely or neglect (A/B/D) harms one stakeholder."
+        explanation: "Risk-managed compromises like phased beta releases (Option 1) or feature prioritization by risk (Option 2) balance high-stakes campaign deadlines with critical quality controls."
       },
       {
         title: "Credit Misattribution",
         chars: { left: "👩‍💼 Lin (Researcher)", right: "👨‍💼 James (Presenter)" },
-        dialogue: "James presented a slide deck to the director using Lin's sole research, but took full credit without mentioning her. Lin is upset and refuses to collaborate with James.",
+        dialogue: "James presented a slide deck to the director using Lin's sole research, but took credit without mentioning her. Lin is upset and refuses to collaborate with James.",
         options: [
-          { text: "Advise Lin to let it go, as slides are corporate team property.", val: 1.5 },
-          { text: "Meet with James privately; ask him to email the director acknowledging Lin's contribution, and ensure clear credit guidelines for future projects.", val: 4 }, // Best
-          { text: "Escalate the issue to HR immediately, claiming plagiarism.", val: 2 },
-          { text: "Tell Lin to represent herself better during presentations in the future.", val: 1 }
+          { text: "Meet with James privately to have him email the director clarifying Lin's contribution, and set up a joint presentation for the next director briefing.", val: 4 },
+          { text: "Personally brief the director on Lin's research role, while mentoring James on collaborative leadership and sharing credit.", val: 3.8 },
+          { text: "Facilitate a private discussion where James explains his actions, apologizes, and agrees to highlight Lin's role in the follow-up project report.", val: 3.5 },
+          { text: "Propose establishing a mandatory 'Credits & Contributors' slide for all team presentations going forward to prevent future omissions.", val: 3.0 }
         ],
-        explanation: "Corrective feedback combined with structural restoration of credit (Option B) repairs peer relationships without premature escalations."
+        explanation: "Having James personally correct the record with the director (Option 1) or directly briefing the director (Option 2) restores professional equity and credit while encouraging collaborative growth."
+      },
+      {
+        title: "Resource Allocation",
+        chars: { left: "👨‍💻 Alex (Tech Lead)", right: "👩‍💼 Priya (Product Lead)" },
+        dialogue: "Both Alex and Priya need the senior designer, Leo, full-time next week. Alex needs Leo to fix CSS design bugs, and Priya needs Leo for investor mocks.",
+        options: [
+          { text: "Allocate Leo to Priya for the investor mocks, as funding is a strategic priority, while outsourcing the CSS bugs to a junior designer with senior support.", val: 4 },
+          { text: "Have Leo create a design template system on Monday, enabling Alex's developers to fix CSS bugs themselves while Leo works with Priya.", val: 3.8 },
+          { text: "Split Leo's time 50/50 next week, setting fixed morning/afternoon hours for each project to ensure both make progress.", val: 3.0 },
+          { text: "Keep Leo on CSS bugs to maintain release stability, and ask Priya to use existing mock wireframes for the investor meeting.", val: 2.5 }
+        ],
+        explanation: "Prioritizing the strategic funding mockup while delegating CSS work (Option 1) or empowering developers with templates (Option 2) resolves the constraint while maximizing business output."
+      },
+      {
+        title: "Remote Work Core Hours",
+        chars: { left: "👨‍💼 Ken (Eng Lead)", right: "👨‍💻 Liam (Developer)" },
+        dialogue: "Ken wants to enforce core collaboration hours (10 AM to 3 PM) for the remote team. Liam is upset, stating it violates the company's flexible hours policy.",
+        options: [
+          { text: "Establish a 2-hour daily collaboration window (e.g. 11 AM to 1 PM) for standups and syncs, leaving the rest of the day completely flexible.", val: 4 },
+          { text: "Maintain absolute flex hours, but require all team members to respond to Slack messages within a 4-hour window.", val: 3.5 },
+          { text: "Have Liam and others who want flexibility work on async-heavy tasks, while Ken's sync-heavy tasks are handled by developers who prefer fixed hours.", val: 3.0 },
+          { text: "Enforce Ken's core hours (10 AM - 3 PM) since core team sync is essential for project velocity.", val: 2.5 }
+        ],
+        explanation: "Structuring a narrow 2-hour daily sync window (Option 1) allows vital team coordination to occur without stripping employees of their remote work flexibility."
       }
     ];
   }
@@ -129,7 +154,7 @@ class TeamDilemmaGame {
     const d = this.dilemmas[this.qIndex];
     const chosenOpt = d.options[choiceIdx];
     
-    // Find optimal option
+    // Find optimal option (val === 4)
     const optimalIdx = d.options.findIndex(o => o.val === 4);
     const isPerfect = (choiceIdx === optimalIdx);
 
@@ -148,7 +173,7 @@ class TeamDilemmaGame {
     if (isPerfect) this.correct++;
 
     this.cb.onScore(pts, this.qIndex + 1);
-    this.cb.onFeedback(chosenOpt.val >= 3);
+    this.cb.onFeedback(chosenOpt.val >= 3.5);
 
     const expEl = this.el.querySelector('#tdil-explanation');
     if (expEl) {
@@ -160,10 +185,12 @@ class TeamDilemmaGame {
     if (nextPanel) {
       nextPanel.style.display = 'flex';
       const nextBtn = this.el.querySelector('#tdil-next-btn');
-      if (nextBtn) nextBtn.addEventListener('click', () => {
-        this.qIndex++;
-        this._showQuestion();
-      });
+      if (nextBtn) {
+        nextBtn.onclick = () => {
+          this.qIndex++;
+          this._showQuestion();
+        };
+      }
     }
   }
 
@@ -174,7 +201,7 @@ class TeamDilemmaGame {
       avgTime: 0,
       correct: this.correct,
       total: this.total,
-      level: 1
+      level: 3
     });
   }
 

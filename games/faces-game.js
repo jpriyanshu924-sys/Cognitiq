@@ -158,6 +158,10 @@ class FacesGame {
   }
 
   _next() {
+    if (this.total >= 20) {
+      this.timeUp();
+      return;
+    }
     this.q++;
     this.locked = false;
     this._t0 = Date.now();

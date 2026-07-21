@@ -15,10 +15,10 @@ class ScenarioJudgeGame {
       {
         text: "You are leading a project that is behind schedule. The client is unhappy and demands an immediate update. Your team is already working overtime and feeling burnt out.",
         responses: [
-          { id: 'A', text: "Agree to the client's demanding deadline and ask the team to push through the burnout.", val: 2 }, // Medium-Low
+          { id: 'A', text: "Agree to the client's demanding deadline and ask the team to push through the burnout.", val: 2 },
           { id: 'B', text: "Meet with the client, explain the delay honestly, present a realistic revised timeline, and protect team workload.", val: 4 }, // Best
           { id: 'C', text: "Delegate the client communication to a junior team member to avoid conflict while you focus on execution.", val: 1 }, // Worst
-          { id: 'D', text: "Ask the team to skip quality check protocols so the deliverables can be completed on the original schedule.", val: 1.5 } // Bad
+          { id: 'D', text: "Ask the team to skip quality check protocols so the deliverables can be completed on the original schedule.", val: 1.5 }
         ],
         explanation: "Empathetic leadership, direct client management, and realistic planning (Response B) represent the best approach. Avoiding conflict or sacrificing quality (Response C/D) are worst."
       },
@@ -84,11 +84,14 @@ class ScenarioJudgeGame {
         </div>
         
         <div class="sjt-sorting-area">
-          <div class="sjt-label">Rearrange the actions below from <strong>Most Effective (Top)</strong> to <strong>Least Effective (Bottom)</strong>:</div>
+          <div class="sjt-label">Rearrange the actions below from <strong>Most Effective (Top)</strong> to <strong>Least Effective (Bottom)</strong> (Drag and drop cards, or use arrow buttons):</div>
           <div class="sjt-list" id="sjt-list">
             ${this.currentOrder.map((resp, idx) => `
               <div class="sjt-item-card" data-idx="${idx}">
-                <div class="sjt-item-rank">${idx + 1}</div>
+                <div class="sjt-item-rank" style="display:flex; align-items:center; gap:8px">
+                  <span style="font-size:0.95rem; cursor:grab; color:var(--violet-l)">☰</span>
+                  <span>${idx + 1}</span>
+                </div>
                 <div class="sjt-item-text">${resp.text}</div>
                 <div class="sjt-item-moves">
                   <button class="btn btn-sm btn-icon sjt-move-up" ${idx === 0 ? 'disabled' : ''}>▲</button>
@@ -113,6 +116,7 @@ class ScenarioJudgeGame {
   _bindEvents() {
     this.el.querySelectorAll('.sjt-move-up').forEach(btn => {
       btn.addEventListener('click', (e) => {
+        e.stopPropagation();
         const card = e.target.closest('.sjt-item-card');
         const idx = parseInt(card.dataset.idx);
         if (idx > 0) this._swap(idx, idx - 1);
@@ -121,9 +125,54 @@ class ScenarioJudgeGame {
 
     this.el.querySelectorAll('.sjt-move-down').forEach(btn => {
       btn.addEventListener('click', (e) => {
+        e.stopPropagation();
         const card = e.target.closest('.sjt-item-card');
         const idx = parseInt(card.dataset.idx);
         if (idx < 3) this._swap(idx, idx + 1);
+      });
+    });
+
+    // Native Drag and Drop Implementation
+    const cards = this.el.querySelectorAll('.sjt-item-card');
+    cards.forEach(card => {
+      if (this.hasAnswered) return;
+      card.setAttribute('draggable', 'true');
+      card.style.cursor = 'grab';
+
+      card.addEventListener('dragstart', (e) => {
+        e.dataTransfer.setData('text/plain', card.dataset.idx);
+        card.style.opacity = '0.5';
+        card.style.border = '2px dashed var(--violet)';
+      });
+
+      card.addEventListener('dragend', () => {
+        card.style.opacity = '1';
+        card.style.border = '1px solid var(--border)';
+        this.el.querySelectorAll('.sjt-item-card').forEach(c => {
+          c.style.background = '';
+          c.style.border = '';
+        });
+      });
+
+      card.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        card.style.background = 'rgba(124, 58, 237, 0.06)';
+      });
+
+      card.addEventListener('dragleave', () => {
+        card.style.background = '';
+      });
+
+      card.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const srcIdx = parseInt(e.dataTransfer.getData('text/plain'));
+        const targetIdx = parseInt(card.dataset.idx);
+        if (!isNaN(srcIdx) && srcIdx !== targetIdx) {
+          const draggedItem = this.currentOrder[srcIdx];
+          this.currentOrder.splice(srcIdx, 1);
+          this.currentOrder.splice(targetIdx, 0, draggedItem);
+          this._render(this.scenarios[this.qIndex]);
+        }
       });
     });
 
@@ -145,8 +194,6 @@ class ScenarioJudgeGame {
     const s = this.scenarios[this.qIndex];
     
     // Calculate scoring
-    // Perfect order score: 400. Subtract points for rank distance.
-    // Optimal order would be sorted by val descending.
     const optimal = [...s.responses].sort((a, b) => b.val - a.val);
     
     let penalty = 0;
@@ -155,15 +202,14 @@ class ScenarioJudgeGame {
       penalty += Math.abs(idx - optimalIdx);
     });
 
-    // Max penalty is typically 8 (e.g. reversing best-worst)
     const pts = Math.max(50, 300 - (penalty * 30));
     this.score += pts;
-    this.correct += (penalty === 0 ? 1 : 0); // Perfect matches counted as correct
+    this.correct += (penalty === 0 ? 1 : 0);
 
     this.cb.onScore(pts, this.qIndex + 1);
     this.cb.onFeedback(penalty <= 2);
 
-    // Render results
+    // Render readonly results
     const listEl = document.getElementById('sjt-list');
     listEl.innerHTML = this.currentOrder.map((resp, idx) => {
       const optimalIdx = optimal.findIndex(o => o.id === resp.id);
