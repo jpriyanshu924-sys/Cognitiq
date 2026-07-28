@@ -40,42 +40,7 @@
           <a href="tips.html" class="lnav-link">Free Tips</a>
           <a href="pricing.html" class="lnav-link">Pricing</a>
         </div>
-
-        <!-- Sleek search bar integrated into navigation -->
-        <div class="lnav-search-container" style="margin-left: auto;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lnav-search-icon">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-          <input type="text" id="search-input" class="lnav-search-input" placeholder="Filter games..." />
-        </div>
-
-        <!-- Actions -->
-        <div class="lnav-actions">
-          <div class="lnav-streak-chip" id="header-streak" title="Daily play streak">
-            <span class="lnav-streak-flame">🔥</span>
-            <span class="lnav-streak-num" id="header-streak-num">0</span>
-          </div>
-
-          <div class="lnav-streak-chip" id="candidate-badge" title="Click to change Candidate ID" style="background:rgba(124, 58, 237, 0.1); border-color:rgba(124, 58, 237, 0.2); color:var(--violet); font-size:0.75rem; font-weight:700; cursor:pointer">
-            👤 <span id="candidate-id-display">...</span>
-          </div>
-
-          <div class="lnav-score" id="session-score" style="display:none">
-            <span class="lnav-score-label">SCORE</span>
-            <span class="lnav-score-value" id="total-score-display">0</span>
-          </div>
-
-          <button class="btn-profile-new" id="btn-view-results" title="View Profile" style="border: none;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;">
-               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-               <circle cx="12" cy="7" r="4"></circle>
-            </svg>
-          </button>
-
-          <button class="btn-reset-new" id="btn-reset">Reset</button>
-        </div>
-
+        <a href="games.html" class="lnav-cta" style="margin-left: auto;">Start Free →</a>
         <button class="lnav-hamburger" id="lnav-hamburger" aria-label="Open menu">
           <span></span><span></span><span></span>
         </button>
@@ -113,6 +78,45 @@
         </div>
       </div>
     </section>
+
+    <!-- Page specific filters and controls -->
+    <div class="page-controls">
+      <!-- Left Side: Search Bar -->
+      <div class="lnav-search-container" style="margin: 0; flex: 1; max-width: 320px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lnav-search-icon">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="search-input" class="lnav-search-input" placeholder="Filter games..." />
+      </div>
+
+      <!-- Right Side: User Controls -->
+      <div class="lnav-actions" style="margin: 0; display: flex; gap: 12px; align-items: center;">
+        <div class="lnav-streak-chip" id="header-streak" title="Daily play streak">
+          <span class="lnav-streak-flame">🔥</span>
+          <span class="lnav-streak-num" id="header-streak-num">0</span>
+        </div>
+        
+        <div class="lnav-streak-chip" id="candidate-badge" title="Click to change Candidate ID" style="background:rgba(124, 58, 237, 0.1); border-color:rgba(124, 58, 237, 0.2); color:var(--violet); font-size:0.75rem; font-weight:700; cursor:pointer">
+          👤 <span id="candidate-id-display">...</span>
+        </div>
+
+        <div class="lnav-score" id="session-score" style="display:none">
+          <span class="lnav-score-label">SCORE</span>
+          <span class="lnav-score-value" id="total-score-display">0</span>
+        </div>
+
+        <button class="btn-profile-new" id="btn-view-results" title="View Profile" style="border: none; cursor: pointer;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;">
+             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+             <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </button>
+
+        <button class="btn-reset-new" id="btn-reset" style="cursor: pointer;">Reset</button>
+      </div>
+    </div>
+
     <div class="categories" id="categories-container">
       <!-- Injected dynamically by app.js based on Trait Categories -->
     </div>
