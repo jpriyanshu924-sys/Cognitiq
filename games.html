@@ -57,6 +57,10 @@
             <span class="lnav-streak-num" id="header-streak-num">0</span>
           </div>
 
+          <div class="lnav-streak-chip" id="candidate-badge" title="Click to change Candidate ID" style="background:rgba(124, 58, 237, 0.1); border-color:rgba(124, 58, 237, 0.2); color:var(--violet); font-size:0.75rem; font-weight:700; cursor:pointer">
+            👤 <span id="candidate-id-display">...</span>
+          </div>
+
           <div class="lnav-score" id="session-score" style="display:none">
             <span class="lnav-score-label">SCORE</span>
             <span class="lnav-score-value" id="total-score-display">0</span>
@@ -462,6 +466,10 @@ if (!CanvasRenderingContext2D.prototype.roundRect) {
 <script src="games/personality-reveal.js"></script>
 
 <script src="games/security-door.js"></script>
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
 
 <script src="app.js?v=5"></script>
 <script>

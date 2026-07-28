@@ -36,6 +36,9 @@
       <a href="tips.html" class="lnav-link">Free Tips</a>
       <a href="pricing.html" class="lnav-link">Pricing</a>
     </div>
+    <div class="lnav-streak-chip" id="candidate-badge" title="Click to change Candidate ID" style="background:rgba(124, 58, 237, 0.1); border-color:rgba(124, 58, 237, 0.2); color:var(--violet); font-size:0.75rem; font-weight:700; cursor:pointer; margin-left:auto; margin-right:12px">
+      👤 <span id="candidate-id-display">...</span>
+    </div>
     <a href="games.html" class="lnav-cta">Start Free →</a>
     <button class="lnav-hamburger" id="lnav-hamburger" aria-label="Open menu">
       <span></span><span></span><span></span>
@@ -282,6 +285,10 @@
     <span>© 2025 CognitIQ. All rights reserved.</span>
   </div>
 </footer>
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
 
 <script src="mock-test.js"></script>
 <script>

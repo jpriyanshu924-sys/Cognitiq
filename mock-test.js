@@ -135,6 +135,39 @@ const $ = id => document.getElementById(id);
 document.addEventListener('DOMContentLoaded', () => {
   const hash = location.hash.replace('#', '');
   if (hash && PROVIDERS[hash]) selectProvider(hash);
+  
+  // Candidate ID initialization
+  const params = new URLSearchParams(location.search);
+  let cid = params.get('candidateId') || params.get('candidate') || params.get('name');
+  if (cid) {
+    localStorage.setItem('ciq_candidate_id', cid);
+  } else {
+    cid = localStorage.getItem('ciq_candidate_id');
+    if (!cid) {
+      cid = 'CP-Anon-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+      localStorage.setItem('ciq_candidate_id', cid);
+    }
+  }
+  state.candidateId = cid;
+
+  const updateCandidateDisplay = () => {
+    const display = $('candidate-id-display');
+    if (display) display.textContent = state.candidateId;
+  };
+  updateCandidateDisplay();
+
+  const candBtn = $('candidate-badge');
+  if (candBtn) {
+    candBtn.addEventListener('click', () => {
+      const newId = prompt('Enter Candidate ID/Name:', state.candidateId);
+      if (newId && newId.trim()) {
+        state.candidateId = newId.trim();
+        localStorage.setItem('ciq_candidate_id', state.candidateId);
+        updateCandidateDisplay();
+      }
+    });
+  }
+
   // Provider card clicks
   document.querySelectorAll('.mt-pcard').forEach(card => {
     card.addEventListener('click', () => selectProvider(card.dataset.provider));
@@ -360,6 +393,22 @@ function finishTest() {
 
   // HUD progress to 100%
   $('mt-hud-progress-fill').style.width = '100%';
+
+  // Save aggregated mock test result to Firebase Firestore if initialized
+  if (typeof isFirebaseReady !== 'undefined' && isFirebaseReady && db) {
+    const payload = {
+      candidateId: state.candidateId,
+      testId: state.provider,
+      avgScore: avgScore,
+      timeUsed: timeUsed,
+      gamesCompleted: done,
+      totalGames: total,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    };
+    db.collection('mock_test_results').add(payload)
+      .then(() => console.log('Mock test results successfully logged to Firestore!'))
+      .catch(e => console.error('Error logging mock test results to Firestore:', e));
+  }
 
   $('mt-final-results').style.display = 'flex';
 }

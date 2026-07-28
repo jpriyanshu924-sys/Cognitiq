@@ -363,6 +363,21 @@ class CognitIQApp {
       practiceMode: false,
     };
     this._streakData = JSON.parse(localStorage.getItem('ciq_streak') || '{"streak":0,"lastPlayed":""}');
+    
+    // Candidate ID initialization
+    const params = new URLSearchParams(location.search);
+    let cid = params.get('candidateId') || params.get('candidate') || params.get('name');
+    if (cid) {
+      localStorage.setItem('ciq_candidate_id', cid);
+    } else {
+      cid = localStorage.getItem('ciq_candidate_id');
+      if (!cid) {
+        cid = 'CP-Anon-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+        localStorage.setItem('ciq_candidate_id', cid);
+      }
+    }
+    this.state.candidateId = cid;
+
     this._renderCategories();
     this._bind();
     this._updateStreak(false); // init display without extending
@@ -458,6 +473,19 @@ class CognitIQApp {
       searchInput.addEventListener('input', (e) => {
         const query = e.target.value.toLowerCase().trim();
         this._filterGames(query);
+      });
+    }
+
+    // Candidate ID Click Prompt
+    const candBtn = document.getElementById('candidate-badge');
+    if (candBtn) {
+      candBtn.addEventListener('click', () => {
+        const newId = prompt('Enter Candidate ID/Name:', this.state.candidateId);
+        if (newId && newId.trim()) {
+          this.state.candidateId = newId.trim();
+          localStorage.setItem('ciq_candidate_id', this.state.candidateId);
+          this._updateDashboard();
+        }
       });
     }
   }
@@ -709,6 +737,25 @@ class CognitIQApp {
       // Update streak (only count test mode plays for streak)
       if (!this.state.practiceMode) {
         this._updateStreak(true);
+      }
+
+      // Save result to Firebase Firestore if initialized
+      if (typeof isFirebaseReady !== 'undefined' && isFirebaseReady && db) {
+        const payload = {
+          candidateId: this.state.candidateId,
+          gameId: gameId,
+          score: score,
+          accuracy: Math.round(result.accuracy ?? (result.total ? (result.correct / result.total) * 100 : 0)),
+          correct: result.correct ?? 0,
+          total: result.total ?? 0,
+          level: result.level ?? 1,
+          avgTime: result.avgTime ?? 0,
+          practiceMode: this.state.practiceMode,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        };
+        db.collection('results').add(payload)
+          .then(() => console.log('Score successfully logged to Firestore!'))
+          .catch(e => console.error('Error logging score to Firestore:', e));
       }
 
       this._updateDashboard();
@@ -994,6 +1041,9 @@ class CognitIQApp {
   /* ── DASHBOARD UPDATE ────────────────── */
   _updateDashboard() {
     const s = this.state.scores;
+
+    const candEl = document.getElementById('candidate-id-display');
+    if (candEl) candEl.textContent = this.state.candidateId;
 
     GAME_ORDER.forEach(id => {
       const card = document.getElementById(`card-${id}`);
