@@ -47,11 +47,6 @@ const PROVIDERS = {
       { id: 'order',             name: 'Order',              icon: '🧩' },
     ]
   },
-      { id: 'pathfinder',   name: 'Sea Wolf / Ocean Cleanup', icon: '⚓' },
-      { id: 'flashback',    name: 'Sustainability Futures Lab', icon: '🧪' },
-      { id: 'shapedance',   name: 'Ecosystem Creation', icon: '🦊' }
-    ]
-  },
   aon: {
     name: 'Aon / Cut-e',
     icon: '⚡',
@@ -85,12 +80,6 @@ const PROVIDERS = {
       { id: 'calculation-game',  name: 'Calculation', icon: '🔢' },
       { id: 'scenario-judge',    name: 'SJT', icon: '⚖️' },
       { id: 'pattern-matrix',    name: 'Mechanical Comprehension', icon: '⚙️' }
-    ]
-  },
-      { id: 'crisis-room',        name: 'Crisis Management', icon: '🚨' },
-      { id: 'business-sim',       name: 'Business Simulation', icon: '👔' },
-      { id: 'personality-reveal', name: 'Learning Agility', icon: '📈' },
-      { id: 'number-dash',        name: 'Job-Specific Simulation', icon: '🏢' }
     ]
   }
 };
