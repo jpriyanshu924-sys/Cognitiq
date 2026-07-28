@@ -139,31 +139,10 @@ const GAME_CONFIG = {
     howto: ['Arrange block elements or pegs in the target configuration', 'Obey the movement constraints and sequencing rules', 'Solve in the minimum possible steps']
   },
 
-  // McKinsey Solve (4 games)
-  'mirror-match': {
-    name: 'Redrock', icon: '⛰️', cat: 5, duration: 60, provider: 'McKinsey Solve', difficulty: 'medium', tag: 'Spatial',
-    desc: 'Compare target patterns and identify matching visual reflection metrics to build species registries.',
-    skills: ['Spatial Alignment', 'Reflection Detection', 'Target Matching'],
-    howto: ['Study the reference grid pattern', 'Note the reflection axis shown (horizontal / vertical)', 'Identify which of the 4 options is the correct mirror', '60 seconds total']
-  },
-  'pathfinder': {
-    name: 'Sea Wolf / Ocean Cleanup', icon: '⚓', cat: 5, duration: 90, provider: 'McKinsey Solve', difficulty: 'hard', tag: 'Spatial',
-    desc: 'Navigate submarines and optimal routes across water nodes to capture and extract pollutant spills.',
-    skills: ['Route Optimization', 'Incident Prioritization', 'Resource Management'],
-    howto: ['Click starting node and draw paths to destination', 'Ensure the path crosses through every target waypoint star', 'Avoid walls and self-crossing tracks. Solve as many as possible']
-  },
-  'flashback': {
-    name: 'Sustainability Futures Lab', icon: '🧪', cat: 3, duration: 90, provider: 'McKinsey Solve', difficulty: 'hard', tag: 'Numerical',
-    desc: 'Run model scenarios, track statistics, and balance environmental thresholds in dynamic forecast models.',
-    skills: ['Sequential Prediction', 'Working Memory', 'Statistical Tracking'],
-    howto: ['Watch the sequence of colored shapes flash on screen', 'Select the matching shapes from the grid in the exact sequence', 'Length increases with success; three mistakes ends the game']
-  },
-  'shapedance': {
-    name: 'Ecosystem Creation', icon: '🦊', cat: 4, duration: 90, provider: 'McKinsey Solve', difficulty: 'hard', tag: 'Logic',
-    desc: 'Form complex food chain ecosystems by pairing predator and prey animals under strictly balanced rules.',
-    skills: ['Systems Thinking', 'Ecosystem Modeling', 'Abstract Logical Reasoning'],
-    howto: ['Examine the main 3D target shape closely', 'Identify which option matches a valid 3D rotation of the target', 'Watch out for mirrored or shape-shifted distractors']
-  },
+
+
+
+
 
   // Aon / Cut-e (6 games)
   'gridlock': {
@@ -246,52 +225,16 @@ const GAME_CONFIG = {
     skills: ['Mechanical Principles Induction', 'Spatial Logic Assembly', 'Abstract Grid Rule Discovery'],
     howto: ['Study the 3×3 grid — 8 cells filled, 1 missing', 'Identify the rule governing rows, columns, or both', 'Select the correct answer from 4 options below', '90 seconds to answer as many as possible']
   },
-
-  // The Talent Games (5 games)
-  'team-dilemma': {
-    name: 'Strategy', icon: '🎯', cat: 7, duration: 0, provider: 'The Talent Games', difficulty: 'medium', tag: 'Social',
-    desc: 'Mediate staff conflicts and choose collaboration roadmaps to preserve team alignment.',
-    skills: ['Strategic Mediation', 'Organizational Alignment', 'Consensus Building'],
-    howto: ['Read the dialog conflict between two team members', 'Analyze the 4 possible mediation plans', 'Select the most constructive strategy to restore team harmony']
-  },
-  'crisis-room': {
-    name: 'Crisis Management', icon: '🚨', cat: 7, duration: 90, provider: 'The Talent Games', difficulty: 'hard', tag: 'Social',
-    desc: 'Contain customer product outages in real-time by dispatching engineering resources under pressure.',
-    skills: ['Outage Incident Response', 'Staff Skill Allocation', 'Calmness Under Pressure'],
-    howto: ['Review incoming tickets with varying staff requirements (Tech, QA, Support)', 'Click Dispatch to assign idle staff to resolve the incidents', 'Manage resources to prevent the Crisis Meter from hitting 100%']
-  },
-  'business-sim': {
-    name: 'Business Simulation', icon: '👔', cat: 6, duration: 180, provider: 'The Talent Games', difficulty: 'medium', tag: 'Decision',
-    desc: 'Lead a tech company startup and manage cash reserves, staff morale, and code quality across quarters.',
-    skills: ['Quarterly Startup Management', 'Cash Reserve Strategy', 'Balance Sheet Trade-offs'],
-    howto: ['Review the business scenario presented each quarter', 'Select one of the 3 actions to solve the issue', 'Balance Cash, Morale, and Quality stats over 6 quarters']
-  },
-  'personality-reveal': {
-    name: 'Learning Agility', icon: '📈', cat: 7, duration: 0, provider: 'The Talent Games', difficulty: 'medium', tag: 'Social',
-    desc: 'Evaluate statement pairs in forced-choice selections to establish your behavioral adaptability profile.',
-    skills: ['Agile Behavioral Profiling', 'Adaptability Indicators', 'Workplace Agility Fit'],
-    howto: ['Read statements A and B in each pair', 'Choose the statement that fits your workplace preference better', 'Answer 10 statement pairs to build your Big Five profile']
-  },
-  'number-dash': {
-    name: 'Job-Specific Simulation', icon: '🏢', cat: 2, duration: 90, provider: 'The Talent Games', difficulty: 'easy', tag: 'Memory',
-    desc: 'Navigate specific job scenarios by collecting falling targets and managing dynamic rules.',
-    skills: ['Role-Specific Task Execution', 'Fast Numerical Collection', 'Multi-Tasking Focus'],
-    howto: ['Use ← → Arrow keys (or A/D) to move the collector', 'Collect numbers that sum to the TARGET shown at the top', 'Hit the exact target sum to score points', '90 seconds total']
-  }
 };
 const GAME_ORDER = [
   // Pymetrics
   'balloon-game', 'money-exchange', 'tower-game', 'keypress-game', 'hard-easy-game', 'arrows-game', 'lengths-game', 'cards-game', 'faces-game', 'signal-stop', 'memory-vault', 'shape-spinner',
   // Arctic Shores
   'arrow-directions', 'balloon-risk-game', 'tickets', 'sequence', 'emotions-face-game', 'team-selling', 'power-generators', 'security-door', 'patterns', 'order',
-  // McKinsey Solve
-  'mirror-match', 'pathfinder', 'flashback', 'shapedance',
   // Aon / Cut-e
   'gridlock', 'motion-track', 'digit-nback', 'pipe-puzzle', 'aon-switch', 'inbox-triage',
   // SHL
-  'verify-numerical', 'verify-inductive', 'logic-deduction', 'checking-game', 'calculation-game', 'scenario-judge', 'pattern-matrix',
-  // The Talent Games
-  'team-dilemma', 'crisis-room', 'business-sim', 'personality-reveal', 'number-dash'
+  'verify-numerical', 'verify-inductive', 'logic-deduction', 'checking-game', 'calculation-game', 'scenario-judge', 'pattern-matrix'
 ];
 
 const GAME_MODULES = {
@@ -319,11 +262,6 @@ const GAME_MODULES = {
   'security-door':     () => window.SecurityDoorGame,
   'patterns':          () => window.PatternMatrixGame,
   'order':             () => window.GridlockGame,
-  // McKinsey Solve
-  'mirror-match':      () => window.MirrorMatchGame,
-  'pathfinder':        () => window.PathfinderGame,
-  'flashback':         () => window.FlashbackGame,
-  'shapedance':        () => window.ShapedanceGame,
   // Aon / Cut-e
   'gridlock':          () => window.GridlockGame,
   'motion-track':      () => window.MotionTrackGame,
@@ -339,12 +277,6 @@ const GAME_MODULES = {
   'calculation-game':  () => window.NumerosityGame,
   'scenario-judge':    () => window.ScenarioJudgeGame,
   'pattern-matrix':    () => window.PatternMatrixGame,
-  // The Talent Games
-  'team-dilemma':      () => window.TeamDilemmaGame,
-  'crisis-room':       () => window.CrisisRoomGame,
-  'business-sim':      () => window.BusinessSimGame,
-  'personality-reveal':() => window.PersonalityRevealGame,
-  'number-dash':       () => window.NumberDashGame
 };
 
 /* ───────────────────────────────────────────────────── */
@@ -536,7 +468,6 @@ class CampusPlayApp {
       3: { name: 'HIREVUE ASSESSMENT', bg: 'gc-bg-cyan' },
       4: { name: 'AON ASSESSMENT', bg: 'gc-bg-emerald' },
       5: { name: 'SHL ASSESSMENT', bg: 'gc-bg-amber' },
-      6: { name: 'TALENT GAMES ASSESSMENT', bg: 'gc-bg-red' },
       7: { name: 'TALEGENT ASSESSMENT', bg: 'gc-bg-blue' },
       8: { name: 'SOVA ASSESSMENT', bg: 'gc-bg-purple' }
     };
@@ -967,12 +898,12 @@ class CampusPlayApp {
       // Aliases (arrow-directions, balloon-risk-game, etc.) live in mock-test.js
       // and are encountered there; they are intentionally excluded here.
       1: { name: 'Attention & Focus', icon: '🏹', desc: 'Inhibiting distractions and maintaining persistent focus', games: ['arrows-game', 'lengths-game', 'motion-track', 'keypress-game', 'signal-stop'], color: 'linear-gradient(135deg, #06b6d4, #0891b2)', bg: 'gc-bg-cyan', tag: 'Attention' },
-      2: { name: 'Working Memory & Speed', icon: '🧠', desc: 'Holding, updating and manipulating sequential data', games: ['memory-vault', 'digit-nback', 'flashback', 'sequence', 'aon-switch', 'tickets', 'number-dash'], color: 'linear-gradient(135deg, #7c3aed, #6d28d9)', bg: 'gc-bg-violet', tag: 'Memory' },
+      2: { name: 'Working Memory & Speed', icon: '🧠', desc: 'Holding, updating and manipulating sequential data', games: ['memory-vault', 'digit-nback', 'sequence', 'aon-switch', 'tickets'], color: 'linear-gradient(135deg, #7c3aed, #6d28d9)', bg: 'gc-bg-violet', tag: 'Memory' },
       3: { name: 'Quantitative & Numerical', icon: '🔢', desc: 'Processing mental arithmetic and logical quantities', games: ['verify-numerical', 'numerosity'], color: 'linear-gradient(135deg, #d97706, #b45309)', bg: 'gc-bg-orange', tag: 'Numerical' },
       4: { name: 'Logical & Abstract Reasoning', icon: '🔷', desc: 'Formulating patterns and rules from visual shapes', games: ['pattern-matrix', 'verify-inductive', 'power-generators', 'logic-deduction'], color: 'linear-gradient(135deg, #8b5cf6, #7c3aed)', bg: 'gc-bg-purple', tag: 'Logic' },
-      5: { name: 'Spatial Reasoning & Planning', icon: '📐', desc: 'Mentally rotating shapes and sequencing moves', games: ['shape-spinner', 'shapedance', 'mirror-match', 'pipe-puzzle', 'pathfinder', 'gridlock', 'tower-game'], color: 'linear-gradient(135deg, #2563eb, #1d4ed8)', bg: 'gc-bg-blue', tag: 'Spatial' },
-      6: { name: 'Risk Calibration & Decision Making', icon: '🧩', desc: 'Assessing trade-offs under high-uncertainty rules', games: ['balloon-game', 'cards-game', 'hard-easy-game', 'money-exchange', 'business-sim'], color: 'linear-gradient(135deg, #10b981, #059669)', bg: 'gc-bg-emerald', tag: 'Decision' },
-      7: { name: 'Social, Emotional & Interpersonal', icon: '🤝', desc: 'Reading expressions and resolving workplace scenarios', games: ['faces-game', 'team-dilemma', 'scenario-judge', 'inbox-triage', 'crisis-room', 'personality-reveal'], color: 'linear-gradient(135deg, #3b82f6, #2563eb)', bg: 'gc-bg-pink', tag: 'Social' }
+      5: { name: 'Spatial Reasoning & Planning', icon: '📐', desc: 'Mentally rotating shapes and sequencing moves', games: ['shape-spinner', 'pipe-puzzle', 'gridlock', 'tower-game'], color: 'linear-gradient(135deg, #2563eb, #1d4ed8)', bg: 'gc-bg-blue', tag: 'Spatial' },
+      6: { name: 'Risk Calibration & Decision Making', icon: '🧩', desc: 'Assessing trade-offs under high-uncertainty rules', games: ['balloon-game', 'cards-game', 'hard-easy-game', 'money-exchange'], color: 'linear-gradient(135deg, #10b981, #059669)', bg: 'gc-bg-emerald', tag: 'Decision' },
+      7: { name: 'Social, Emotional & Interpersonal', icon: '🤝', desc: 'Reading expressions and resolving workplace scenarios', games: ['faces-game', 'scenario-judge', 'inbox-triage'], color: 'linear-gradient(135deg, #3b82f6, #2563eb)', bg: 'gc-bg-pink', tag: 'Social' }
     };
 
     container.innerHTML = Object.keys(TRAIT_CATEGORIES).map(catId => {
@@ -1076,12 +1007,12 @@ class CampusPlayApp {
     // Dynamically update progress counters for all 7 trait categories
     const categoriesMapping = [
       { id: 1, games: ['arrows-game', 'arrow-directions', 'lengths-game', 'motion-track', 'keypress-game', 'signal-stop', 'security-door', 'checking-game'] },
-      { id: 2, games: ['memory-vault', 'digit-nback', 'sequence', 'aon-switch', 'tickets', 'number-dash'] },
-      { id: 3, games: ['verify-numerical', 'calculation-game', 'flashback'] },
-      { id: 4, games: ['verify-inductive', 'logic-deduction', 'pattern-matrix', 'patterns', 'power-generators', 'shapedance'] },
-      { id: 5, games: ['tower-game', 'shape-spinner', 'order', 'mirror-match', 'pathfinder', 'gridlock', 'pipe-puzzle'] },
-      { id: 6, games: ['balloon-game', 'money-exchange', 'hard-easy-game', 'cards-game', 'balloon-risk-game', 'business-sim'] },
-      { id: 7, games: ['faces-game', 'emotions-face-game', 'team-selling', 'inbox-triage', 'scenario-judge', 'team-dilemma', 'crisis-room', 'personality-reveal'] }
+      { id: 2, games: ['memory-vault', 'digit-nback', 'sequence', 'aon-switch', 'tickets'] },
+      { id: 3, games: ['verify-numerical', 'calculation-game'] },
+      { id: 4, games: ['verify-inductive', 'logic-deduction', 'pattern-matrix', 'patterns', 'power-generators'] },
+      { id: 5, games: ['tower-game', 'shape-spinner', 'order', 'gridlock', 'pipe-puzzle'] },
+      { id: 6, games: ['balloon-game', 'money-exchange', 'hard-easy-game', 'cards-game', 'balloon-risk-game'] },
+      { id: 7, games: ['faces-game', 'emotions-face-game', 'team-selling', 'inbox-triage', 'scenario-judge'] }
     ]
 
     categoriesMapping.forEach(cat => {
@@ -1118,12 +1049,12 @@ class CampusPlayApp {
 
     const cats = [
       { name: 'Attention & Focus',         games: ['arrows-game', 'arrow-directions', 'lengths-game', 'motion-track', 'keypress-game', 'signal-stop', 'security-door', 'checking-game'], c1: '#06b6d4', c2: '#0891b2' },
-      { name: 'Working Memory',            games: ['memory-vault', 'digit-nback', 'sequence', 'aon-switch', 'tickets', 'number-dash'], c1: '#7c3aed', c2: '#6d28d9' },
-      { name: 'Quantitative',              games: ['verify-numerical', 'calculation-game', 'flashback'], c1: '#d97706', c2: '#b45309' },
-      { name: 'Logical Reasoning',         games: ['verify-inductive', 'logic-deduction', 'pattern-matrix', 'patterns', 'power-generators', 'shapedance'], c1: '#8b5cf6', c2: '#7c3aed' },
-      { name: 'Spatial & Planning',        games: ['tower-game', 'shape-spinner', 'order', 'mirror-match', 'pathfinder', 'gridlock', 'pipe-puzzle'], c1: '#2563eb', c2: '#1d4ed8' },
-      { name: 'Risk & Decisions',          games: ['balloon-game', 'money-exchange', 'hard-easy-game', 'cards-game', 'balloon-risk-game', 'business-sim'], c1: '#10b981', c2: '#059669' },
-      { name: 'Social & Interpersonal',    games: ['faces-game', 'emotions-face-game', 'team-selling', 'inbox-triage', 'scenario-judge', 'team-dilemma', 'crisis-room', 'personality-reveal'], c1: '#ec4899', c2: '#be185d' }
+      { name: 'Working Memory',            games: ['memory-vault', 'digit-nback', 'sequence', 'aon-switch', 'tickets'], c1: '#7c3aed', c2: '#6d28d9' },
+      { name: 'Quantitative',              games: ['verify-numerical', 'calculation-game'], c1: '#d97706', c2: '#b45309' },
+      { name: 'Logical Reasoning',         games: ['verify-inductive', 'logic-deduction', 'pattern-matrix', 'patterns', 'power-generators'], c1: '#8b5cf6', c2: '#7c3aed' },
+      { name: 'Spatial & Planning',        games: ['tower-game', 'shape-spinner', 'order', 'gridlock', 'pipe-puzzle'], c1: '#2563eb', c2: '#1d4ed8' },
+      { name: 'Risk & Decisions',          games: ['balloon-game', 'money-exchange', 'hard-easy-game', 'cards-game', 'balloon-risk-game'], c1: '#10b981', c2: '#059669' },
+      { name: 'Social & Interpersonal',    games: ['faces-game', 'emotions-face-game', 'team-selling', 'inbox-triage', 'scenario-judge'], c1: '#ec4899', c2: '#be185d' }
     ]
 
     const getScore = id => (s[id]?.best ?? s[id])?.score ?? 0;
@@ -1180,12 +1111,12 @@ class CampusPlayApp {
 
     const cats = [
       { name: 'Attention & Focus',         games: ['arrows-game', 'arrow-directions', 'lengths-game', 'motion-track', 'keypress-game', 'signal-stop', 'security-door', 'checking-game'] },
-      { name: 'Working Memory',            games: ['memory-vault', 'digit-nback', 'sequence', 'aon-switch', 'tickets', 'number-dash'] },
-      { name: 'Quantitative',              games: ['verify-numerical', 'calculation-game', 'flashback'] },
-      { name: 'Logical Reasoning',         games: ['verify-inductive', 'logic-deduction', 'pattern-matrix', 'patterns', 'power-generators', 'shapedance'] },
-      { name: 'Spatial & Planning',        games: ['tower-game', 'shape-spinner', 'order', 'mirror-match', 'pathfinder', 'gridlock', 'pipe-puzzle'] },
-      { name: 'Risk & Decisions',          games: ['balloon-game', 'money-exchange', 'hard-easy-game', 'cards-game', 'balloon-risk-game', 'business-sim'] },
-      { name: 'Social & Interpersonal',    games: ['faces-game', 'emotions-face-game', 'team-selling', 'inbox-triage', 'scenario-judge', 'team-dilemma', 'crisis-room', 'personality-reveal'] }
+      { name: 'Working Memory',            games: ['memory-vault', 'digit-nback', 'sequence', 'aon-switch', 'tickets'] },
+      { name: 'Quantitative',              games: ['verify-numerical', 'calculation-game'] },
+      { name: 'Logical Reasoning',         games: ['verify-inductive', 'logic-deduction', 'pattern-matrix', 'patterns', 'power-generators'] },
+      { name: 'Spatial & Planning',        games: ['tower-game', 'shape-spinner', 'order', 'gridlock', 'pipe-puzzle'] },
+      { name: 'Risk & Decisions',          games: ['balloon-game', 'money-exchange', 'hard-easy-game', 'cards-game', 'balloon-risk-game'] },
+      { name: 'Social & Interpersonal',    games: ['faces-game', 'emotions-face-game', 'team-selling', 'inbox-triage', 'scenario-judge'] }
     ]
     const N = cats.length;
 
@@ -1347,16 +1278,16 @@ Object.assign(CampusPlayApp.prototype, {
   _renderTraitBreakdown(s, getScore) {
     const MAX = 1500;
     const TRAITS = [
-      { icon: '⚡', name: 'Processing Speed',    color: '#06b6d4', games: ['security-door','keypress-game','arrows-game','number-dash','aon-switch'], desc: 'How quickly you respond to stimuli' },
-      { icon: '🧠', name: 'Working Memory',       color: '#7c3aed', games: ['memory-vault','sequence','digit-nback','flashback'], desc: 'Holding and manipulating information' },
+      { icon: '⚡', name: 'Processing Speed',    color: '#06b6d4', games: ['security-door','keypress-game','arrows-game','aon-switch'], desc: 'How quickly you respond to stimuli' },
+      { icon: '🧠', name: 'Working Memory',       color: '#7c3aed', games: ['memory-vault','sequence','digit-nback'], desc: 'Holding and manipulating information' },
       { icon: '🎯', name: 'Impulse Control',      color: '#db2777', games: ['security-door','keypress-game','hard-easy-game','balloon-risk-game'], desc: 'Inhibiting automatic responses' },
-      { icon: '📐', name: 'Spatial Reasoning',    color: '#2563eb', games: ['shape-spinner','mirror-match','order','pathfinder','shapedance','pipe-puzzle'], desc: 'Mentally rotating and manipulating shapes' },
-      { icon: '🔢', name: 'Numerical Reasoning',  color: '#d97706', games: ['verify-numerical','numerosity','sequence','number-dash'], desc: 'Working with numbers and data' },
+      { icon: '📐', name: 'Spatial Reasoning',    color: '#2563eb', games: ['shape-spinner','order','pipe-puzzle'], desc: 'Mentally rotating and manipulating shapes' },
+      { icon: '🔢', name: 'Numerical Reasoning',  color: '#d97706', games: ['verify-numerical','numerosity','sequence'], desc: 'Working with numbers and data' },
       { icon: '🔷', name: 'Abstract Reasoning',   color: '#8b5cf6', games: ['patterns','verify-inductive','power-generators'], desc: 'Identifying rules and patterns' },
       { icon: '💛', name: 'Emotional Intelligence',color: '#f59e0b', games: ['emotions-face-game','money-exchange'], desc: 'Reading emotions and social cues' },
-      { icon: '🧩', name: 'Decision Making',       color: '#10b981', games: ['cards-game','balloon-risk-game','business-sim','scenario-judge'], desc: 'Weighing options under uncertainty' },
+      { icon: '🧩', name: 'Decision Making',       color: '#10b981', games: ['cards-game','balloon-risk-game','scenario-judge'], desc: 'Weighing options under uncertainty' },
       { icon: '🏹', name: 'Attention',             color: '#ef4444', games: ['motion-track','lengths-game','arrow-directions'], desc: 'Focusing on relevant stimuli' },
-      { icon: '🤝', name: 'Social Judgment',       color: '#3b82f6', games: ['logic-deduction','team-selling','inbox-triage','personality-reveal'], desc: 'Navigating interpersonal situations' },
+      { icon: '🤝', name: 'Social Judgment',       color: '#3b82f6', games: ['logic-deduction','team-selling','inbox-triage'], desc: 'Navigating interpersonal situations' },
     ];
 
     const grid = document.getElementById('fp-traits-grid');

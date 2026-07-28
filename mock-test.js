@@ -47,16 +47,6 @@ const PROVIDERS = {
       { id: 'order',             name: 'Order',              icon: '🧩' },
     ]
   },
-  mckinsey: {
-    name: 'McKinsey Solve',
-    icon: '⚓',
-    meta: '4 games · ~40 min',
-    totalSeconds: 40 * 60,
-    desc: 'McKinsey Solve (formerly Imbellus) is a game-based cognitive assessment used to evaluate system-level planning, resource allocation, and hypothesis testing. Critical for all McKinsey recruiting.',
-    traits: ['System Optimization', 'Food Chain Logic', 'Battery Optimization', 'Scenario Estimation'],
-    employers: ['McKinsey & Company'],
-    games: [
-      { id: 'mirror-match', name: 'Redrock', icon: '⛰️' },
       { id: 'pathfinder',   name: 'Sea Wolf / Ocean Cleanup', icon: '⚓' },
       { id: 'flashback',    name: 'Sustainability Futures Lab', icon: '🧪' },
       { id: 'shapedance',   name: 'Ecosystem Creation', icon: '🦊' }
@@ -97,16 +87,6 @@ const PROVIDERS = {
       { id: 'pattern-matrix',    name: 'Mechanical Comprehension', icon: '⚙️' }
     ]
   },
-  talent: {
-    name: 'The Talent Games',
-    icon: '🚀',
-    meta: '5 games · ~25 min',
-    totalSeconds: 25 * 60,
-    desc: 'The Talent Games focuses on gamified business simulations, testing strategy, agility, and decision-making under uncertainty, commonly used in FMCG graduate recruitment.',
-    traits: ['Business Acumen', 'Crisis Containment', 'Strategic Planning', 'Learning Agility', 'Job Simulations'],
-    employers: ["L'Oréal", 'Nestlé', 'Danone', 'Unilever'],
-    games: [
-      { id: 'team-dilemma',       name: 'Strategy', icon: '🎯' },
       { id: 'crisis-room',        name: 'Crisis Management', icon: '🚨' },
       { id: 'business-sim',       name: 'Business Simulation', icon: '👔' },
       { id: 'personality-reveal', name: 'Learning Agility', icon: '📈' },

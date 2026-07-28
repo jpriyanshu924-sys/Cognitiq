@@ -1951,7 +1951,7 @@ h1, h2, h3, h4, h5 { font-family: var(--fh); }
 .sky-plot { aspect-ratio: 1.2; border: 1px dashed var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; background: rgba(0,0,0,0.01); }
 .sky-empty { font-size: 1.1rem; color: var(--border-h); font-weight: 300; }
 
-/* ── Minor Class Additions for SHL, Talent Games, Sova, and Talegent ── */
+/* ── Minor Class Additions for SHL, Sova, and Talegent ── */
 .shl-opt-text { flex: 1; }
 .sjt-move-up, .sjt-move-down { font-size: 0.7rem !important; padding: 6px !important; width: 28px !important; height: 28px !important; border-radius: 4px !important; }
 .pr-results-grid { display: flex; flex-direction: column; gap: 12px; }
