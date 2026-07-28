@@ -1,5 +1,5 @@
 /* ══════════════════════════════════════════════════════════════
-   CognitIQ — Global Design System (Light Theme)
+   CampusPlay — Global Design System (Light Theme)
    ══════════════════════════════════════════════════════════════ */
 
 :root {
@@ -1628,7 +1628,7 @@ h1, h2, h3, h4, h5 { font-family: var(--fh); }
 }
 
 /* ══════════════════════════════════════════════════════
-   CognitIQ — Gameplay HUD & Layout
+   CampusPlay — Gameplay HUD & Layout
    ══════════════════════════════════════════════════════ */
 #view-game {
   background: var(--bg);
@@ -3267,7 +3267,7 @@ h1, h2, h3, h4, h5 { font-family: var(--fh); }
 }
 
 /* ══════════════════════════════════════════════════════════════
-   ASSESSPRO/COGNITIQ THEME — TOWER GAME UI
+   ASSESSPRO/CAMPUSPLAY THEME — TOWER GAME UI
    ══════════════════════════════════════════════════════════════ */
 
 .ap-tow-header-row {
@@ -3493,7 +3493,7 @@ h1, h2, h3, h4, h5 { font-family: var(--fh); }
 }
 
 /* ══════════════════════════════════════════════════════════════
-   ASSESSPRO/COGNITIQ THEME — KEYPRESS CHALLENGE UI
+   ASSESSPRO/CAMPUSPLAY THEME — KEYPRESS CHALLENGE UI
    ══════════════════════════════════════════════════════════════ */
 
 .ap-kp-wrapper {
@@ -3685,7 +3685,7 @@ h1, h2, h3, h4, h5 { font-family: var(--fh); }
 .ap-kp-ind-lbl.wait { color: #ef4444; }
 
 /* ══════════════════════════════════════════════════════════════
-   ASSESSPRO/COGNITIQ THEME — EFFORT VS REWARD TASK UI
+   ASSESSPRO/CAMPUSPLAY THEME — EFFORT VS REWARD TASK UI
    ══════════════════════════════════════════════════════════════ */
 
 .ap-he-container {
@@ -4168,4 +4168,4 @@ h1, h2, h3, h4, h5 { font-family: var(--fh); }
     height: 1px;
   }
 }
-
+

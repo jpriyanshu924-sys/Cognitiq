@@ -120,7 +120,7 @@ class NumerosityGame {
         <!-- Top Header Bar -->
         <header class="ap-header">
           <div class="ap-header-left">
-            <span class="ap-logo">CognitIQ</span>
+            <span class="ap-logo">CampusPlay</span>
           </div>
           <div class="ap-header-center">
             <span class="ap-question-num">Round ${this.total}</span>

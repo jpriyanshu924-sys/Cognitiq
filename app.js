@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════
-   app.js — CognitIQ App Controller (38 Games Suite)
+   app.js — CampusPlay App Controller (38 Games Suite)
    ═══════════════════════════════════════════════════════ */
 
 const GAME_CONFIG = {
@@ -349,7 +349,7 @@ const GAME_MODULES = {
 
 /* ───────────────────────────────────────────────────── */
 
-class CognitIQApp {
+class CampusPlayApp {
   constructor() {
     this.state = {
       currentGame: null,
@@ -1265,7 +1265,7 @@ class CognitIQApp {
 
 /* ── NEW HELPER METHODS ─────────────────────────────── */
 
-Object.assign(CognitIQApp.prototype, {
+Object.assign(CampusPlayApp.prototype, {
 
   /* ── Streak Tracking ──────────────────────────────── */
   _updateStreak(extended) {
@@ -1393,4 +1393,4 @@ Object.assign(CognitIQApp.prototype, {
   }
 });
 
-window.addEventListener('DOMContentLoaded', () => { window._app = window.CIQ = new CognitIQApp(); });
+window.addEventListener('DOMContentLoaded', () => { window._app = window.CIQ = new CampusPlayApp(); });
