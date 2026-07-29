@@ -674,6 +674,7 @@ class CampusPlayApp {
       if (typeof isFirebaseReady !== 'undefined' && isFirebaseReady && db) {
         const payload = {
           candidateId: this.state.candidateId,
+          uid: (typeof auth !== 'undefined' && auth && auth.currentUser) ? auth.currentUser.uid : null,
           gameId: gameId,
           score: score,
           accuracy: Math.round(result.accuracy ?? (result.total ? (result.correct / result.total) * 100 : 0)),

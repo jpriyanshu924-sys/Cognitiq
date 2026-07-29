@@ -367,6 +367,7 @@ function finishTest() {
   if (typeof isFirebaseReady !== 'undefined' && isFirebaseReady && db) {
     const payload = {
       candidateId: state.candidateId,
+      uid: (typeof auth !== 'undefined' && auth && auth.currentUser) ? auth.currentUser.uid : null,
       testId: state.provider,
       avgScore: avgScore,
       timeUsed: timeUsed,

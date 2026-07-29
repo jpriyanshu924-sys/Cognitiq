@@ -11,14 +11,16 @@ const firebaseConfig = {
 };
 
 let db = null;
+let auth = null;
 let isFirebaseReady = false;
 
 if (typeof firebase !== 'undefined' && firebaseConfig.projectId && firebaseConfig.projectId !== "YOUR_PROJECT_ID") {
   try {
     firebase.initializeApp(firebaseConfig);
     db = firebase.firestore();
+    auth = firebase.auth();
     isFirebaseReady = true;
-    console.log("🔥 Firebase Firestore initialized successfully for project: " + firebaseConfig.projectId);
+    console.log("🔥 Firebase Firestore & Auth initialized successfully for project: " + firebaseConfig.projectId);
   } catch (error) {
     console.error("Error initializing Firebase:", error);
   }
