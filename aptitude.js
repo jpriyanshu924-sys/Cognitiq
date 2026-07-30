@@ -336,10 +336,15 @@ class AptitudeApp {
   }
 
   _init() {
-    document.addEventListener('DOMContentLoaded', () => {
+    const start = () => {
       this._renderCards();
       this._bindEvents();
-    });
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', start);
+    } else {
+      start();
+    }
   }
 
   _bindEvents() {
@@ -359,6 +364,17 @@ class AptitudeApp {
 
     const nextBtn = document.getElementById('apt-btn-next');
     if (nextBtn) nextBtn.addEventListener('click', () => this._nextQuestion());
+
+    // Event delegation for Start Test buttons
+    const grid = document.getElementById('apt-grid-container');
+    if (grid) {
+      grid.addEventListener('click', (e) => {
+        const btn = e.target.closest('.apt-btn-start');
+        if (btn && btn.dataset.cat) {
+          this.startTest(btn.dataset.cat);
+        }
+      });
+    }
   }
 
   _renderCards() {
@@ -388,7 +404,7 @@ class AptitudeApp {
             <span>⏱ 10 Mins</span>
             <span>🎯 Placement Standard</span>
           </div>
-          <button class="apt-btn-start" onclick="window.AptitudeEngine.startTest('${k}')">
+          <button class="apt-btn-start" data-cat="${k}">
             Start Test →
           </button>
         </div>
