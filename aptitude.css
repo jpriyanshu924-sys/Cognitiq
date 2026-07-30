@@ -253,7 +253,8 @@
   transition: opacity 0.25s ease;
 }
 
-.apt-modal-overlay.active {
+.apt-modal-overlay.active,
+.apt-modal-overlay.open {
   opacity: 1;
   pointer-events: auto;
 }

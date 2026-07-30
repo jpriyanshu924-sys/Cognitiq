@@ -427,7 +427,7 @@ class AptitudeApp {
     if (titleEl) titleEl.textContent = data.title;
 
     const modal = document.getElementById('apt-modal-overlay');
-    if (modal) modal.classList.add('open');
+    if (modal) modal.classList.add('active', 'open');
 
     this._startTimer();
     this._renderQuestion();
@@ -573,7 +573,7 @@ class AptitudeApp {
   _closeModal() {
     clearInterval(this.timer);
     const modal = document.getElementById('apt-modal-overlay');
-    if (modal) modal.classList.remove('open');
+    if (modal) modal.classList.remove('active', 'open');
   }
 }
 
