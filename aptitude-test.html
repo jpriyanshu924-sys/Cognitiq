@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="CAT-Level & Corporate Placement Aptitude Tests — CampusPlay. Practice Quantitative Aptitude, DILR, VARC, and Speed Drills." />
+  <title>Aptitude Tests — CampusPlay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700;800&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css?v=15" />
+  <link rel="stylesheet" href="landing.css?v=2" />
+  <link rel="stylesheet" href="aptitude.css?v=1" />
+</head>
+<body class="landing-body">
+
+  <!-- NAVIGATION BAR -->
+  <nav class="lnav" id="lnav">
+    <div class="lnav-inner">
+      <a href="index.html" class="lnav-logo">
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" class="lnav-logo-svg">
+          <polygon points="20,3 35,11.5 35,28.5 20,37 5,28.5 5,11.5" fill="none" stroke="currentColor" stroke-width="2.5"/>
+          <circle cx="20" cy="20" r="5.5" fill="currentColor"/>
+          <line x1="20" y1="3" x2="20" y2="14.5" stroke="currentColor" stroke-width="1.8"/>
+          <line x1="35" y1="11.5" x2="25.2" y2="17.2" stroke="currentColor" stroke-width="1.8"/>
+          <line x1="35" y1="28.5" x2="25.2" y2="22.8" stroke="currentColor" stroke-width="1.8"/>
+          <line x1="20" y1="37" x2="20" y2="25.5" stroke="currentColor" stroke-width="1.8"/>
+          <line x1="5" y1="28.5" x2="14.8" y2="22.8" stroke="currentColor" stroke-width="1.8"/>
+          <line x1="5" y1="11.5" x2="14.8" y2="17.2" stroke="currentColor" stroke-width="1.8"/>
+        </svg>
+        <span class="lnav-logo-text">CampusPlay</span>
+      </a>
+      <div class="lnav-links">
+        <a href="games.html" class="lnav-link">Gamified Assessments</a>
+        <a href="mock-test.html" class="lnav-link">Mock Tests</a>
+        <a href="aptitude-test.html" class="lnav-link lnav-link-active">Aptitude Tests</a>
+        <a href="tips.html" class="lnav-link">Free Tips</a>
+      </div>
+      <div class="lnav-actions">
+        <a href="games.html" class="lnav-cta">Start Free →</a>
+        <button type="button" class="lnav-profile-btn" id="btn-header-profile" aria-label="Account Profile">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          <span>Sign In</span>
+        </button>
+      </div>
+      <button class="lnav-hamburger" id="lnav-hamburger" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <!-- Mobile dropdown -->
+    <div class="lnav-mobile" id="lnav-mobile">
+      <a href="games.html" class="lnav-link">Gamified Assessments</a>
+      <a href="mock-test.html" class="lnav-link">Mock Tests</a>
+      <a href="aptitude-test.html" class="lnav-link lnav-link-active">Aptitude Tests</a>
+      <a href="tips.html" class="lnav-link">Free Tips</a>
+      <a href="games.html" class="lnav-cta lnav-cta-mobile">Start Free →</a>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <section class="apt-hero">
+    <div class="apt-hero-bg-grid"></div>
+    <div class="apt-hero-inner">
+      <div class="apt-eyebrow">🎓 CAT & Corporate Placement Suite</div>
+      <h1 class="apt-hero-h1">CAT-Level Aptitude Tests & Speed Drills</h1>
+      <p class="apt-hero-sub">Ace corporate quizzes, case competition aptitude rounds, and CAT-level entrance tests. Practice Quantitative Aptitude, DILR, VARC, and rapid mental math speed sprints with instant solution breakdowns.</p>
+      
+      <!-- Category Filter Tabs -->
+      <div class="apt-filter-bar">
+        <button class="apt-filter-btn active" data-cat="all">⚡ All Modules</button>
+        <button class="apt-filter-btn" data-cat="qa">📊 Quantitative (QA)</button>
+        <button class="apt-filter-btn" data-cat="dilr">📈 Data & Logic (DILR)</button>
+        <button class="apt-filter-btn" data-cat="varc">📚 Verbal (VARC)</button>
+        <button class="apt-filter-btn" data-cat="speed">⚡ Speed Drills</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEST CARDS GRID -->
+  <section class="apt-section-wrap">
+    <div class="apt-grid" id="apt-grid-container">
+      <!-- Injected dynamically by aptitude.js -->
+    </div>
+  </section>
+
+  <!-- MODAL TEST WORKSPACE -->
+  <div class="apt-modal-overlay" id="apt-modal-overlay">
+    <div class="apt-workspace-card">
+      <div class="apt-workspace-header">
+        <div class="apt-ws-title" id="apt-ws-title">Aptitude Test</div>
+        <div style="display:flex; align-items:center; gap:16px;">
+          <div class="apt-ws-timer" id="apt-ws-timer">⏱ 10:00</div>
+          <button class="apt-ws-close" id="apt-ws-close" aria-label="Close test">✕</button>
+        </div>
+      </div>
+
+      <div class="apt-workspace-body" id="apt-workspace-body">
+        <!-- Injected dynamically during test execution -->
+      </div>
+
+      <div class="apt-workspace-footer">
+        <span style="font-size:0.8rem; color:#64748b;">Instant Solutions & Explanations</span>
+        <button class="apt-btn-start" id="apt-btn-next" style="width:auto; padding:10px 24px; display:none;">
+          Next Question →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="28" height="28" class="lnav-logo-svg">
+            <polygon points="20,3 35,11.5 35,28.5 20,37 5,28.5 5,11.5" fill="none" stroke="currentColor" stroke-width="2.5"/>
+            <circle cx="20" cy="20" r="5.5" fill="currentColor"/>
+          </svg>
+          <span>CampusPlay</span>
+        </div>
+        <p class="footer-tagline">The #1 platform for gamified recruitment assessment practice.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <div class="footer-col-title">Platform</div>
+          <a href="games.html" class="footer-link">Gamified Assessments</a>
+          <a href="mock-test.html" class="footer-link">Mock Tests</a>
+          <a href="aptitude-test.html" class="footer-link">Aptitude Tests</a>
+          <a href="tips.html" class="footer-link">Free Tips</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 CampusPlay. All rights reserved.</span>
+    </div>
+  </footer>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="auth.js?v=1"></script>
+  <script src="aptitude.js?v=1"></script>
+</body>
+</html>
