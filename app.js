@@ -115,7 +115,7 @@ const GAME_CONFIG = {
     howto: ['Read the team conflict or sales scenario', 'Select your preferred resolution or response option', 'Analyze the dynamic feedback and consequences']
   },
   'power-generators': {
-    name: 'Power Generators', icon: '⚡', cat: 4, duration: 90, provider: 'Arctic Shores', difficulty: 'hard', tag: 'Logic',
+    name: 'Power Generators', icon: '⚡', cat: 5, duration: 90, provider: 'Arctic Shores', difficulty: 'hard', tag: 'Spatial',
     desc: 'You interact with virtual generators or resource elements and have to achieve an objective under specific constraints. It tests problem-solving, planning and attention.',
     skills: ['Problem Solving', 'Planning Depth', 'Resource Management'],
     howto: ['Click generator tiles to alter their output values', 'Observe the interaction rules and constraints', 'Find the combination that stabilizes all generators to unlock next level']
@@ -844,16 +844,11 @@ class CampusPlayApp {
     }).length;
 
     const TRAIT_CATEGORIES = {
-      // Practice grid — each unique game appears ONCE.
-      // Aliases (arrow-directions, balloon-risk-game, etc.) live in mock-test.js
-      // and are encountered there; they are intentionally excluded here.
       1: { name: 'Attention & Focus', icon: '🏹', desc: 'Inhibiting distractions and maintaining persistent focus', games: ['arrows-game', 'lengths-game', 'motion-track', 'keypress-game', 'signal-stop'], color: 'linear-gradient(135deg, #06b6d4, #0891b2)', bg: 'gc-bg-cyan', tag: 'Attention' },
       2: { name: 'Working Memory & Speed', icon: '🧠', desc: 'Holding, updating and manipulating sequential data', games: ['memory-vault', 'digit-nback', 'sequence', 'aon-switch', 'tickets'], color: 'linear-gradient(135deg, #7c3aed, #6d28d9)', bg: 'gc-bg-violet', tag: 'Memory' },
-      3: { name: 'Quantitative & Numerical', icon: '🔢', desc: 'Processing mental arithmetic and logical quantities', games: ['numerosity'], color: 'linear-gradient(135deg, #d97706, #b45309)', bg: 'gc-bg-orange', tag: 'Numerical' },
-      4: { name: 'Logical & Abstract Reasoning', icon: '🔷', desc: 'Formulating patterns and rules from visual shapes', games: ['power-generators', ], color: 'linear-gradient(135deg, #8b5cf6, #7c3aed)', bg: 'gc-bg-purple', tag: 'Logic' },
-      5: { name: 'Spatial Reasoning & Planning', icon: '📐', desc: 'Mentally rotating shapes and sequencing moves', games: ['shape-spinner', 'pipe-puzzle', 'gridlock', 'tower-game'], color: 'linear-gradient(135deg, #2563eb, #1d4ed8)', bg: 'gc-bg-blue', tag: 'Spatial' },
-      6: { name: 'Risk Calibration & Decision Making', icon: '🧩', desc: 'Assessing trade-offs under high-uncertainty rules', games: ['balloon-game', 'cards-game', 'hard-easy-game', 'money-exchange'], color: 'linear-gradient(135deg, #10b981, #059669)', bg: 'gc-bg-emerald', tag: 'Decision' },
-      7: { name: 'Social, Emotional & Interpersonal', icon: '🤝', desc: 'Reading expressions and resolving workplace scenarios', games: ['faces-game', 'inbox-triage'], color: 'linear-gradient(135deg, #3b82f6, #2563eb)', bg: 'gc-bg-pink', tag: 'Social' }
+      3: { name: 'Spatial Reasoning & Planning', icon: '📐', desc: 'Mentally rotating shapes, sequencing moves and generator logic', games: ['shape-spinner', 'pipe-puzzle', 'gridlock', 'tower-game', 'power-generators'], color: 'linear-gradient(135deg, #2563eb, #1d4ed8)', bg: 'gc-bg-blue', tag: 'Spatial' },
+      4: { name: 'Risk Calibration & Decision Making', icon: '🧩', desc: 'Assessing trade-offs under high-uncertainty rules', games: ['balloon-game', 'cards-game', 'hard-easy-game', 'money-exchange'], color: 'linear-gradient(135deg, #10b981, #059669)', bg: 'gc-bg-emerald', tag: 'Decision' },
+      5: { name: 'Social, Emotional & Interpersonal', icon: '🤝', desc: 'Reading expressions and resolving workplace scenarios', games: ['faces-game', 'inbox-triage'], color: 'linear-gradient(135deg, #3b82f6, #2563eb)', bg: 'gc-bg-pink', tag: 'Social' }
     };
 
     container.innerHTML = Object.keys(TRAIT_CATEGORIES).map(catId => {
@@ -954,16 +949,14 @@ class CampusPlayApp {
       const e = s[id]; return (e?.best ?? e)?.score !== undefined;
     }).length;
 
-    // Dynamically update progress counters for all 7 trait categories
+    // Dynamically update progress counters for all 5 trait categories
     const categoriesMapping = [
-      { id: 1, games: ['arrows-game', 'arrow-directions', 'lengths-game', 'motion-track', 'keypress-game', 'signal-stop', 'security-door', ] },
+      { id: 1, games: ['arrows-game', 'arrow-directions', 'lengths-game', 'motion-track', 'keypress-game', 'signal-stop', 'security-door'] },
       { id: 2, games: ['memory-vault', 'digit-nback', 'sequence', 'aon-switch', 'tickets'] },
-      { id: 3, games: [] },
-      { id: 4, games: ['patterns', 'power-generators'] },
-      { id: 5, games: ['tower-game', 'shape-spinner', 'order', 'gridlock', 'pipe-puzzle'] },
-      { id: 6, games: ['balloon-game', 'money-exchange', 'hard-easy-game', 'cards-game', 'balloon-risk-game'] },
-      { id: 7, games: ['faces-game', 'emotions-face-game', 'team-selling', 'inbox-triage', ] }
-    ]
+      { id: 3, games: ['tower-game', 'shape-spinner', 'order', 'gridlock', 'pipe-puzzle', 'power-generators'] },
+      { id: 4, games: ['balloon-game', 'money-exchange', 'hard-easy-game', 'cards-game', 'balloon-risk-game'] },
+      { id: 5, games: ['faces-game', 'emotions-face-game', 'team-selling', 'inbox-triage'] }
+    ];
 
     categoriesMapping.forEach(cat => {
       const el = document.getElementById(`progress-cat-${cat.id}`);
@@ -998,14 +991,12 @@ class CampusPlayApp {
     }
 
     const cats = [
-      { name: 'Attention & Focus',         games: ['arrows-game', 'arrow-directions', 'lengths-game', 'motion-track', 'keypress-game', 'signal-stop', 'security-door', ], c1: '#06b6d4', c2: '#0891b2' },
-      { name: 'Working Memory',            games: ['memory-vault', 'digit-nback', 'sequence', 'aon-switch', 'tickets'], c1: '#7c3aed', c2: '#6d28d9' },
-      { name: 'Quantitative',              games: [], c1: '#d97706', c2: '#b45309' },
-      { name: 'Logical Reasoning',         games: ['patterns', 'power-generators'], c1: '#8b5cf6', c2: '#7c3aed' },
-      { name: 'Spatial & Planning',        games: ['tower-game', 'shape-spinner', 'order', 'gridlock', 'pipe-puzzle'], c1: '#2563eb', c2: '#1d4ed8' },
-      { name: 'Risk & Decisions',          games: ['balloon-game', 'money-exchange', 'hard-easy-game', 'cards-game', 'balloon-risk-game'], c1: '#10b981', c2: '#059669' },
-      { name: 'Social & Interpersonal',    games: ['faces-game', 'emotions-face-game', 'team-selling', 'inbox-triage', ], c1: '#ec4899', c2: '#be185d' }
-    ]
+      { name: 'Attention & Focus', games: ['arrows-game', 'arrow-directions', 'lengths-game', 'motion-track', 'keypress-game', 'signal-stop', 'security-door'], c1: '#06b6d4', c2: '#0891b2' },
+      { name: 'Working Memory', games: ['memory-vault', 'digit-nback', 'sequence', 'aon-switch', 'tickets'], c1: '#7c3aed', c2: '#6d28d9' },
+      { name: 'Spatial & Planning', games: ['tower-game', 'shape-spinner', 'order', 'gridlock', 'pipe-puzzle', 'power-generators'], c1: '#2563eb', c2: '#1d4ed8' },
+      { name: 'Risk & Decisions', games: ['balloon-game', 'money-exchange', 'hard-easy-game', 'cards-game', 'balloon-risk-game'], c1: '#10b981', c2: '#059669' },
+      { name: 'Social & Interpersonal', games: ['faces-game', 'emotions-face-game', 'team-selling', 'inbox-triage'], c1: '#ec4899', c2: '#be185d' }
+    ];
 
     const getScore = id => (s[id]?.best ?? s[id])?.score ?? 0;
     const getAcc   = id => (s[id]?.best ?? s[id])?.accuracy ?? 0;
@@ -1060,14 +1051,12 @@ class CampusPlayApp {
     const getScore = id => (scores[id]?.best ?? scores[id])?.score ?? 0;
 
     const cats = [
-      { name: 'Attention & Focus',         games: ['arrows-game', 'arrow-directions', 'lengths-game', 'motion-track', 'keypress-game', 'signal-stop', 'security-door', ] },
-      { name: 'Working Memory',            games: ['memory-vault', 'digit-nback', 'sequence', 'aon-switch', 'tickets'] },
-      { name: 'Quantitative',              games: [] },
-      { name: 'Logical Reasoning',         games: ['patterns', 'power-generators'] },
-      { name: 'Spatial & Planning',        games: ['tower-game', 'shape-spinner', 'order', 'gridlock', 'pipe-puzzle'] },
-      { name: 'Risk & Decisions',          games: ['balloon-game', 'money-exchange', 'hard-easy-game', 'cards-game', 'balloon-risk-game'] },
-      { name: 'Social & Interpersonal',    games: ['faces-game', 'emotions-face-game', 'team-selling', 'inbox-triage', ] }
-    ]
+      { name: 'Attention & Focus', games: ['arrows-game', 'arrow-directions', 'lengths-game', 'motion-track', 'keypress-game', 'signal-stop', 'security-door'] },
+      { name: 'Working Memory', games: ['memory-vault', 'digit-nback', 'sequence', 'aon-switch', 'tickets'] },
+      { name: 'Spatial & Planning', games: ['tower-game', 'shape-spinner', 'order', 'gridlock', 'pipe-puzzle', 'power-generators'] },
+      { name: 'Risk & Decisions', games: ['balloon-game', 'money-exchange', 'hard-easy-game', 'cards-game', 'balloon-risk-game'] },
+      { name: 'Social & Interpersonal', games: ['faces-game', 'emotions-face-game', 'team-selling', 'inbox-triage'] }
+    ];
     const N = cats.length;
 
     ctx.clearRect(0, 0, W, H);
