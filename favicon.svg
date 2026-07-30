@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="cpGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#1d4ed8" />
+    </linearGradient>
+  </defs>
+  <!-- Outer Hexagon -->
+  <polygon points="32,4 58,18 58,46 32,60 6,46 6,18" fill="url(#cpGrad)" />
+  <!-- Inner Connecting Tech Lines -->
+  <line x1="32" y1="4" x2="32" y2="24" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+  <line x1="58" y1="18" x2="40" y2="28" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+  <line x1="58" y1="46" x2="40" y2="36" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+  <line x1="32" y1="60" x2="32" y2="40" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+  <line x1="6" y1="46" x2="24" y2="36" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+  <line x1="6" y1="18" x2="24" y2="28" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+  <!-- Central White Circle & Core Node -->
+  <circle cx="32" cy="32" r="9" fill="#ffffff"/>
+  <circle cx="32" cy="32" r="4.5" fill="#2563eb"/>
+</svg>
