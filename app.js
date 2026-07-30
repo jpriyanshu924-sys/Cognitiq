@@ -951,11 +951,11 @@ class CampusPlayApp {
 
     // Dynamically update progress counters for all 5 trait categories
     const categoriesMapping = [
-      { id: 1, games: ['arrows-game', 'arrow-directions', 'lengths-game', 'motion-track', 'keypress-game', 'signal-stop', 'security-door'] },
+      { id: 1, games: ['arrows-game', 'lengths-game', 'motion-track', 'keypress-game', 'signal-stop'] },
       { id: 2, games: ['memory-vault', 'digit-nback', 'sequence', 'aon-switch', 'tickets'] },
-      { id: 3, games: ['tower-game', 'shape-spinner', 'order', 'gridlock', 'pipe-puzzle', 'power-generators'] },
-      { id: 4, games: ['balloon-game', 'money-exchange', 'hard-easy-game', 'cards-game', 'balloon-risk-game'] },
-      { id: 5, games: ['faces-game', 'emotions-face-game', 'team-selling', 'inbox-triage'] }
+      { id: 3, games: ['shape-spinner', 'pipe-puzzle', 'gridlock', 'tower-game', 'power-generators'] },
+      { id: 4, games: ['balloon-game', 'cards-game', 'hard-easy-game', 'money-exchange'] },
+      { id: 5, games: ['faces-game', 'inbox-triage'] }
     ];
 
     categoriesMapping.forEach(cat => {
@@ -991,11 +991,11 @@ class CampusPlayApp {
     }
 
     const cats = [
-      { name: 'Attention & Focus', games: ['arrows-game', 'arrow-directions', 'lengths-game', 'motion-track', 'keypress-game', 'signal-stop', 'security-door'], c1: '#06b6d4', c2: '#0891b2' },
+      { name: 'Attention & Focus', games: ['arrows-game', 'lengths-game', 'motion-track', 'keypress-game', 'signal-stop'], c1: '#06b6d4', c2: '#0891b2' },
       { name: 'Working Memory', games: ['memory-vault', 'digit-nback', 'sequence', 'aon-switch', 'tickets'], c1: '#7c3aed', c2: '#6d28d9' },
-      { name: 'Spatial & Planning', games: ['tower-game', 'shape-spinner', 'order', 'gridlock', 'pipe-puzzle', 'power-generators'], c1: '#2563eb', c2: '#1d4ed8' },
-      { name: 'Risk & Decisions', games: ['balloon-game', 'money-exchange', 'hard-easy-game', 'cards-game', 'balloon-risk-game'], c1: '#10b981', c2: '#059669' },
-      { name: 'Social & Interpersonal', games: ['faces-game', 'emotions-face-game', 'team-selling', 'inbox-triage'], c1: '#ec4899', c2: '#be185d' }
+      { name: 'Spatial & Planning', games: ['shape-spinner', 'pipe-puzzle', 'gridlock', 'tower-game', 'power-generators'], c1: '#2563eb', c2: '#1d4ed8' },
+      { name: 'Risk & Decisions', games: ['balloon-game', 'cards-game', 'hard-easy-game', 'money-exchange'], c1: '#10b981', c2: '#059669' },
+      { name: 'Social & Interpersonal', games: ['faces-game', 'inbox-triage'], c1: '#ec4899', c2: '#be185d' }
     ];
 
     const getScore = id => (s[id]?.best ?? s[id])?.score ?? 0;
@@ -1051,11 +1051,11 @@ class CampusPlayApp {
     const getScore = id => (scores[id]?.best ?? scores[id])?.score ?? 0;
 
     const cats = [
-      { name: 'Attention & Focus', games: ['arrows-game', 'arrow-directions', 'lengths-game', 'motion-track', 'keypress-game', 'signal-stop', 'security-door'] },
+      { name: 'Attention & Focus', games: ['arrows-game', 'lengths-game', 'motion-track', 'keypress-game', 'signal-stop'] },
       { name: 'Working Memory', games: ['memory-vault', 'digit-nback', 'sequence', 'aon-switch', 'tickets'] },
-      { name: 'Spatial & Planning', games: ['tower-game', 'shape-spinner', 'order', 'gridlock', 'pipe-puzzle', 'power-generators'] },
-      { name: 'Risk & Decisions', games: ['balloon-game', 'money-exchange', 'hard-easy-game', 'cards-game', 'balloon-risk-game'] },
-      { name: 'Social & Interpersonal', games: ['faces-game', 'emotions-face-game', 'team-selling', 'inbox-triage'] }
+      { name: 'Spatial & Planning', games: ['shape-spinner', 'pipe-puzzle', 'gridlock', 'tower-game', 'power-generators'] },
+      { name: 'Risk & Decisions', games: ['balloon-game', 'cards-game', 'hard-easy-game', 'money-exchange'] },
+      { name: 'Social & Interpersonal', games: ['faces-game', 'inbox-triage'] }
     ];
     const N = cats.length;
 
