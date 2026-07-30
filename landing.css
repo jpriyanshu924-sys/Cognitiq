@@ -1965,3 +1965,30 @@
 
 
 
+
+/* Navbar Right Group & Mobile Collapsing */
+.lnav-right-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+  .lnav-inner {
+    padding: 0 12px;
+    gap: 8px;
+  }
+  .lnav-logo-text {
+    font-size: 1.05rem;
+  }
+  /* On mobile phones, collapse text inside profile button so it fits side-by-side with hamburger */
+  .lnav-profile-btn {
+    padding: 5px 8px;
+    gap: 5px;
+  }
+  .lnav-profile-btn > span:not(.lnav-online-dot):not(.lnav-avatar-text) {
+    display: none !important;
+  }
+}
