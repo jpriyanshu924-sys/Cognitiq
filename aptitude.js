@@ -1,11 +1,11 @@
 /* ══════════════════════════════════════════════════════════════
-   APTITUDE.JS — Interactive CAT-Level & Placement Test Engine
+   APTITUDE.JS — Interactive Placement & Corporate Aptitude Test Engine
    ══════════════════════════════════════════════════════════════ */
 
 const APTITUDE_DATA = {
   qa: {
     title: "Quantitative Aptitude (QA)",
-    desc: "Master CAT-level Arithmetic, Algebra, Geometry, and Number Systems for top corporate placements.",
+    desc: "Master Arithmetic, Algebra, Geometry, and Number Systems for top corporate placements.",
     icon: "📊",
     questions: [
       {
@@ -40,7 +40,7 @@ const APTITUDE_DATA = {
   },
   dilr: {
     title: "Data Interpretation & Logical Reasoning (DILR)",
-    desc: "Solve CAT-style matrix puzzles, chart caselets, and seating arrangement challenges.",
+    desc: "Solve matrix puzzles, chart caselets, and seating arrangement challenges.",
     icon: "📈",
     questions: [
       {
@@ -185,7 +185,7 @@ class AptitudeApp {
         <div>
           <div class="apt-card-meta">
             <span>⏱ 10 Mins</span>
-            <span>🎯 CAT / Placement Level</span>
+            <span>🎯 Placement Standard</span>
           </div>
           <button class="apt-btn-start" onclick="window.AptitudeEngine.startTest('${k}')">
             Start Test →
