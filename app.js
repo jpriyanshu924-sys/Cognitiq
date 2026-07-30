@@ -332,21 +332,26 @@ class CampusPlayApp {
     });
 
     // Profile
-    document.getElementById('btn-final-profile').addEventListener('click', () => this._showProfile());
-    document.getElementById('btn-view-results').addEventListener('click',  () => this._showProfile());
-    document.getElementById('btn-back-final').addEventListener('click',    () => this._showView('home'));
+    const btnViewRes = document.getElementById('btn-view-results');
+    if (btnViewRes) btnViewRes.addEventListener('click', () => this._showProfile());
+
+    const btnBackFinal = document.getElementById('btn-back-final');
+    if (btnBackFinal) btnBackFinal.addEventListener('click', () => this._showView('home'));
 
     // Reset
-    document.getElementById('btn-reset').addEventListener('click', () => {
-      if (confirm('Reset all scores? This cannot be undone.')) {
-        localStorage.removeItem('ciq_scores');
-        localStorage.removeItem('ciq_streak');
-        this.state.scores = {};
-        this._streakData = { streak: 0, lastPlayed: "" };
-        this._updateStreak(false);
-        this._updateDashboard();
-      }
-    });
+    const btnReset = document.getElementById('btn-reset');
+    if (btnReset) {
+      btnReset.addEventListener('click', () => {
+        if (confirm('Reset all scores? This cannot be undone.')) {
+          localStorage.removeItem('ciq_scores');
+          localStorage.removeItem('ciq_streak');
+          this.state.scores = {};
+          this._streakData = { streak: 0, lastPlayed: "" };
+          this._updateStreak(false);
+          this._updateDashboard();
+        }
+      });
+    }
 
     // Search input
     const searchInput = document.getElementById('search-input');
