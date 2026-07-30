@@ -384,12 +384,13 @@
       const badges = document.querySelectorAll('.lnav-profile-btn');
       badges.forEach(btn => {
         if (this.user) {
-          const name = this.user.displayName || this.user.email;
-          const initial = (name.charAt(0) || 'U').toUpperCase();
+          const name = this.user.displayName || this.user.email.split('@')[0];
+          const firstName = name.split(' ')[0];
+          const initial = (firstName.charAt(0) || 'U').toUpperCase();
           if (this.user.photoURL) {
-            btn.innerHTML = `<img src="${this.user.photoURL}" class="lnav-avatar-img" alt="Profile"/><span class="lnav-online-dot"></span>`;
+            btn.innerHTML = `<img src="${this.user.photoURL}" class="lnav-avatar-img" alt="Profile"/><span style="font-weight:700;">${firstName}</span><span class="lnav-online-dot"></span>`;
           } else {
-            btn.innerHTML = `<span class="lnav-avatar-text">${initial}</span><span class="lnav-online-dot"></span>`;
+            btn.innerHTML = `<span class="lnav-avatar-text">${initial}</span><span style="font-weight:700;">${firstName}</span><span class="lnav-online-dot"></span>`;
           }
           btn.title = `Profile: ${name}`;
           btn.classList.add('logged-in');

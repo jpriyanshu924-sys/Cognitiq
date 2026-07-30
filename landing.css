@@ -1291,62 +1291,69 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: #1e293b;
-  border: 1px solid #334155;
-  color: #ffffff !important;
-  padding: 7px 16px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #0f172a !important;
+  padding: 6px 14px;
   border-radius: 30px;
   font-size: 0.84rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
   position: relative;
   text-decoration: none;
   white-space: nowrap;
 }
 .lnav-profile-btn svg {
-  stroke: #ffffff !important;
+  stroke: #2563eb !important;
 }
 .lnav-profile-btn span {
-  color: #ffffff !important;
+  color: #0f172a !important;
 }
 .lnav-profile-btn:hover {
-  background: #0f172a;
+  background: #eff6ff;
   border-color: #2563eb;
-  color: #ffffff !important;
-  box-shadow: 0 4px 16px rgba(37,99,235,0.3);
+  color: #2563eb !important;
+  box-shadow: 0 4px 14px rgba(37,99,235,0.15);
   transform: translateY(-1px);
 }
 .lnav-profile-btn.logged-in {
-  background: linear-gradient(135deg, #1e293b, #0f172a);
-  border-color: #3b82f6;
-  color: #ffffff !important;
+  background: #ffffff;
+  border: 1px solid #bfdbfe;
+  color: #0f172a !important;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.08);
+}
+.lnav-profile-btn.logged-in:hover {
+  background: #f0f9ff;
+  border-color: #2563eb;
 }
 .lnav-avatar-text {
-  width: 26px;
-  height: 26px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #2563eb, #7c3aed);
-  color: #fff;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.8rem;
-  font-weight: 700;
+  font-size: 0.75rem;
+  font-weight: 800;
+  font-family: var(--fm);
 }
 .lnav-avatar-img {
-  width: 26px;
-  height: 26px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   object-fit: cover;
+  border: 1.5px solid #2563eb;
 }
 .lnav-online-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background-color: #10b981;
-  box-shadow: 0 0 0 2px rgba(16,185,129,0.3);
+  box-shadow: 0 0 0 2px #ffffff;
 }
 
 /* Auth Modal Overlay */
