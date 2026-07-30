@@ -254,7 +254,11 @@
           setTimeout(() => this.closeModal(), 800);
         } catch (err) {
           console.error("Google Auth Error:", err);
-          this.showAlert(err.message || 'Google sign-in failed. Ensure popups are allowed.', 'error');
+          if (err.code === 'auth/unauthorized-domain' || (err.message && err.message.includes('unauthorized-domain'))) {
+            this.showAlert('Domain Authorization Required: campusplay.in must be added to Authorized Domains in Firebase Console. You can also sign in below using Email & Password.', 'error');
+          } else {
+            this.showAlert(err.message || 'Google sign-in failed. Ensure popups are allowed.', 'error');
+          }
         }
       };
 
