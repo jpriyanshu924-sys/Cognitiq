@@ -63,24 +63,6 @@ const PROVIDERS = {
       { id: 'aon-switch',   name: 'Switch Challenge', icon: '🔄' },
       { id: 'inbox-triage',  name: 'ChatAssess',       icon: '💬' }
     ]
-  },
-  shl: {
-    name: 'SHL',
-    icon: '📊',
-    meta: '7 games · ~35 min',
-    totalSeconds: 35 * 60,
-    desc: 'SHL assessments are among the most widely used psychometric tests globally. They cover numerical reasoning, inductive logic, situational judgement and abstract pattern recognition.',
-    traits: ['Numerical Reasoning', 'Inductive Logic', 'Deductive Reasoning', 'Attention Checking', 'Situational Judgement', 'Mechanical Aptitude'],
-    employers: ['HSBC', 'Shell', 'Rolls-Royce', 'BT', 'Vodafone', 'Tesco'],
-    games: [
-      { id: 'verify-numerical', name: 'Numerical', icon: '📊' },
-      { id: 'verify-inductive', name: 'Inductive', icon: '🔬' },
-      { id: 'logic-deduction',   name: 'Deductive', icon: '🔍' },
-      { id: 'checking-game',     name: 'Checking', icon: '📋' },
-      { id: 'calculation-game',  name: 'Calculation', icon: '🔢' },
-      { id: 'scenario-judge',    name: 'SJT', icon: '⚖️' },
-      { id: 'pattern-matrix',    name: 'Mechanical Comprehension', icon: '⚙️' }
-    ]
   }
 };
 
