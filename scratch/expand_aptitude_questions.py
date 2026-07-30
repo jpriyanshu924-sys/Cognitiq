@@ -1,4 +1,9 @@
-/* ══════════════════════════════════════════════════════════════
+import os
+
+workspace = r"C:\Users\PRIYANSHU\.gemini\antigravity\scratch\cognitiq"
+aptitude_js_path = os.path.join(workspace, "aptitude.js")
+
+new_aptitude_js = r"""/* ══════════════════════════════════════════════════════════════
    APTITUDE.JS — Interactive Placement & Corporate Aptitude Test Engine
    ══════════════════════════════════════════════════════════════ */
 
@@ -562,3 +567,9 @@ class AptitudeApp {
 }
 
 window.AptitudeEngine = new AptitudeApp();
+"""
+
+with open(aptitude_js_path, "w", encoding="utf-8") as f:
+    f.write(new_aptitude_js)
+
+print("=== EXPANDED APTITUDE QUESTIONS COMPLETE (40 Detailed Questions) ===")
