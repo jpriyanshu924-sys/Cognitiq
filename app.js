@@ -353,12 +353,31 @@ class CampusPlayApp {
       });
     }
 
-    // Search input
+    // Search input (hidden but still functional)
     const searchInput = document.getElementById('search-input');
     if (searchInput) {
       searchInput.addEventListener('input', (e) => {
         const query = e.target.value.toLowerCase().trim();
         this._filterGames(query);
+      });
+    }
+
+    // Category filter buttons in game hero
+    const filterBar = document.getElementById('game-filter-bar');
+    if (filterBar) {
+      filterBar.addEventListener('click', (e) => {
+        const btn = e.target.closest('.apt-filter-btn');
+        if (!btn) return;
+        filterBar.querySelectorAll('.apt-filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const cat = btn.dataset.cat;
+        document.querySelectorAll('.game-category-section').forEach(section => {
+          if (cat === 'all' || section.dataset.catid === cat) {
+            section.style.display = '';
+          } else {
+            section.style.display = 'none';
+          }
+        });
       });
     }
 
@@ -876,19 +895,19 @@ class CampusPlayApp {
 
         return `
           <div class="game-card apt-style-card" id="card-${gameId}" data-game="${gameId}">
-            <div>
+            <div class="card-stripe" style="background: ${cat.color};"></div>
+            <div class="card-body">
               <div class="apt-card-top">
-                <div class="gc-icon-pill" style="background: ${cat.color};">
-                  <span style="font-size:1.4rem; line-height:1;">${cfg.icon}</span>
+                <div class="gc-icon-pill" style="background: ${cat.color}22; border: 1px solid ${cat.color}44;">
+                  <span style="font-size:1.5rem; line-height:1;">${cfg.icon}</span>
                 </div>
-                <span class="apt-card-badge gc-cat-badge">${cat.tag}</span>
+                <span class="gc-cat-badge">${cat.tag.toUpperCase()}</span>
               </div>
               <h3 class="apt-card-title">${cfg.name}</h3>
               <p class="apt-card-desc">${cfg.desc}</p>
-            </div>
-            <div>
               <div class="apt-card-meta">
                 <span class="difficulty ${diffClass}">${difficultyLabel}</span>
+                <span style="font-size:0.72rem; color:#94a3b8; font-weight:600;">${prov}</span>
                 <div class="game-best" id="best-${gameId}" style="${bestData ? '' : 'display:none'}">
                   🏆 ${bestData ? `<strong>${scoreStr}</strong>${accStr}` : ''}
                 </div>
@@ -901,7 +920,7 @@ class CampusPlayApp {
       }).join('');
 
       return `
-        <div class="category cat-${catId}">
+        <div class="category cat-${catId} game-category-section" data-catid="${catId}">
           <div class="category-header">
             <div class="category-icon" style="background: ${cat.color}; color: #fff; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 12px; font-size: 1.25rem;">${cat.icon}</div>
             <div class="cat-meta" style="margin-left: 12px;">
@@ -912,7 +931,7 @@ class CampusPlayApp {
               <span>${played}/${cat.games.length}</span>
             </div>
           </div>
-          <div class="game-grid grid-3">
+          <div class="game-grid game-grid-single" id="game-grid-cat-${catId}">
             ${cardsHtml}
           </div>
         </div>`;

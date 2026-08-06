@@ -62,44 +62,30 @@
     </div>
     </nav>
 
-    <!-- PAGE HERO -->
-    <section class="page-hero">
-      <div class="page-hero-inner" style="max-width: 820px;">
-        <div class="page-hero-eyebrow">🚀 Cognitive Training Suite</div>
-        <h1 class="page-hero-h1">Practice Your Recruiter Assessments</h1>
-        <p class="page-hero-sub" style="max-width: 680px; color: rgba(255,255,255,0.75);">Prepare for the exact cognitive, logic, behavioral, and spatial games used by top global employers. Build your cognitive profile across all major provider formats.</p>
-        <div class="page-hero-stats">
-          <div class="page-hero-stat">
-            <span class="page-hero-stat-num">31</span>
-            <span class="page-hero-stat-label">Gamified Assessments</span>
-          </div>
-          <div class="page-hero-stat-divider"></div>
-          <div class="page-hero-stat">
-            <span class="page-hero-stat-num">3</span>
-            <span class="page-hero-stat-label">Assessment Suites</span>
-          </div>
-          <div class="page-hero-stat-divider"></div>
-          <div class="page-hero-stat">
-            <span class="page-hero-stat-num">∞</span>
-            <span class="page-hero-stat-label">Unlimited Access</span>
-          </div>
+    <!-- GAME HERO — matches aptitude page style -->
+    <section class="apt-hero game-hero">
+      <div class="apt-hero-bg-grid"></div>
+      <div class="apt-hero-inner">
+        <div class="apt-eyebrow">🎮 Cognitive Assessment Suite</div>
+        <h1 class="apt-hero-h1">Practice Your Recruiter Assessments</h1>
+        <p class="apt-hero-sub">Prepare for the exact cognitive, logic, behavioral, and spatial games used by top global employers. Build your cognitive profile across all major provider formats.</p>
+
+        <!-- Category Filter Tabs -->
+        <div class="apt-filter-bar" id="game-filter-bar">
+          <button class="apt-filter-btn active" data-cat="all">⚡ All Games</button>
+          <button class="apt-filter-btn" data-cat="1">🏹 Attention &amp; Focus</button>
+          <button class="apt-filter-btn" data-cat="2">🧠 Memory &amp; Speed</button>
+          <button class="apt-filter-btn" data-cat="3">📐 Spatial Reasoning</button>
+          <button class="apt-filter-btn" data-cat="4">🧩 Risk &amp; Decision</button>
+          <button class="apt-filter-btn" data-cat="5">🤝 Social &amp; EQ</button>
         </div>
       </div>
     </section>
 
-    <!-- Page specific filters and controls -->
-    <div class="page-controls">
-      <!-- Left Side: Search Bar -->
-      <div class="lnav-search-container" style="margin: 0; flex: 1; max-width: 320px;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lnav-search-icon">
-          <circle cx="11" cy="11" r="8"></circle>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        </svg>
-        <input type="text" id="search-input" class="lnav-search-input" placeholder="Filter games..." />
-      </div>
-    </div>
+    <!-- hidden search input kept for JS compatibility -->
+    <input type="text" id="search-input" style="display:none;" />
 
-    <div class="categories" id="categories-container">
+    <div class="categories games-categories-wrap" id="categories-container">
       <!-- Injected dynamically by app.js based on Trait Categories -->
     </div>
 
