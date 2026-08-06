@@ -11,6 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css?v=15" />
   <link rel="stylesheet" href="landing.css?v=2" />
+  <link rel="stylesheet" href="aptitude.css?v=1" />
 </head>
 <body class="landing-body">
 <div id="app">
@@ -62,13 +63,13 @@
     </div>
     </nav>
 
-    <!-- PAGE HERO -->
-    <section class="apt-hero game-hero">
+        <!-- BLUE HERO SECTION (matches aptitude test page) -->
+    <section class="apt-hero">
       <div class="apt-hero-bg-grid"></div>
       <div class="apt-hero-inner">
-        <div class="apt-eyebrow">🚀 Cognitive Training Suite</div>
-        <h1 class="apt-hero-h1">Practice Your Recruiter Assessments</h1>
-        <p class="apt-hero-sub">Prepare for the exact cognitive, logic, behavioral, and spatial games used by top global employers. Build your cognitive profile across all major provider formats.</p>
+        <div class="apt-eyebrow">🚀 GAMIFIED RECRUITMENT ASSESSMENT SUITE</div>
+        <h1 class="apt-hero-h1">Gamified Assessment &amp; Recruiter Rounds</h1>
+        <p class="apt-hero-sub">Prepare for the exact cognitive, logic, behavioral, and spatial games used by top recruiters like Pymetrics, Arctic Shores, HireVue, and Aon Cut-e.</p>
 
         <!-- Category Filter Tabs -->
         <div class="apt-filter-bar" id="game-filter-bar">
@@ -82,12 +83,15 @@
       </div>
     </section>
 
-    <!-- hidden search input kept for JS compatibility -->
+    <!-- hidden search input for JS compatibility -->
     <input type="text" id="search-input" style="display:none;" />
 
-    <div class="categories games-categories-wrap" id="categories-container">
-      <!-- Injected dynamically by app.js based on Trait Categories -->
-    </div>
+    <!-- CARDS GRID CONTAINER -->
+    <section class="apt-section-wrap">
+      <div class="apt-grid" id="categories-container">
+        <!-- Injected dynamically by app.js -->
+      </div>
+    </section>
 
     <div class="final-cta" id="final-cta" style="display:none">
       <div class="cta-inner">

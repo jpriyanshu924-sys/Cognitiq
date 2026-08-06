@@ -457,3 +457,32 @@
   .apt-workspace-footer { padding: 12px 18px; }
   .apt-btn-start { font-size: 0.8rem; padding: 9px 18px; }
 }
+
+/* Mobile Responsive for apt-grid */
+@media (max-width: 768px) {
+  .apt-section-wrap {
+    padding: 24px 16px 60px;
+  }
+  .apt-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+  .apt-card {
+    padding: 20px 16px;
+    border-radius: 16px;
+  }
+  .apt-card-title {
+    font-size: 1.15rem;
+  }
+  .apt-card-desc {
+    font-size: 0.84rem;
+    line-height: 1.5;
+    margin-bottom: 16px;
+  }
+  .apt-card-meta {
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 18px;
+    padding-top: 12px;
+  }
+}

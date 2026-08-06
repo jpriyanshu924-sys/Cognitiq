@@ -371,11 +371,11 @@ class CampusPlayApp {
         filterBar.querySelectorAll('.apt-filter-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         const cat = btn.dataset.cat;
-        document.querySelectorAll('.game-category-section').forEach(section => {
-          if (cat === 'all' || section.dataset.catid === cat) {
-            section.style.display = '';
+        document.querySelectorAll('.game-card-item').forEach(card => {
+          if (cat === 'all' || card.dataset.catid === cat) {
+            card.style.display = 'flex';
           } else {
-            section.style.display = 'none';
+            card.style.display = 'none';
           }
         });
       });
@@ -858,81 +858,64 @@ class CampusPlayApp {
     return { icon:'🔄', label:'Needs More Practice' };
   }
 
-  _renderCategories() {
+    _renderCategories() {
     const container = document.getElementById('categories-container');
     if (!container) return;
 
     const s = this.state.scores;
-    const count = (ids) => ids.filter(id => {
-      const e = s[id]; return (e?.best ?? e)?.score !== undefined;
-    }).length;
 
     const TRAIT_CATEGORIES = {
-      1: { name: 'Attention & Focus', icon: '🏹', desc: 'Inhibiting distractions and maintaining persistent focus', games: ['arrows-game', 'lengths-game', 'motion-track', 'keypress-game', 'signal-stop'], color: 'linear-gradient(135deg, #06b6d4, #0891b2)', bg: 'gc-bg-cyan', tag: 'Attention' },
-      2: { name: 'Working Memory & Speed', icon: '🧠', desc: 'Holding, updating and manipulating sequential data', games: ['memory-vault', 'digit-nback', 'sequence', 'aon-switch', 'tickets'], color: 'linear-gradient(135deg, #7c3aed, #6d28d9)', bg: 'gc-bg-violet', tag: 'Memory' },
-      3: { name: 'Spatial Reasoning & Planning', icon: '📐', desc: 'Mentally rotating shapes, sequencing moves and generator logic', games: ['shape-spinner', 'pipe-puzzle', 'gridlock', 'tower-game', 'power-generators'], color: 'linear-gradient(135deg, #2563eb, #1d4ed8)', bg: 'gc-bg-blue', tag: 'Spatial' },
-      4: { name: 'Risk Calibration & Decision Making', icon: '🧩', desc: 'Assessing trade-offs under high-uncertainty rules', games: ['balloon-game', 'cards-game', 'hard-easy-game', 'money-exchange'], color: 'linear-gradient(135deg, #10b981, #059669)', bg: 'gc-bg-emerald', tag: 'Decision' },
-      5: { name: 'Social, Emotional & Interpersonal', icon: '🤝', desc: 'Reading expressions and resolving workplace scenarios', games: ['faces-game', 'inbox-triage'], color: 'linear-gradient(135deg, #3b82f6, #2563eb)', bg: 'gc-bg-pink', tag: 'Social' }
+      1: { name: 'Attention & Focus', icon: '🏹', desc: 'Inhibiting distractions and maintaining persistent focus', games: ['arrows-game', 'lengths-game', 'motion-track', 'keypress-game', 'signal-stop'], tag: 'Attention' },
+      2: { name: 'Working Memory & Speed', icon: '🧠', desc: 'Holding, updating and manipulating sequential data', games: ['memory-vault', 'digit-nback', 'sequence', 'aon-switch', 'tickets'], tag: 'Memory' },
+      3: { name: 'Spatial Reasoning & Planning', icon: '📐', desc: 'Mentally rotating shapes, sequencing moves and generator logic', games: ['shape-spinner', 'pipe-puzzle', 'gridlock', 'tower-game', 'power-generators'], tag: 'Spatial' },
+      4: { name: 'Risk Calibration & Decision Making', icon: '🧩', desc: 'Assessing trade-offs under high-uncertainty rules', games: ['balloon-game', 'cards-game', 'hard-easy-game', 'money-exchange'], tag: 'Decision' },
+      5: { name: 'Social, Emotional & Interpersonal', icon: '🤝', desc: 'Reading expressions and resolving workplace scenarios', games: ['faces-game', 'inbox-triage'], tag: 'Social' }
     };
 
-    container.innerHTML = Object.keys(TRAIT_CATEGORIES).map(catId => {
+    let allGames = [];
+    Object.keys(TRAIT_CATEGORIES).forEach(catId => {
       const cat = TRAIT_CATEGORIES[catId];
-      const played = count(cat.games);
+      cat.games.forEach(gameId => {
+        allGames.push({ catId, cat, gameId });
+      });
+    });
+
+    container.innerHTML = allGames.map(({ catId, cat, gameId }) => {
+      const cfg = GAME_CONFIG[gameId];
+      if (!cfg) return '';
+      const bestData = (s[gameId]?.best ?? s[gameId]);
+      const scoreStr = bestData ? `${bestData.score.toLocaleString()} pts` : '';
+      const accStr = bestData ? ` · ${Math.round(bestData.accuracy)}% acc` : '';
       
-      const cardsHtml = cat.games.map(gameId => {
-        const cfg = GAME_CONFIG[gameId];
-        if (!cfg) return '';
-        const bestData = (s[gameId]?.best ?? s[gameId]);
-        const scoreStr = bestData ? `${bestData.score.toLocaleString()} pts` : '';
-        const accStr = bestData ? ` · ${Math.round(bestData.accuracy)}% acc` : '';
-        
-        let difficultyLabel = 'Easy';
-        let diffClass = 'diff-easy';
-        if (cfg.difficulty === 'medium') { difficultyLabel = 'Medium'; diffClass = 'diff-medium'; }
-        else if (cfg.difficulty === 'hard') { difficultyLabel = 'Hard'; diffClass = 'diff-hard'; }
+      let difficultyLabel = 'Easy';
+      let diffClass = 'diff-easy';
+      if (cfg.difficulty === 'medium') { difficultyLabel = 'Medium'; diffClass = 'diff-medium'; }
+      else if (cfg.difficulty === 'hard') { difficultyLabel = 'Hard'; diffClass = 'diff-hard'; }
 
-        const prov = cfg.provider || 'Recruitment Test';
-
-        return `
-          <div class="game-card" id="card-${gameId}" data-game="${gameId}">
-            <div class="gc-header-block ${cat.bg}">
-              <div class="gc-top-row">
-                <span class="gc-popular-tag">${cat.tag}</span>
-                <span class="gc-watermark">${cfg.icon}</span>
-              </div>
-              <div class="gc-title-row">
-                <span class="gc-card-title-main">${cfg.name}</span>
-              </div>
-            </div>
-            <div class="gc-body-block">
-              <div class="gc-body-title">${prov} Assessment</div>
-              <span class="difficulty ${diffClass}">${difficultyLabel}</span>
-              <p>${cfg.desc}</p>
-              <div class="game-best" id="best-${gameId}" style="${bestData ? '' : 'display:none'}">
-                ${bestData ? `🏆 Best: <strong>${scoreStr}</strong>${accStr}` : ''}
-              </div>
-              <button class="btn btn-play" data-game="${gameId}">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                Start Practice
-              </button>
-            </div>
-          </div>`;
-      }).join('');
+      const prov = cfg.provider || 'Recruiter Assessment';
 
       return `
-        <div class="category cat-${catId} game-category-section" data-catid="${catId}">
-          <div class="category-header">
-            <div class="category-icon" style="background: ${cat.color}; color: #fff; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 12px; font-size: 1.25rem;">${cat.icon}</div>
-            <div class="cat-meta" style="margin-left: 12px;">
-              <h2 class="category-title" style="font-family: var(--fh); font-size: 1.15rem; font-weight: 700; color: var(--text);">${cat.name}</h2>
-              <p class="category-subtitle" style="font-size: 0.82rem; color: var(--muted); margin-top: 2px;">${cat.desc}</p>
+        <div class="apt-card game-card game-card-item" id="card-${gameId}" data-game="${gameId}" data-catid="${catId}">
+          <div>
+            <div class="apt-card-top">
+              <div class="apt-card-icon">${cfg.icon}</div>
+              <span class="apt-card-badge">${cat.tag}</span>
             </div>
-            <div class="category-progress" id="progress-cat-${catId}" style="margin-left: auto; font-family: var(--fm); font-size: 0.85rem; font-weight: 700; color: var(--violet); background: rgba(37,99,235,0.08); padding: 4px 12px; border-radius: 100px;">
-              <span>${played}/${cat.games.length}</span>
-            </div>
+            <h3 class="apt-card-title">${cfg.name}</h3>
+            <p class="apt-card-desc">${cfg.desc}</p>
           </div>
-          <div class="game-grid grid-3" id="game-grid-cat-${catId}">
-            ${cardsHtml}
+          <div>
+            <div class="apt-card-meta">
+              <span>⏱ 3 Mins</span>
+              <span>🎯 ${prov}</span>
+              <span class="difficulty ${diffClass}">${difficultyLabel}</span>
+            </div>
+            <div class="game-best" id="best-${gameId}" style="${bestData ? 'margin-bottom:12px;' : 'display:none;'}">
+              ${bestData ? `🏆 Best: <strong>${scoreStr}</strong>${accStr}` : ''}
+            </div>
+            <button class="apt-btn-start btn-play" data-game="${gameId}">
+              Start Practice →
+            </button>
           </div>
         </div>`;
     }).join('');
