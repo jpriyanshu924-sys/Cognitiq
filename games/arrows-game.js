@@ -355,6 +355,7 @@ class ArrowsGame {
     if (this._kd) window.removeEventListener('keydown', this._kd);
     clearTimeout(this._showTimer);
     clearTimeout(this._responseTimeout);
+    if (this.el && this.el.parentNode) { this.el.parentNode.removeChild(this.el); }
     this.el = null;
   }
 }

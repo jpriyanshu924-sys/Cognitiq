@@ -189,6 +189,7 @@ class FeatureUnlockGame {
     this._timers.forEach(clearTimeout);
     this.cb.onEnd({ score: this.score, accuracy: this.puzzlesSolved > 0 ? 80 : 0, avgTime: 0, correct: this.puzzlesSolved, total: this.puzzlesSolved + 1, level: this.level });
   }
-  destroy() { this._timers.forEach(clearTimeout); this.el = null; }
+  destroy() { this._timers.forEach(clearTimeout); if (this.el && this.el.parentNode) { this.el.parentNode.removeChild(this.el); }
+    this.el = null; }
 }
 window.FeatureUnlockGame = FeatureUnlockGame;

@@ -246,6 +246,7 @@ class AonSwitchGame {
       });
     }, 2000);
   }
-  destroy() { if (this._kd) window.removeEventListener('keydown', this._kd); clearTimeout(this._nextTimer); this.el = null; }
+  destroy() { if (this._kd) window.removeEventListener('keydown', this._kd); clearTimeout(this._nextTimer); if (this.el && this.el.parentNode) { this.el.parentNode.removeChild(this.el); }
+    this.el = null; }
 }
 window.AonSwitchGame = AonSwitchGame;

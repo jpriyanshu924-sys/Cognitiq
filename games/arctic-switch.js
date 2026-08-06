@@ -313,6 +313,7 @@ class ArcticSwitchGame {
   destroy() {
     if (this._kd) window.removeEventListener('keydown', this._kd);
     clearTimeout(this._showTimer);
+    if (this.el && this.el.parentNode) { this.el.parentNode.removeChild(this.el); }
     this.el = null;
   }
 }

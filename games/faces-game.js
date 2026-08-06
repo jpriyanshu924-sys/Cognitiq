@@ -324,7 +324,8 @@ class FacesGame {
     });
   }
 
-  destroy() { this.el = null; }
+  destroy() { if (this.el && this.el.parentNode) { this.el.parentNode.removeChild(this.el); }
+    this.el = null; }
 }
 
 window.FacesGame = FacesGame;

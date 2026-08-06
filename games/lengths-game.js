@@ -388,6 +388,7 @@ class LengthsGame {
   destroy() {
     this._clearTimers();
     if (this._kd) window.removeEventListener('keydown', this._kd);
+    if (this.el && this.el.parentNode) { this.el.parentNode.removeChild(this.el); }
     this.el = null;
   }
 }

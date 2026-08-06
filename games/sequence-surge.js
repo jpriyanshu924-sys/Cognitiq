@@ -341,6 +341,7 @@ class SequenceSurgeGame {
 
   destroy() {
     this._clearTimers();
+    if (this.el && this.el.parentNode) { this.el.parentNode.removeChild(this.el); }
     this.el = null;
   }
 }

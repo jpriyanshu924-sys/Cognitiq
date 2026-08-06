@@ -232,6 +232,7 @@ class GridMemoryGame {
     this._timers.forEach(clearTimeout);
     this.cb.onEnd({ score: this.score, accuracy: this.total ? (this.correct/this.total)*100 : 0, avgTime: 0, correct: this.correct, total: this.total, level: this.level });
   }
-  destroy() { this._timers.forEach(clearTimeout); this.el = null; }
+  destroy() { this._timers.forEach(clearTimeout); if (this.el && this.el.parentNode) { this.el.parentNode.removeChild(this.el); }
+    this.el = null; }
 }
 window.GridMemoryGame = GridMemoryGame;

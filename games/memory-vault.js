@@ -5,6 +5,7 @@
 ══════════════════════════════════════════════════════ */
 class MemoryVaultGame {
   constructor(container, cb) {
+    this.cb = cb || {};
     this.container=container; this.cb=cb;
     this.score=0; this.lives=3; this.seqLen=3;
     this.level=1; this.roundsWon=0;

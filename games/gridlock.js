@@ -359,6 +359,7 @@ class GridlockGame {
   destroy() {
     if (this._kd) window.removeEventListener('keydown', this._kd);
     this._timers.forEach(clearTimeout);
+    if (this.el && this.el.parentNode) { this.el.parentNode.removeChild(this.el); }
     this.el = null;
   }
 }

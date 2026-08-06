@@ -283,6 +283,7 @@ class NumerosityGame {
   destroy() { 
     this._clearRoundTimer();
     this._timers.forEach(clearTimeout); 
+    if (this.el && this.el.parentNode) { this.el.parentNode.removeChild(this.el); }
     this.el = null; 
   }
 }

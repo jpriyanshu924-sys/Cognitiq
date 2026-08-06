@@ -5,6 +5,7 @@
 ══════════════════════════════════════════════════════ */
 class SignalStopGame {
   constructor(container, cb) {
+    this.cb = cb || {};
     this.container=container; this.cb=cb;
     this.score=0; this.hits=0; this.misses=0; this.falseAlarms=0;
     this.rtTimes=[]; this.level=1;

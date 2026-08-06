@@ -253,6 +253,7 @@ class KeypressGame {
     clearTimeout(this._phaseTimer);
     if (this._frameId) cancelAnimationFrame(this._frameId);
     if (this._kd) window.removeEventListener('keydown', this._kd);
+    if (this.el && this.el.parentNode) { this.el.parentNode.removeChild(this.el); }
     this.el = null;
   }
 }

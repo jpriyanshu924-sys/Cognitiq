@@ -5,6 +5,7 @@
 ══════════════════════════════════════════════════════ */
 class ShapeSpinnerGame {
   constructor(container, cb) {
+    this.cb = cb || {};
     this.container=container; this.cb=cb;
     this.q=0; this.correct=0; this.total=0;
     this.score=0; this.streak=0; this.times=[];

@@ -54,6 +54,7 @@ const OPPOSITE = {T:'B',B:'T',L:'R',R:'L'};
 
 class PipePuzzleGame {
   constructor(container, cb) {
+    this.cb = cb || {};
     this.container=container; this.cb=cb;
     this.score=0; this.level=1; this.puzzlesSolved=0;
     this.el=null; this.grid=null; this.rows=0; this.cols=0;

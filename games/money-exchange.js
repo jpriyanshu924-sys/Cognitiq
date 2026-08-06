@@ -251,7 +251,8 @@ class MoneyExchangeGame {
   }
 
   timeUp() { this._finish(); }
-  destroy() { this.el = null; }
+  destroy() { if (this.el && this.el.parentNode) { this.el.parentNode.removeChild(this.el); }
+    this.el = null; }
 }
 
 window.MoneyExchangeGame = MoneyExchangeGame;

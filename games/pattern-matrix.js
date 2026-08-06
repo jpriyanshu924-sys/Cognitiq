@@ -378,6 +378,7 @@ class PatternMatrixGame {
 
   destroy() {
     clearInterval(this._roundInterval);
+    if (this.el && this.el.parentNode) { this.el.parentNode.removeChild(this.el); }
     this.el = null;
   }
 }

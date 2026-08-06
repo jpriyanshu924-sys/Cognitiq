@@ -541,9 +541,22 @@ class CampusPlayApp {
 
   _exitGame() {
     clearInterval(this.state.timer);
-    if (this.state.gameInst?.destroy) this.state.gameInst.destroy();
-    this.state.gameInst = null;
+    if (this.state.gameInst) {
+      if (typeof this.state.gameInst.destroy === 'function') {
+        try {
+          this.state.gameInst.destroy();
+        } catch (err) {
+          console.warn('Error destroying game instance:', err);
+        }
+      }
+      this.state.gameInst = null;
+    }
     
+    const container = document.getElementById('game-container');
+    if (container) container.innerHTML = '';
+
+    this._closeModal();
+
     const isMock = new URLSearchParams(location.search).get('mock') === '1';
     if (isMock) {
       window.parent.postMessage({ type: 'EXIT_GAME' }, '*');
