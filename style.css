@@ -4168,3 +4168,199 @@ h1, h2, h3, h4, h5 { font-family: var(--fh); }
     height: 1px;
   }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   GLOBAL MOBILE RESPONSIVE OVERRIDES FOR ALL GAMES & ASSESSPRO UI
+   ══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  /* 1. Header Bar Responsiveness */
+  .ap-header {
+    padding: 0 10px !important;
+    height: 52px !important;
+    gap: 6px !important;
+  }
+  .ap-logo {
+    font-size: 0.95rem !important;
+    white-space: nowrap !important;
+  }
+  .ap-header-center {
+    flex: 1 !important;
+    min-width: 0 !important;
+    text-align: center !important;
+  }
+  .ap-question-num {
+    font-size: 0.78rem !important;
+    padding-bottom: 0 !important;
+    border-bottom: none !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;
+  }
+  .ap-header-right {
+    gap: 6px !important;
+    flex-shrink: 0 !important;
+  }
+  .ap-timer-box {
+    padding: 4px 8px !important;
+    font-size: 0.72rem !important;
+    border-radius: 14px !important;
+    gap: 3px !important;
+    white-space: nowrap !important;
+  }
+  .ap-exit-btn {
+    padding: 5px 10px !important;
+    font-size: 0.72rem !important;
+    border-radius: 6px !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* 2. Main View & Workspace Containers */
+  .ap-body {
+    flex-direction: column !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  .ap-sidebar {
+    width: 100% !important;
+    border-right: none !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    padding: 8px 12px !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+  .ap-candidate-card {
+    margin-bottom: 0 !important;
+  }
+  .ap-nav, .ap-sidebar-bottom {
+    display: none !important;
+  }
+  .ap-main {
+    padding: 12px 8px !important;
+    width: 100% !important;
+    overflow-x: hidden !important;
+  }
+  .ap-workspace {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* 3. Multi-Column Game Grids Override */
+  .ap-blg-grid,
+  .ap-spin-grid,
+  .ap-face-grid,
+  .ap-mem-grid,
+  .ap-cards-split-container,
+  .shl-workspace,
+  .sd-canvases,
+  .tow-boards,
+  .he-options,
+  .mex-split-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    margin-top: 8px !important;
+    margin-bottom: 14px !important;
+  }
+
+  .ap-cards-top-metrics,
+  .sky-header,
+  .bsim-dashboard,
+  .cr-staff-grid {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  .sky-choices,
+  .cards-decks,
+  .pm-choices,
+  .spin-choices,
+  .mm-choices,
+  .ss-choices {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .ap-spin-ref-box {
+    width: 100% !important;
+    height: 150px !important;
+    margin: 8px 0 !important;
+  }
+  .ap-spin-right-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+  }
+  .ap-spin-option-card {
+    aspect-ratio: 1.1 !important;
+    padding: 8px !important;
+  }
+
+  .ap-he-card {
+    padding: 16px 12px !important;
+    min-height: auto !important;
+    margin-bottom: 14px !important;
+  }
+
+  .ap-tow-footer-card {
+    flex-direction: column !important;
+    gap: 8px !important;
+    padding: 10px !important;
+  }
+
+  .ap-bottom-actions {
+    flex-direction: column !important;
+    gap: 10px !important;
+    align-items: stretch !important;
+    padding: 10px 12px !important;
+  }
+
+  .ap-progress-label {
+    font-size: 0.78rem !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+  }
+  .ap-progress-bar-bg {
+    width: 100px !important;
+  }
+
+  .ap-action-btns {
+    width: 100% !important;
+    display: flex !important;
+    gap: 8px !important;
+  }
+  .ap-btn-skip, .ap-btn-confirm {
+    flex: 1 !important;
+    text-align: center !important;
+    padding: 10px 12px !important;
+    font-size: 0.85rem !important;
+  }
+
+  /* Canvas Responsiveness */
+  #mt-canvas,
+  .sky-canvas-container canvas,
+  .sig-canvas,
+  canvas {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+
+  /* HUD Header in games.html */
+  .game-hud {
+    padding: 8px 10px !important;
+    gap: 6px !important;
+  }
+  .hud-game-name {
+    font-size: 0.85rem !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;
+    max-width: 100px !important;
+  }
+  .hud-stat-box {
+    padding: 4px 6px !important;
+    font-size: 0.72rem !important;
+  }
+  #btn-exit-game {
+    padding: 4px 6px !important;
+  }
+}
