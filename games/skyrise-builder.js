@@ -187,7 +187,7 @@ class SkyriseBuildGame {
     if (exitBtn) {
       exitBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        if (window.CIQ) window.CIQ._exitGame();
+        if (this.cb && this.cb.onExit) { this.cb.onExit(); } else if (window._app) { window._app._exitGame(); } else if (window.CIQ) { window.CIQ._exitGame(); }
       });
     }
   }

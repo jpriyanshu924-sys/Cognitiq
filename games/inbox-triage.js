@@ -100,6 +100,7 @@ class InboxTriageGame {
 
     this.el.innerHTML = `
       <div class="it-header">
+        <button class="btn ap-exit-btn" id="ap-exit-btn" style="padding:4px 10px; font-size:0.75rem; margin-right:12px;">Save &amp; Exit</button>
         <div class="it-stat"><span class="it-l">Triage Status</span><span class="it-v" style="color:var(--violet-l)">${completedCount}/${this.emails.length} sorted</span></div>
         <div class="it-stat"><span class="it-l">Score</span><span class="it-v" style="color:var(--amber)">${this.score}</span></div>
       </div>
@@ -167,6 +168,14 @@ class InboxTriageGame {
   }
 
   _bindEvents() {
+    
+    const exitBtn = this.el.querySelector('#ap-exit-btn');
+    if (exitBtn) {
+      exitBtn.addEventListener('click', (e) => {
+        e.preventDefault(); e.stopPropagation();
+        if (this.cb && this.cb.onExit) { this.cb.onExit(); } else if (window._app) { window._app._exitGame(); } else if (window.CIQ) { window.CIQ._exitGame(); }
+      });
+    }
     this.el.querySelectorAll('.it-email-item').forEach(item => {
       item.addEventListener('click', () => {
         this.selectedEmailIdx = parseInt(item.dataset.idx);

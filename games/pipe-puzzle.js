@@ -170,10 +170,19 @@ class PipePuzzleGame {
     if(!this.el) return;
     const CS=this.level<=1?68:this.level<=2?58:50;
     this.el.innerHTML=`
-      <div class="pp-info">Level ${this.level} · Puzzle ${this.puzzlesSolved+1} · Solved: ${this.puzzlesSolved}</div>
+      <div class="pp-info">
+        <button class="btn ap-exit-btn" id="ap-exit-btn" style="padding:4px 10px; font-size:0.75rem; float:right; margin-bottom:8px;">Save &amp; Exit</button>Level ${this.level} · Puzzle ${this.puzzlesSolved+1} · Solved: ${this.puzzlesSolved}</div>
       <div class="pp-grid" id="pp-grid" style="grid-template-columns:repeat(${this.cols},${CS}px)"></div>
       <div class="pp-status" id="pp-status">Connect 🔵 START → 🔴 END by clicking to rotate pipes</div>`;
 
+    
+    const exitBtn = this.el.querySelector('#ap-exit-btn');
+    if (exitBtn) {
+      exitBtn.addEventListener('click', (e) => {
+        e.preventDefault(); e.stopPropagation();
+        if (this.cb && this.cb.onExit) { this.cb.onExit(); } else if (window._app) { window._app._exitGame(); } else if (window.CIQ) { window.CIQ._exitGame(); }
+      });
+    }
     const grid=this.el.querySelector('#pp-grid');
 
     for(let r=0;r<this.rows;r++) for(let c=0;c<this.cols;c++) {

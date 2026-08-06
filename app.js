@@ -1270,4 +1270,19 @@ Object.assign(CampusPlayApp.prototype, {
   }
 });
 
+
+// Universal capture-phase listener for any Exit button click across all games
+document.addEventListener('click', (e) => {
+  const exitBtn = e.target.closest('#ap-exit-btn, .ap-exit-btn, #btn-exit-game, .btn-exit-game, [data-action="exit"]');
+  if (exitBtn) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (window._app) {
+      window._app._exitGame();
+    } else if (window.CIQ) {
+      window.CIQ._exitGame();
+    }
+  }
+}, true);
+
 window.addEventListener('DOMContentLoaded', () => { window._app = window.CIQ = new CampusPlayApp(); });

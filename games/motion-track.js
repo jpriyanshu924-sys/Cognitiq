@@ -360,6 +360,14 @@ class MotionTrackGame {
         </div>
       </div>`;
 
+    
+    const exitBtn = this.el.querySelector('#ap-exit-btn');
+    if (exitBtn) {
+      exitBtn.addEventListener('click', (e) => {
+        e.preventDefault(); e.stopPropagation();
+        if (this.cb && this.cb.onExit) { this.cb.onExit(); } else if (window._app) { window._app._exitGame(); } else if (window.CIQ) { window.CIQ._exitGame(); }
+      });
+    }
     this.canvas = document.getElementById('mt-canvas');
     if (this.canvas) {
       this.ctx = this.canvas.getContext('2d');

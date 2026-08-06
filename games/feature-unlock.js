@@ -123,6 +123,7 @@ class FeatureUnlockGame {
 
     this.el.innerHTML = `
       <div class="fu-header">
+        <button class="btn ap-exit-btn" id="ap-exit-btn" style="padding:4px 10px; font-size:0.75rem;">Save &amp; Exit</button>
         <div>Puzzle ${this.puzzlesSolved + 1} · Level ${this.level}</div>
         <div style="color:var(--amber)">Guesses left: <strong style="font-family:var(--fm)">${this.maxGuesses - this.guesses}</strong></div>
         <div style="color:var(--violet-l)">Solved: ${this.puzzlesSolved}</div>

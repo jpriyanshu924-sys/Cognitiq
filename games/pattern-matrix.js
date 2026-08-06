@@ -283,6 +283,7 @@ class PatternMatrixGame {
     const CS = 98;
     this.el.innerHTML = `
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px; max-width:420px; margin: 0 auto 12px">
+        <button class="btn ap-exit-btn" id="ap-exit-btn" style="padding:4px 10px; font-size:0.75rem;">Save &amp; Exit</button>
         <div class="game-q-label" style="margin-bottom:0">Question ${this.q} &nbsp;·&nbsp; Streak 🔥${this.streak}</div>
         <div style="font-size:0.82rem; font-weight:800; color:#ef4444; background:rgba(239,68,68,0.08); padding:4px 10px; border-radius:12px; min-width:80px; text-align:center">
           ⏱️ <span id="pm-round-timer">30</span>s
@@ -293,6 +294,14 @@ class PatternMatrixGame {
       <p style="font-size:.78rem;color:var(--muted);text-align:center;margin-top:16px">Which option completes the pattern?</p>
       <div class="pm-choices" id="pm-choices" style="display:grid; gap:10px; width:100%; margin-top:12px"></div>`;
 
+    
+    const exitBtn = this.el.querySelector('#ap-exit-btn');
+    if (exitBtn) {
+      exitBtn.addEventListener('click', (e) => {
+        e.preventDefault(); e.stopPropagation();
+        if (this.cb && this.cb.onExit) { this.cb.onExit(); } else if (window._app) { window._app._exitGame(); } else if (window.CIQ) { window.CIQ._exitGame(); }
+      });
+    }
     const grid = this.el.querySelector('#pm-grid');
     puzzle.cells.forEach((cell,i) => {
       const div = document.createElement('div');
