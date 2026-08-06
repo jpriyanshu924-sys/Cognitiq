@@ -1,4 +1,12 @@
-/* ══════════════════════════════════════════════════════════════
+"""
+Complete overhaul script for landing.css to define all base desktop & mobile responsive rules
+"""
+import os
+
+ws = r"C:\Users\PRIYANSHU\.gemini\antigravity\scratch\cognitiq"
+LANDING_CSS_PATH = os.path.join(ws, "landing.css")
+
+LANDING_CSS_CONTENT = """/* ══════════════════════════════════════════════════════════════
    LANDING.CSS — Complete Design System & Page Styles
    CampusPlay Gamified Assessment & Aptitude Preparation Suite
    ══════════════════════════════════════════════════════════════ */
@@ -1067,3 +1075,9 @@
     gap: 8px;
   }
 }
+"""
+
+with open(LANDING_CSS_PATH, "w", encoding="utf-8") as f:
+    f.write(LANDING_CSS_CONTENT)
+
+print("[landing.css] Overhauled landing.css with rich tokens, hero glow, tracks, features, how-it-works, FAQ, CTA & Footer.")
