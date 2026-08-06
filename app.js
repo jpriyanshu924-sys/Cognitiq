@@ -875,26 +875,26 @@ class CampusPlayApp {
         const prov = cfg.provider || 'Recruitment Test';
 
         return `
-          <div class="game-card" id="card-${gameId}" data-game="${gameId}">
-            <div class="gc-header-block ${cat.bg}">
-              <div class="gc-top-row">
-                <span class="gc-popular-tag">${cat.tag}</span>
-                <span class="gc-watermark">${cfg.icon}</span>
+          <div class="game-card apt-style-card" id="card-${gameId}" data-game="${gameId}">
+            <div>
+              <div class="apt-card-top">
+                <div class="gc-icon-pill" style="background: ${cat.color};">
+                  <span style="font-size:1.4rem; line-height:1;">${cfg.icon}</span>
+                </div>
+                <span class="apt-card-badge gc-cat-badge">${cat.tag}</span>
               </div>
-              <div class="gc-title-row">
-                <span class="gc-card-title-main">${cfg.name}</span>
-              </div>
+              <h3 class="apt-card-title">${cfg.name}</h3>
+              <p class="apt-card-desc">${cfg.desc}</p>
             </div>
-            <div class="gc-body-block">
-              <div class="gc-body-title">${prov} Assessment</div>
-              <span class="difficulty ${diffClass}">${difficultyLabel}</span>
-              <p>${cfg.desc}</p>
-              <div class="game-best" id="best-${gameId}" style="${bestData ? '' : 'display:none'}">
-                ${bestData ? `🏆 Best: <strong>${scoreStr}</strong>${accStr}` : ''}
+            <div>
+              <div class="apt-card-meta">
+                <span class="difficulty ${diffClass}">${difficultyLabel}</span>
+                <div class="game-best" id="best-${gameId}" style="${bestData ? '' : 'display:none'}">
+                  🏆 ${bestData ? `<strong>${scoreStr}</strong>${accStr}` : ''}
+                </div>
               </div>
-              <button class="btn btn-play" data-game="${gameId}">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                Start Practice
+              <button class="apt-btn-start btn-play" data-game="${gameId}">
+                Start Practice →
               </button>
             </div>
           </div>`;

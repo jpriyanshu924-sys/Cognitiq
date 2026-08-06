@@ -140,6 +140,71 @@
 }
 .lnav-cta:hover { background: var(--violet-d); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(37,99,235,0.35); }
 
+/* ─── Profile button pill & right-group (always inline) ─── */
+.lnav-right-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.lnav-profile-btn {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #e2e8f0;
+  border-radius: 100px;
+  padding: 5px 12px 5px 7px;
+  cursor: pointer;
+  font-family: var(--fi);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1e293b;
+  transition: all 0.2s;
+  white-space: nowrap;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  flex-shrink: 0;
+}
+.lnav-profile-btn:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.lnav-avatar-text {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 800;
+  font-family: var(--fh);
+  flex-shrink: 0;
+  line-height: 1;
+}
+.lnav-avatar-img {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.lnav-online-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10b981;
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+
 /* Sleek search bar integrated into navigation */
 .lnav-search-container {
   position: relative;
@@ -382,14 +447,32 @@
   .lnav-logo-svg { width: 24px; height: 24px; }
   .lnav-logo-text { font-size: 0.95rem; }
 
-  /* profile pill → avatar-only circle */
-  .lnav-profile-btn {
-    padding: 4px 7px;
-    gap: 4px;
-    border-radius: 20px;
+  /* Right group: always a flex ROW so avatar + hamburger sit side-by-side */
+  .lnav-right-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+    flex-shrink: 0;
   }
+
+  /* profile pill → compact avatar-only pill (no name text, just initial) */
+  .lnav-profile-btn {
+    padding: 4px 6px;
+    gap: 4px;
+    border-radius: 100px;
+    flex-direction: row;
+    white-space: nowrap;
+  }
+  /* Hide name/label spans but keep avatar initial and online dot */
   .lnav-profile-btn > span:not(.lnav-online-dot):not(.lnav-avatar-text) {
     display: none !important;
+  }
+  /* Also hide if it's just a Sign In text SVG button — keep small */
+  .lnav-profile-btn > svg {
+    width: 16px;
+    height: 16px;
   }
 
   /* mobile dropdown pinned below 52px bar */
