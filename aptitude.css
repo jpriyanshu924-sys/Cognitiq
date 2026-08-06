@@ -425,7 +425,35 @@
 }
 
 @media (max-width: 640px) {
-  .apt-hero { padding: 60px 16px 40px; }
-  .apt-grid { grid-template-columns: 1fr; }
-  .apt-workspace-card { max-height: 95vh; border-radius: 16px; }
+  .apt-hero {
+    padding: 60px 12px 24px;
+  }
+  .apt-hero-h1 { font-size: clamp(1.4rem, 5.5vw, 1.9rem); }
+  .apt-hero-sub { font-size: 0.82rem; line-height: 1.5; }
+  .apt-eyebrow { font-size: 0.68rem; padding: 4px 10px; }
+
+  /* workspace modal: full-screen bottom sheet */
+  .apt-modal-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+  .apt-workspace-card {
+    max-height: 92vh;
+    border-radius: 20px 20px 0 0;
+    width: 100%;
+    max-width: 100%;
+  }
+  .apt-workspace-header { padding: 14px 18px; }
+  .apt-ws-title { font-size: 0.9rem; }
+  .apt-ws-timer { font-size: 0.78rem; padding: 4px 10px; }
+  .apt-workspace-body  { padding: 16px 18px; }
+  .apt-q-text { font-size: 0.9rem; line-height: 1.5; }
+  .apt-options-grid { gap: 8px; margin-top: 14px; }
+  .apt-opt-btn {
+    padding: 11px 14px;
+    font-size: 0.82rem;
+    border-radius: 12px;
+  }
+  .apt-workspace-footer { padding: 12px 18px; }
+  .apt-btn-start { font-size: 0.8rem; padding: 9px 18px; }
 }
