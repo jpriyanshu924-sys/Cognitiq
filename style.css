@@ -4519,3 +4519,72 @@ h1, h2, h3, h4, h5 { font-family: var(--fh); }
   }
 }
 
+/* ══════════════════════════════════════════════════════════════
+   GAMES PAGE — Desktop/Mobile hero toggle + mobile card overrides
+   ══════════════════════════════════════════════════════════════ */
+
+/* Desktop: show light hero, hide dark mobile hero */
+.desktop-only-hero { display: block; }
+.mobile-only-hero  { display: none;  }
+
+/* Desktop: filter bar in mobile hero hidden */
+#game-filter-bar { display: flex; }
+
+@media (max-width: 768px) {
+  /* Swap heroes */
+  .desktop-only-hero { display: none !important; }
+  .mobile-only-hero  { display: block !important; }
+
+  /* Mobile game grid: SINGLE column (1-after-another scroll) */
+  .game-grid.grid-3 {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+
+  /* Mobile game card: flat, no gradient split — clean single-col tile */
+  .game-card {
+    flex-direction: column;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  /* Compact coloured header */
+  .gc-header-block {
+    min-height: 60px !important;
+    padding: 12px 14px !important;
+    border-radius: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+  }
+  .gc-watermark { font-size: 1.6rem; top: auto; right: auto; position: static; opacity: 1; }
+  .gc-title-row { margin-top: 0; }
+  .gc-card-title-main { font-size: 0.95rem; }
+  .gc-popular-tag { font-size: 0.58rem; }
+  .gc-top-row { flex-direction: column; align-items: flex-start; gap: 4px; }
+
+  /* Body: hide long description */
+  .gc-body-block { padding: 12px 14px 14px; gap: 8px; }
+  .gc-body-title { font-size: 0.82rem; margin-bottom: 2px; }
+  .game-card p   { display: none; }
+  .game-best     { display: none !important; }
+
+  /* Play button full-width */
+  .game-card .btn-play {
+    width: 100%;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 0.8rem !important;
+    padding: 10px 14px !important;
+    border-radius: 10px !important;
+    margin-top: 4px;
+  }
+
+  /* Category section on mobile */
+  .game-category-section { padding: 0 12px; }
+  .games-categories-wrap { padding: 16px 12px 60px; }
+}
+

@@ -894,26 +894,26 @@ class CampusPlayApp {
         const prov = cfg.provider || 'Recruitment Test';
 
         return `
-          <div class="game-card apt-style-card" id="card-${gameId}" data-game="${gameId}">
-            <div class="card-stripe" style="background: ${cat.color};"></div>
-            <div class="card-body">
-              <div class="apt-card-top">
-                <div class="gc-icon-pill" style="background: ${cat.color}22; border: 1px solid ${cat.color}44;">
-                  <span style="font-size:1.5rem; line-height:1;">${cfg.icon}</span>
-                </div>
-                <span class="gc-cat-badge">${cat.tag.toUpperCase()}</span>
+          <div class="game-card" id="card-${gameId}" data-game="${gameId}">
+            <div class="gc-header-block ${cat.bg}">
+              <div class="gc-top-row">
+                <span class="gc-popular-tag">${cat.tag}</span>
+                <span class="gc-watermark">${cfg.icon}</span>
               </div>
-              <h3 class="apt-card-title">${cfg.name}</h3>
-              <p class="apt-card-desc">${cfg.desc}</p>
-              <div class="apt-card-meta">
-                <span class="difficulty ${diffClass}">${difficultyLabel}</span>
-                <span style="font-size:0.72rem; color:#94a3b8; font-weight:600;">${prov}</span>
-                <div class="game-best" id="best-${gameId}" style="${bestData ? '' : 'display:none'}">
-                  🏆 ${bestData ? `<strong>${scoreStr}</strong>${accStr}` : ''}
-                </div>
+              <div class="gc-title-row">
+                <span class="gc-card-title-main">${cfg.name}</span>
               </div>
-              <button class="apt-btn-start btn-play" data-game="${gameId}">
-                Start Practice →
+            </div>
+            <div class="gc-body-block">
+              <div class="gc-body-title">${prov} Assessment</div>
+              <span class="difficulty ${diffClass}">${difficultyLabel}</span>
+              <p>${cfg.desc}</p>
+              <div class="game-best" id="best-${gameId}" style="${bestData ? '' : 'display:none'}">
+                ${bestData ? `🏆 Best: <strong>${scoreStr}</strong>${accStr}` : ''}
+              </div>
+              <button class="btn btn-play" data-game="${gameId}">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                Start Practice
               </button>
             </div>
           </div>`;
@@ -931,7 +931,7 @@ class CampusPlayApp {
               <span>${played}/${cat.games.length}</span>
             </div>
           </div>
-          <div class="game-grid game-grid-single" id="game-grid-cat-${catId}">
+          <div class="game-grid grid-3" id="game-grid-cat-${catId}">
             ${cardsHtml}
           </div>
         </div>`;
