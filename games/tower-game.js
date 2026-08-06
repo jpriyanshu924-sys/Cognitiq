@@ -18,9 +18,11 @@ class TowerGame {
   // Display: 3 columns, discs drawn as colored rectangles
 
   start() {
+    this.gameStartTime = Date.now();
     this.el = document.createElement('div');
     this.el.className = 'tow-game';
     this.container.appendChild(this.el);
+    this._render();
     this._newPuzzle();
   }
 
@@ -74,7 +76,12 @@ class TowerGame {
     this.minMoves = numDiscs * 2;
     this.moves = 0;
     this.selected = null;
-    this._render();
+
+    // In-place DOM updates
+    const qEl = this.el.querySelector('.ap-question-num');
+    if (qEl) qEl.textContent = `Puzzle ${this.puzzlesSolved + 1} of 8`;
+
+    this._drawBoards();
   }
 
   _isSolved() {

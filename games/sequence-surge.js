@@ -19,9 +19,11 @@ class SequenceSurgeGame {
   }
 
   start() {
+    this.gameStartTime = Date.now();
     this.el = document.createElement('div');
-    this.el.className = 'ss-game';
+    this.el.className = 'seq-game';
     this.container.appendChild(this.el);
+    this._render();
     this._newRound();
   }
 
@@ -44,24 +46,33 @@ class SequenceSurgeGame {
     }
 
     // Interleave decoy steps for Level 2 & 3
-    // Decoys are extra icons that light up but are NOT part of the true sequence
     this.pattern = truePattern.map(idx => ({ index: idx, isDecoy: false }));
 
     if (this.level >= 2) {
-      // Add 1 decoy
       const decoyIdx = Math.floor(Math.random() * totalCells);
       const insertAt = 1 + Math.floor(Math.random() * (this.pattern.length - 1));
       this.pattern.splice(insertAt, 0, { index: decoyIdx, isDecoy: true });
     }
 
     if (this.level >= 3) {
-      // Add a second decoy
       const decoyIdx2 = Math.floor(Math.random() * totalCells);
       const insertAt2 = 1 + Math.floor(Math.random() * (this.pattern.length - 1));
       this.pattern.splice(insertAt2, 0, { index: decoyIdx2, isDecoy: true });
     }
 
-    this._render();
+    // In-place DOM updates
+    const qEl = this.el.querySelector('.ap-question-num');
+    if (qEl) qEl.textContent = `Round ${this.total}`;
+
+    const statusEl = document.getElementById('ss-status');
+    if (statusEl) {
+      statusEl.textContent = 'OBSERVE SEQUENCE';
+      statusEl.style.backgroundColor = '#eff6ff';
+      statusEl.style.color = '#2563eb';
+    }
+
+    this._renderGrid();
+
     const t = setTimeout(() => this._playSequence(), 1000);
     this._timers.push(t);
   }

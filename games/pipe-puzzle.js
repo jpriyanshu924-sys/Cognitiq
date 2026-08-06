@@ -62,18 +62,24 @@ class PipePuzzleGame {
   }
 
   start() {
-    this.el=document.createElement('div');
-    this.el.className='pp-game';
+    this.gameStartTime = Date.now();
+    this.el = document.createElement('div');
+    this.el.className = 'pp-game';
     this.container.appendChild(this.el);
+    this._render();
     this._newPuzzle();
   }
 
   _newPuzzle() {
-    // Grid size scales with level
-    const size = this.level<=1?4:this.level<=2?5:6;
-    this.rows=size; this.cols=size;
-    this._buildGrid(size,size);
-    this._render();
+    const size = this.level <= 1 ? 4 : this.level <= 2 ? 5 : 6;
+    this.rows = size;
+    this.cols = size;
+    this._buildGrid(size, size);
+
+    const infoEl = this.el.querySelector('.pp-info');
+    if (infoEl) infoEl.textContent = `Level ${this.level} · Puzzle ${this.puzzlesSolved + 1} · Solved: ${this.puzzlesSolved}`;
+
+    this._drawGrid();
   }
 
   _buildGrid(rows,cols) {
@@ -185,6 +191,18 @@ class PipePuzzleGame {
       });
     }
     const grid=this.el.querySelector('#pp-grid');
+    if (grid) grid.style.gridTemplateColumns = `repeat(${this.cols},${CS}px)`;
+
+    this._drawGrid();
+  }
+
+  _drawGrid() {
+    if (!this.el) return;
+    const CS=this.level<=1?68:this.level<=2?58:50;
+    const grid = this.el.querySelector('#pp-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    grid.style.gridTemplateColumns = `repeat(${this.cols},${CS}px)`;
 
     for(let r=0;r<this.rows;r++) for(let c=0;c<this.cols;c++) {
       const cell=document.createElement('div');

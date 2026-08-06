@@ -14,9 +14,11 @@ class NumerosityGame {
   }
 
   start() {
+    this.gameStartTime = Date.now();
     this.el = document.createElement('div');
     this.el.className = 'num-game';
     this.container.appendChild(this.el);
+    this._render();
     this._newRound();
   }
 
@@ -58,7 +60,18 @@ class NumerosityGame {
 
     const allNums = [...answerNums, ...extra].sort(() => Math.random() - 0.5);
     this.bubbles = allNums.map((n, i) => ({ id: i, val: n }));
-    this._render();
+
+    // In-place DOM updates
+    const qEl = this.el.querySelector('.ap-question-num');
+    if (qEl) qEl.textContent = `Round ${this.total}`;
+
+    const targetEl = document.getElementById('num-target');
+    if (targetEl) targetEl.textContent = this.target;
+
+    const sumEl = document.getElementById('num-sum');
+    if (sumEl) sumEl.textContent = '0';
+
+    this._renderBubbles();
     this._startRoundTimer();
   }
 
@@ -163,7 +176,7 @@ class NumerosityGame {
                 <div style="display:flex; gap:24px; align-items:center; justify-content:center; margin-bottom:28px">
                   <div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:12px; padding:12px 24px; text-align:center">
                     <span style="font-size:0.72rem; font-weight:700; color:#1e3a8a; display:block; margin-bottom:2px">TARGET</span>
-                    <span style="font-size:2.2rem; font-weight:800; color:#1e3a8a; font-family:var(--fm)">${this.target}</span>
+                    <span style="font-size:2.2rem; font-weight:800; color:#1e3a8a; font-family:var(--fm)" id="num-target">${this.target}</span>
                   </div>
                   <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:12px 24px; text-align:center; min-width:110px">
                     <span style="font-size:0.72rem; font-weight:700; color:#6b7280; display:block; margin-bottom:2px">YOUR SUM</span>

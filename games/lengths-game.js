@@ -32,6 +32,7 @@ class LengthsGame {
     this.el = document.createElement('div');
     this.el.className = 'len-game';
     this.container.appendChild(this.el);
+    this._render();
     this._newRound();
   }
 
@@ -45,8 +46,26 @@ class LengthsGame {
     // Randomize mouth type for this round
     this.currentMouth = Math.random() < 0.5 ? 'little' : 'big';
 
-    this._render();
-    
+    // In-place DOM updates without re-rendering outer HTML structure
+    const qEl = this.el.querySelector('.ap-question-num');
+    if (qEl) qEl.textContent = `Question ${this.q} of ${this.totalQuestions}`;
+
+    const statusBadge = document.getElementById('len-status-badge');
+    if (statusBadge) {
+      statusBadge.textContent = 'Observe the face mouth length...';
+      statusBadge.style.color = '#3b22d8';
+      statusBadge.style.backgroundColor = '#eff6ff';
+    }
+
+    ['len-btn-left', 'len-btn-right'].forEach(id => {
+      const btn = document.getElementById(id);
+      if (btn) {
+        btn.style.backgroundColor = '';
+        btn.style.borderColor = '';
+        btn.style.color = '';
+      }
+    });
+
     // Draw initial face base with mouth hidden/blank
     this._drawFace(true);
 
@@ -321,6 +340,31 @@ class LengthsGame {
         correctBtn.style.borderColor = '#10b981';
         correctBtn.style.color = '#ffffff';
       }
+    }
+
+    // In-place text updates for cash total and last result feedback
+    const cashEl = document.getElementById('len-total-cash');
+    if (cashEl) cashEl.textContent = `$${(this.bankTotal / 100).toFixed(2)}`;
+
+    const lastRewardObj = this.times.length > 0 ? this.times[this.times.length - 1] : null;
+    let rewardText = 'None';
+    let rewardColor = '#6b7280';
+    if (lastRewardObj) {
+      if (lastRewardObj.rewarded) {
+        rewardText = `💵 REWARDED! +$0.20`;
+        rewardColor = '#059669';
+      } else if (lastRewardObj.correct) {
+        rewardText = `✓ Correct (No Cash)`;
+        rewardColor = '#2563eb';
+      } else {
+        rewardText = `❌ Incorrect`;
+        rewardColor = '#dc2626';
+      }
+    }
+    const feedbackEl = document.getElementById('len-last-feedback');
+    if (feedbackEl) {
+      feedbackEl.textContent = rewardText;
+      feedbackEl.style.color = rewardColor;
     }
 
     // Force face redraw to show correct length clearly

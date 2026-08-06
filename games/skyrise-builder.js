@@ -22,24 +22,32 @@ class SkyriseBuildGame {
   }
 
   start() {
+    this.gameStartTime = Date.now();
     this.el = document.createElement('div');
-    this.el.className = 'skyrise-game';
+    this.el.className = 'sky-game';
     this.container.appendChild(this.el);
+    this._render();
     this._nextRound();
   }
 
   _nextRound() {
-    if (this.round >= this.maxRounds) { this._finish(); return; }
+    if (this.round >= this.maxRounds) {
+      this._finish();
+      return;
+    }
     this.round++;
-    // Each round: random budget + worker budget
     this.budget  = 6 + this.round * 2 + Math.floor(Math.random() * 4);
     this.workers = 3 + this.round + Math.floor(Math.random() * 3);
-    // Pick 3 random building choices
     const shuffled = [...this.buildings].sort(() => Math.random() - 0.5);
     this.choices = shuffled.slice(0, 3);
-    // Random event every 3 rounds
     this.event = this.round % 3 === 0 ? this._randomEvent() : null;
-    this._render();
+
+    // In-place DOM updates
+    const qEl = this.el.querySelector('.ap-question-num');
+    if (qEl) qEl.textContent = `Round ${this.round} of ${this.maxRounds}`;
+
+    this._renderChoices();
+    this._updateCityDisplay();
   }
 
   _randomEvent() {

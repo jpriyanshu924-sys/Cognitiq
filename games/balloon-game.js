@@ -29,6 +29,7 @@ class BalloonGame {
     this.el = document.createElement('div');
     this.el.className = 'balloon-game';
     this.container.appendChild(this.el);
+    this._render();
     this._newRound();
   }
 
@@ -46,9 +47,6 @@ class BalloonGame {
     this.balloonColor = colors[Math.floor(Math.random() * colors.length)];
 
     // Set pop rate based on color:
-    // Red: early pops (avg ~10.5 pumps, range 1-20)
-    // Blue: medium pops (avg ~17.5 pumps, range 5-30)
-    // Gold: late pops (avg ~32.5 pumps, range 10-55)
     if (this.balloonColor === 'red') {
       this.popAt = 1 + Math.floor(Math.random() * 20);
     } else if (this.balloonColor === 'blue') {
@@ -57,7 +55,24 @@ class BalloonGame {
       this.popAt = 10 + Math.floor(Math.random() * 45);
     }
 
-    this._render();
+    // In-place DOM updates without re-rendering full HTML shell
+    const qEl = this.el.querySelector('.ap-question-num');
+    if (qEl) qEl.textContent = `Balloon ${this.round} of ${this.totalRounds}`;
+
+    const curEarnEl = document.getElementById('blg-cur-earn');
+    if (curEarnEl) curEarnEl.textContent = '$0.00';
+
+    const pumpsEl = document.getElementById('blg-pumps-count');
+    if (pumpsEl) pumpsEl.textContent = '0';
+
+    const statusBadge = document.getElementById('blg-status-badge');
+    if (statusBadge) {
+      statusBadge.textContent = 'Active Balloon';
+      statusBadge.style.backgroundColor = '#eff6ff';
+      statusBadge.style.color = '#2563eb';
+    }
+
+    this._drawBalloon();
     this._updateButtonsState(false, true);
     this._startActionTimer();
   }
