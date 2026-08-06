@@ -468,8 +468,8 @@ h1, h2, h3, h4, h5 { font-family: var(--fh); }
   50%      { border-color: rgba(37,99,235,.45); box-shadow: 0 0 32px rgba(37,99,235,.06); }
 }
 .cta-emoji { font-size: 3rem; margin-bottom: 12px; }
-.cta-inner h3 { font-size: 1.6rem; margin-bottom: 10px; color: var(--text); }
-.cta-inner p  { color: var(--muted); margin-bottom: 28px; }
+.cta-inner h3 { font-size: 1.6rem; margin-bottom: 10px; color: #ffffff; }
+.cta-inner p  { color: #e2e8f0 !important; margin-bottom: 28px; font-size: 1.05rem; }
 
 /* ══════════════════════════════════════════════
    MODAL
